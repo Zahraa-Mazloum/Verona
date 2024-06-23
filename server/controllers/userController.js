@@ -19,6 +19,10 @@ export const loginUser = asyncHandler(async (req, res) => {
     const user = await User.findOne({ email });
 
     if (user && (await bcrypt.compare(password, user.password))) {
+        if (!user.status) {
+            res.status(403);
+            throw new Error('User account is inactive. Please contact support.');
+        }
         res.json({
             _id: user.id,
             fullname_en: user.fullname_en,
