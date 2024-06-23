@@ -53,6 +53,15 @@ export const myProfile = asyncHandler(async (req, res) => {
     })
 });
 
-const user = {loginUser, myProfile };
+// Assuming you have a route for logout
+// @desc Logout user
+// @route POST /api/users/logout
+// @access Private (assuming only authenticated users can logout)
+export const logoutUser = asyncHandler(async (req, res) => {
+    res.status(200).json('Logout successful');
+});
+
+
+const user = {loginUser, myProfile, logoutUser};
 
 export default user;
