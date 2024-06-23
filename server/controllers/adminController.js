@@ -5,12 +5,12 @@ import validator from 'validator';
 import User from '../models/userModel.js';
 
 // Generate JWT
-const generateToken = (id) => {
+export const generateToken = (id) => {
   return jwt.sign({ id }, process.env.JWT_SECRET, { expiresIn: '3d' });
 };
 
 // Password strength validation function
-const isStrongPassword = (password) => {
+export const isStrongPassword = (password) => {
   const regex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
   return regex.test(password);
 };
@@ -79,18 +79,18 @@ export const registerUser = asyncHandler(async (req, res) => {
   });
 
   if (user) {
-    // res.status(201).json({
-    //   _id: user.id,
-    //   fullname_en: user.fullname_en,
-    //   fullname_ar: user.fullname_ar,
-    //   email: user.email,
-    //   phoneNumber: user.phoneNumber,
-    //   dateOfBirth: user.dateOfBirth,
-    //   role: user.role,
-    //   status: user.status,
-    //   token: generateToken(user._id),
-    // });
-    res.status(201).json('User createsd successfully')
+    res.status(201).json({
+      _id: user.id,
+      fullname_en: user.fullname_en,
+      fullname_ar: user.fullname_ar,
+      email: user.email,
+      phoneNumber: user.phoneNumber,
+      dateOfBirth: user.dateOfBirth,
+      role: user.role,
+      status: user.status,
+      token: generateToken(user._id),
+    });
+    // res.status(201).json('User createsd successfully')
   } else {
     res.status(400);
     throw new Error('Invalid user data');

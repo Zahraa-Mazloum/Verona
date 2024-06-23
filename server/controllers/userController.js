@@ -40,9 +40,13 @@ export const loginUser = asyncHandler(async (req, res) => {
 // @route GET /api/users/me
 // @access Private
 export const myProfile = asyncHandler(async (req, res) => {
-    res.json({
-        message: 'Your data loaded',
-    });
+    const {_id, fullname_en,fullname_ar, email} = await User.findById(req.user.id)
+    res.status(200).json({
+        id: _id,
+        fullname_en,
+        fullname_ar,
+        email
+    })
 });
 
 const user = {loginUser, myProfile };
