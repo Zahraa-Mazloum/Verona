@@ -5,9 +5,10 @@ import cors from 'cors';
 import {config} from "dotenv";
 import helmet from 'helmet';
 import morgan from 'morgan';
-import adminRoutes from './routes/admin.js';
-import investorRoutes from './routes/investor.js';
+import adminRoutes from './routes/adminRoutes.js';
+import investorRoutes from './routes/investorRoutes.js';
 import connectDB from "./config/db.js"
+import userRoutes from './routes/userRoutes.js'
 
 
 
@@ -25,9 +26,8 @@ app.use (bodyParser.urlencoded({extended:false}));
 app.use(cors());
 
 // Routes 
- 
-app.use("/admim", adminRoutes);
-app.use("/investor",investorRoutes);
+app.use('/api/user' ,userRoutes);
+app.use('/api/admin', adminRoutes);
 
 
 
