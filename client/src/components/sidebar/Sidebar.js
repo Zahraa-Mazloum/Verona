@@ -124,8 +124,8 @@ const Sidebar = ({ open, setOpen }) => {
           button
           component={NavLink}
           onClick={handleLogout}
-          className="navItem"
-          activeClassName="active"
+          // className="navItem"
+          // activeClassName="active"
           exact
         >
           <ListItemIcon>
