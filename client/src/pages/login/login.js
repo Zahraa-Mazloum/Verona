@@ -38,7 +38,7 @@ const Login = () => {
       toast.success("Login successful!");
       localStorage.setItem('token', response.data.token);
       localStorage.setItem('role', response.data.role);
-      navigate(from, { replace: true });
+      window.location.href = '/dashboard'; 
 
     } catch (err) {
       console.error('Login error:', err.response.data);

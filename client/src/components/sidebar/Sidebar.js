@@ -24,6 +24,12 @@ const Sidebar = ({ open, setOpen }) => {
     setOpen(!open);
   };
 
+  const handleLogout = () => {
+    localStorage.removeItem('token');
+    localStorage.removeItem('username');
+    window.location.href = '/login'; 
+  };
+
   const menuItems = [
     { text: 'Dashboard', icon: <Icon path={mdiViewDashboard} size={1}/>, path: '/dashboard' },   
     { text: 'Contracts', icon: <Icon path={mdiFileSign} size={1}/>, path: '/contract' },
@@ -117,7 +123,7 @@ const Sidebar = ({ open, setOpen }) => {
         <ListItem
           button
           component={NavLink}
-          to="/logout"
+          onClick={handleLogout}
           className="navItem"
           activeClassName="active"
           exact
