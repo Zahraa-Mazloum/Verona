@@ -12,7 +12,7 @@ export const AuthProvider = ({ children }) => {
 
   useEffect(() => {
     if (auth.token) {
-      localStorage.setItem("token", true);
+      localStorage.setItem("token", auth.token);
     //   localStorage.setItem("super-admin", auth.superadmin);
     } else {
       localStorage.removeItem("token");

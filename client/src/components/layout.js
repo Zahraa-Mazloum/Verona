@@ -1,33 +1,29 @@
-
-// import Header from './header/header';
-// import SideBar from './sidebar/sidebar'
-import {useState,createContext} from  "react"
- import "../App.css"
-
- export const Url = createContext()
+import React, { useEffect, useState } from "react";
+import { CssBaseline, Box, Typography } from "@mui/material";
+import Sidebar from '../components/sidebar/Sidebar';
+import Header from './Header';
+import "../App.css";
 
 function Layout({ children }) {
-//   const [expanded , setExpanded] = useState(false)
+  const [userRole, setUserRole] = useState(null);
+  const [open, setOpen] = useState(true);
 
-//   const URL = "https://bassam-monla-ycid.onrender.com"
-
+  useEffect(() => {
+    const role = localStorage.getItem("userRole");
+    setUserRole(role);
+  }, []);
 
   return (
-    <main className="App">
-      {/* <SideBar isCollaps ={setExpanded} Collaps = {expanded}/> */}
-     
-          <div>
-              <div className='Header'>
-            {/* <Header /> */}
-              </div>
-              <div>
-                <Url.Provider value={URL}>
-                 {children}
-                </Url.Provider>
-              </div>
-          </div>
-
-    </main>
+    <Box sx={{ display: 'flex' }}>
+      <Sidebar open={open} setOpen={setOpen} userRole={userRole} />
+      <Box sx={{ flexGrow: 2, paddingLeft: open ? '240px' : '40px', transition: 'padding-left 0.9s' }}>
+        <Header open={open} />
+        <Box sx={{ mt: 8 }}>
+          {children}
+        </Box>
+      </Box>
+    </Box>
   );
 }
+
 export default Layout;
