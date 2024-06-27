@@ -1,23 +1,23 @@
 import mongoose from 'mongoose';
-import User from './userModel'
-
-
+import User from './userModel.js';
 
 const investorSchema = new mongoose.Schema({
-    passportNumber: {
-        type: String,
-        required: [true, 'Please add the passport number']
-    },
-    passportExpiryDate: {
-        type: Date,
-        required: true
-    },
-    passportPhoto:{
-        type:String,
-        required: true
-    },
+  passportNumber: {
+    type: String,
+    required: [true, 'Please add the passport number'],
+  },
+  passportExpiryDate: {
+    type: Date,
+    required: true,
+  },
+  passportPhoto: {
+    type: String,
+    required: true,
+  },
+}, {
+  timestamps: true,
 });
 
-const Investor = User.discriminator('investor', investorSchema);
+const Investor = User.discriminator('Investor', investorSchema);
 
-module.exports = Investor;
+export default Investor;

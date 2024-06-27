@@ -53,7 +53,19 @@ export const myProfile = asyncHandler(async (req, res) => {
     })
 });
 
-// Assuming you have a route for logout
+//@desc get users by roles
+//@route GET /api/users
+//@ access Private only admin
+
+// export const getUserByRole = asyncHandler(async(req,res)=>{
+//     const {_id, fullname_en , fullname_ar, }
+// }
+
+// )
+
+
+
+
 // @desc Logout user
 // @route POST /api/users/logout
 // @access Private (assuming only authenticated users can logout)

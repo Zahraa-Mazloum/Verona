@@ -97,6 +97,12 @@ export const registerUser = asyncHandler(async (req, res) => {
   }
 });
 
-const adminController = { registerUser };
+export const getAllAdmins = asyncHandler(async (req, res) => {
+  const admins = await User.find({})
+  res.json(admins);
+});
+
+
+const adminController = { registerUser , getAllAdmins };
 
 export default adminController;

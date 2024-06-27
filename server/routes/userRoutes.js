@@ -6,6 +6,6 @@ import { protect , admin} from '../middleware/authMiddleware.js';
 
 router.post('/login', loginUser)
 router.post('/logout', logoutUser)
-router.get('/me',protect,admin, myProfile)
+router.get('/me',protect, myProfile)
 
 export default router;

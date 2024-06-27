@@ -9,6 +9,7 @@ import adminRoutes from './routes/adminRoutes.js';
 import investorRoutes from './routes/investorRoutes.js';
 import connectDB from "./config/db.js"
 import userRoutes from './routes/userRoutes.js'
+import currencyRoutes from './routes/currencyRoutes.js'
 
 
 
@@ -28,6 +29,7 @@ app.use(cors());
 // Routes 
 app.use('/api/user' ,userRoutes);
 app.use('/api/admin', adminRoutes);
+app.use('/api/currency',currencyRoutes)
 
 
 
