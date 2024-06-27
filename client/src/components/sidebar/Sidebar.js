@@ -54,9 +54,11 @@ const Sidebar = ({ open, setOpen }) => {
       open={open}
       sx={{
         '& .MuiDrawer-paper': {
-          width: open ? 240 : 60,
+          width: open ? 235 : 60,
           transition: 'width 0.3s',
           overflowX: 'hidden',
+          overflowY: 'hidden',
+
         },
       }}
     >
@@ -67,9 +69,9 @@ const Sidebar = ({ open, setOpen }) => {
           top: '30px',
           transform: 'translateY(-50%)',
           padding: 0.2,
-          marginTop: open ? '5%' : '-2%',
+          marginTop: open ? '5%' : '',
           marginRight: open ? '-10%' : '0',
-          marginBottom: open ? '0' : '5%',
+          marginBottom: open ? '0' : '7%',
           zIndex: '2',
           '&:hover': {
             color: 'rgba(176, 93, 46, .9)',
@@ -97,8 +99,8 @@ const Sidebar = ({ open, setOpen }) => {
             maxWidth: '100%',
             maxHeight: '100%',
             paddingTop: '5%',
-            width: open ? '60%' : '40px',
-            height: open ? '60%' : '40px',
+            width: open ? '70%' : '40px',
+            height: open ? '70%' : '40px',
             paddingLeft: open ? 0 : '10%',
           }}
         />
@@ -124,8 +126,6 @@ const Sidebar = ({ open, setOpen }) => {
           button
           component={NavLink}
           onClick={handleLogout}
-          // className="navItem"
-          // activeClassName="active"
           exact
         >
           <ListItemIcon>

@@ -1,10 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import api from '../../api/axios';
-import { DataGrid } from '@mui/x-data-grid';
-import {
-  Button, Paper, Dialog, DialogActions, DialogContent, DialogTitle, TextField, IconButton,
-  InputAdornment, Toolbar, Typography, Box, DialogContentText
-} from '@mui/material';
+import { DataGrid , gridClasses } from '@mui/x-data-grid';
+import {Button, Paper, TextField, IconButton,InputAdornment, Toolbar, Typography, Box, DialogContentText} from '@mui/material';
+import {  styled } from '@mui/material/styles';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import AddIcon from '@mui/icons-material/Add';
@@ -22,6 +20,16 @@ const CurrencyTable = () => {
   const [editingCurrency, setEditingCurrency] = useState(null);
   const [search, setSearch] = useState('');
 
+
+  const StripedDataGrid = styled(DataGrid)(({ theme }) => ({
+    [`& .${gridClasses.row}.even`]: {
+      backgroundColor: 'rgba(255, 242, 215, 0.5)',
+      '&:hover': {
+        backgroundColor: theme.palette.grey[200],
+
+      }
+    }})
+  );  
   const fetchCurrencies = async () => {
     try {
       const { data } = await api.get('/currency/getCurrencies');
@@ -134,9 +142,10 @@ const CurrencyTable = () => {
   return (
     <Box p={3}>
       <ToastContainer />
-      <Paper elevation={3} style={{ padding: '10px', marginBottom: '10px' }}>
+      <Paper elevation={5} style={{ padding: '10px', marginBottom: '10px', width: open ? 'calc(100% - 240px)' : 'calc(100% - 60px)' }}>
+
         <Toolbar>
-          <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
+          <Typography variant="h6" component="div" sx={{ flexGrow: 1 , marginLeft: '1%'}}>
             Currency Management
           </Typography>
           <TextField
@@ -167,18 +176,21 @@ const CurrencyTable = () => {
   Add Currency
 </Button>
         </Toolbar>
-        <div style={{ height: 500, width: '100%', marginTop: '20px' }}>
-  <DataGrid
-    rows={filteredCurrencies}
-    columns={columns}
-    pageSize={5}
-    rowsPerPageOptions={[5, 10, 25]}
-    pagination={true} 
-    getRowId={(row) => row._id}
-    rowClassName={(params) =>
-      params.index % 2 !== 0 ? 'odd-row' : ''
-    }
-  />
+        <div style={{ width: '100%', overflowX: 'hidden',overflowY: 'hidden' , marginLeft:'2%' }}>
+        <StripedDataGrid
+  style={{ width: open ? 'calc(100% - 240px)' : 'calc(100% - 60px)'}}
+  rows={filteredCurrencies}
+  columns={columns}
+  pageSize={5}
+  rowsPerPageOptions={[5, 10, 25]}
+  pagination={true}
+  getRowId={(row) => row._id}
+  getRowClassName={(params) =>
+    params.indexRelativeToCurrentPage % 2 === 0 ? 'even' : 'odd'
+  }
+/>
+
+
 </div>
       </Paper>
       <CurrencyFormDialog
@@ -191,11 +203,7 @@ const CurrencyTable = () => {
         onEditCurrency={handleEditCurrency}
         editingCurrency={editingCurrency}
       />
- <style>{`
-  .odd-row {
-    background-color: #f5f5f5 !important;
-  }
-`}</style>
+
     </Box>
   );
 };

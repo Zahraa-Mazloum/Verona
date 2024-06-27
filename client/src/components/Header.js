@@ -22,13 +22,17 @@ const Header = ({ open }) => {
   };
 
   return (
-    <AppBar position="static" sx={{ backgroundColor: 'white', transition: 'padding-left 0.3s', paddingLeft: open ? '240px' : '60px' }}>
-      <Toolbar>
+<AppBar position="static" sx={{
+  backgroundColor: 'transparent',
+  boxShadow: 'none',
+  transition: 'padding-left 0.3s',
+  paddingLeft: open? '240px' : '60px'
+}}>      <Toolbar>
         <Box sx={{ flexGrow: 1 }} />
-        <IconButton sx={{ svg: { color: 'rgba(176, 93, 46, .9)' } }}>
+        <IconButton sx={{ svg: { color: 'rgb(243, 166, 74)' } }}>
           <Notifications />
         </IconButton>
-        <IconButton sx={{ svg: { color: 'rgba(176, 93, 46, .9)' } }} onClick={handleMenu}>
+        <IconButton sx={{ svg: { color: 'rgb(243, 166, 74)' } }} onClick={handleMenu}>
           <AccountCircle />
         </IconButton>
         <Menu
