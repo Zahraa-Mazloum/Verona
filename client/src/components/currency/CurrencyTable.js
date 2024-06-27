@@ -142,7 +142,7 @@ const CurrencyTable = () => {
   return (
     <Box p={3}>
       <ToastContainer />
-      <Paper elevation={5} style={{ padding: '10px', marginBottom: '10px', width: open ? 'calc(100% - 240px)' : 'calc(100% - 60px)' }}>
+      <Paper elevation={5} style={{ padding: '15px', marginBottom: '10px',marginLeft:'1%', width: open ? 'calc(100% - 240px)' : 'calc(100% - 60px)' }}>
 
         <Toolbar>
           <Typography variant="h6" component="div" sx={{ flexGrow: 1 , marginLeft: '1%'}}>
