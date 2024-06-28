@@ -1,5 +1,8 @@
 import React, { useEffect } from 'react';
-import { Box, Drawer, List, ListItem, ListItemIcon, ListItemText, IconButton, Divider, useMediaQuery } from '@mui/material';
+import {
+  Box, Drawer, List, ListItem, ListItemIcon, ListItemText,
+  IconButton, Divider, useMediaQuery
+} from '@mui/material';
 import { Home, BarChart, ExitToApp, Person } from '@mui/icons-material';
 import { NavLink } from 'react-router-dom';
 import logoImage from '../../images/logo.png';
@@ -7,7 +10,11 @@ import expandedLogoImage from '../../images/logoExpand.png';
 import ArrowCircleRightOutlinedIcon from '@mui/icons-material/ArrowCircleRightOutlined';
 import ArrowCircleLeftOutlinedIcon from '@mui/icons-material/ArrowCircleLeftOutlined';
 import Icon from '@mdi/react';
-import { mdiViewDashboard , mdiFileSign , mdiAccountTie ,mdiAccountGroup, mdiCash, mdiCurrencyUsd, mdiCashMultiple, mdiBankCircleOutline, mdiCashFast, mdiCurrencyBtc , mdiBankOutline , mdiCash100   } from '@mdi/js';
+import {
+  mdiViewDashboard, mdiFileSign, mdiAccountTie, mdiAccountGroup, mdiCash,
+  mdiCurrencyUsd, mdiCashMultiple, mdiBankCircleOutline, mdiCashFast,
+  mdiCurrencyBtc, mdiBankOutline, mdiCash100
+} from '@mdi/js';
 import './sidebar.css';
 
 const Sidebar = ({ open, setOpen }) => {
@@ -27,25 +34,18 @@ const Sidebar = ({ open, setOpen }) => {
   const handleLogout = () => {
     localStorage.removeItem('token');
     localStorage.removeItem('username');
-    window.location.href = '/login'; 
+    window.location.href = '/login';
   };
 
   const menuItems = [
-    { text: 'Dashboard', icon: <Icon path={mdiViewDashboard} size={1}/>, path: '/dashboard' },   
-    { text: 'Contracts', icon: <Icon path={mdiFileSign} size={1}/>, path: '/contract' },
-    role === 'admin' && { text: 'Investors', icon: <Icon path={mdiAccountTie } size={1} />, path: '/investor' },
-    { text: 'Employees', icon: <Icon path={mdiAccountGroup } size={1} />, path: '/investment' },
-    { text: 'Company Expenses', icon: <Icon path={mdiCash } size={1} />, path: '/investment' },
-    { text: 'Costs Types', icon: <Icon path={mdiCurrencyUsd } size={1} />, path: '/investment' },
-    { text: 'Invesment', icon: <Icon path={mdiBankCircleOutline  } size={1} />, path: '/investment' },
-    { text: 'Invesment type', icon: <Icon path={mdiCashMultiple  } size={1} />, path: '/investment' },
-    { text: 'Profit Loss',icon: <Icon path={mdiCashFast } size={1} /> , path: '/investment' },
-    { text: 'Currencies',icon: <Icon path={mdiCurrencyBtc } size={1} /> , path: '/CurrencyTable' },
-    { text: 'Overall Invesments',icon: <Icon path={mdiBankOutline  } size={1} /> , path: '/investment' },
-    { text: 'Overall Profit',icon: <Icon path={mdiCash100  } size={1} /> , path: '/investment' },
-
-
-
+    { text: 'Dashboard', icon: <Icon path={mdiViewDashboard} size={1} />, path: '/dashboard' },
+    { text: 'Contracts', icon: <Icon path={mdiFileSign} size={1} />, path: '/contract' },
+    role === 'admin' && { text: 'Investors', icon: <Icon path={mdiAccountTie} size={1} />, path: '/investor' },
+    { text: 'Employees', icon: <Icon path={mdiAccountGroup} size={1} />, path: '/investment' },
+    { text: 'Invesment', icon: <Icon path={mdiBankCircleOutline} size={1} />, path: '/investment' },
+    { text: 'Invesment type', icon: <Icon path={mdiCashMultiple} size={1} />, path: '/investment' },
+    { text: 'Currencies', icon: <Icon path={mdiCurrencyBtc} size={1} />, path: '/CurrencyTable' },
+    { text: 'Overall Invesments', icon: <Icon path={mdiBankOutline} size={1} />, path: '/investment' },
   ].filter(Boolean);
 
   return (
@@ -57,8 +57,8 @@ const Sidebar = ({ open, setOpen }) => {
           width: open ? 235 : 60,
           transition: 'width 0.3s',
           overflowX: 'hidden',
-          overflowY: 'hidden',
-
+          display: 'flex',
+          flexDirection: 'column',
         },
       }}
     >
@@ -106,7 +106,7 @@ const Sidebar = ({ open, setOpen }) => {
         />
       </Box>
       <Divider sx={{ mt: 2 }} />
-      <List>
+      <List sx={{ flexGrow: 1 }}>
         {menuItems.map((item, index) => (
           <ListItem
             button
@@ -121,19 +121,18 @@ const Sidebar = ({ open, setOpen }) => {
             <ListItemText primary={open && item.text} />
           </ListItem>
         ))}
-        <Divider sx={{ mt: 2 , marginTop: '90%'}} />
-        <ListItem
-          button
-          component={NavLink}
-          onClick={handleLogout}
-          exact
-        >
-          <ListItemIcon>
-            <ExitToApp />
-          </ListItemIcon>
-          <ListItemText primary={open && 'Logout'} />
-        </ListItem>
       </List>
+      <Divider />
+      <ListItem
+        button
+        onClick={handleLogout}
+        sx={{ mt: 'auto' }}
+      >
+        <ListItemIcon>
+          <ExitToApp />
+        </ListItemIcon>
+        <ListItemText primary={open && 'Logout'} />
+      </ListItem>
     </Drawer>
   );
 };
