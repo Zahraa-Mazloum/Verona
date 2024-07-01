@@ -1,3 +1,17 @@
 .pageTitle{
     text-align: center !important;
 }
+
+.dashCard {
+  box-shadow: 3;
+  background: linear-gradient(45deg, #f16c21, #f78e35);
+  border-radius: 25;
+  transition: 'background 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease'
+}
+
+    .dashCard:hover {
+        background: 'linear-gradient(45deg, #f78e35, #f16c21)';
+        box-shadow: '0 4px 15px rgba(0, 0, 0, 0.2)';
+        transform: 'scale(1.05)';
+      }
+      

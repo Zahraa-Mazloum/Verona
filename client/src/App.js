@@ -5,6 +5,7 @@ import Profile from './pages/profile/profile';
 import Dashboard from './pages/dashboard/dashboard';
 import useDocumentTitle from './hooks/useDocumentTitle';
 import CurrencyTable from './components/currency/CurrencyTable';
+import './App.css'
 
 function App() {
   useDocumentTitle();

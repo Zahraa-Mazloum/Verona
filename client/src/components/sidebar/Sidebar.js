@@ -13,7 +13,7 @@ import Icon from '@mdi/react';
 import {
   mdiViewDashboard, mdiFileSign, mdiAccountTie, mdiAccountGroup, mdiCash,
   mdiCurrencyUsd, mdiCashMultiple, mdiBankCircleOutline, mdiCashFast,
-  mdiCurrencyBtc, mdiBankOutline, mdiCash100
+  mdiCurrencyBtc, mdiBankOutline, mdiCash100,mdiWalletBifold 
 } from '@mdi/js';
 import './sidebar.css';
 
@@ -41,11 +41,12 @@ const Sidebar = ({ open, setOpen }) => {
     { text: 'Dashboard', icon: <Icon path={mdiViewDashboard} size={1} />, path: '/dashboard' },
     { text: 'Contracts', icon: <Icon path={mdiFileSign} size={1} />, path: '/contract' },
     role === 'admin' && { text: 'Investors', icon: <Icon path={mdiAccountTie} size={1} />, path: '/investor' },
-    { text: 'Employees', icon: <Icon path={mdiAccountGroup} size={1} />, path: '/investment' },
-    { text: 'Invesment', icon: <Icon path={mdiBankCircleOutline} size={1} />, path: '/investment' },
+    // { text: 'Employees', icon: <Icon path={mdiAccountGroup} size={1} />, path: '/investment' },
+    { text: 'Verona Invesments', icon: <Icon path={mdiBankCircleOutline} size={1} />, path: '/investment' },
     { text: 'Invesment type', icon: <Icon path={mdiCashMultiple} size={1} />, path: '/investment' },
     { text: 'Currencies', icon: <Icon path={mdiCurrencyBtc} size={1} />, path: '/CurrencyTable' },
-    { text: 'Overall Invesments', icon: <Icon path={mdiBankOutline} size={1} />, path: '/investment' },
+    { text: 'Wallets', icon: <Icon path={mdiWalletBifold } size={1} />, path: '/investment' },
+    { text: 'Overall Verona Invesments', icon: <Icon path={mdiBankOutline} size={1} />, path: '/investment' },
   ].filter(Boolean);
 
   return (
@@ -54,11 +55,13 @@ const Sidebar = ({ open, setOpen }) => {
       open={open}
       sx={{
         '& .MuiDrawer-paper': {
-          width: open ? 235 : 60,
+          width: open ? 240 : 60,
           transition: 'width 0.3s',
           overflowX: 'hidden',
           display: 'flex',
           flexDirection: 'column',
+          backgroundColor:'#fdedd7',
+          borderColor: '#fef7ee'
         },
       }}
     >
@@ -105,7 +108,7 @@ const Sidebar = ({ open, setOpen }) => {
           }}
         />
       </Box>
-      <Divider sx={{ mt: 2 }} />
+      <Divider sx={{ mt: 2, backgroundColor: '#d25716' }} />
       <List sx={{ flexGrow: 1 }}>
         {menuItems.map((item, index) => (
           <ListItem
@@ -114,7 +117,7 @@ const Sidebar = ({ open, setOpen }) => {
             to={item.path}
             key={index}
             className="navItem"
-            activeClassName="active"
+            activeClassName="active" 
             exact
           >
             <ListItemIcon>{item.icon}</ListItemIcon>
@@ -122,8 +125,7 @@ const Sidebar = ({ open, setOpen }) => {
           </ListItem>
         ))}
       </List>
-      <Divider />
-      <ListItem
+      <Divider sx={{ mt: 2, backgroundColor: '#d25716' }} />      <ListItem
         button
         onClick={handleLogout}
         sx={{ mt: 'auto' }}

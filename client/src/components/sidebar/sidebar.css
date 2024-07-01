@@ -1,10 +1,10 @@
 .navItem.active {
-    background-color: #f0f0f0;
+    background-color: #fef7ee;
     border-radius: 0 25px 25px 0;
     color: #b05d2e;
-    width: 100%;
+    width: 26vh;
     margin-top: 5%;
-  }
+    border-radius: 14%;  }
   
   .navItem.active .MuiListItemIcon-root, .navItem.active .MuiListItemText-root {
     color: #b05d2e;
