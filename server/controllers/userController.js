@@ -1,7 +1,8 @@
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcrypt';
 import asyncHandler from 'express-async-handler';
-import User from '../models/userModel.js';
+import Admin from '../models/adminModel.js';
+import Investor from '../models/investorModel.js';
 
 // Generate JWT
 const generateToken = (id) => {
@@ -16,7 +17,7 @@ export const loginUser = asyncHandler(async (req, res) => {
     const { email, password } = req.body;
 
     // Check for user email
-    const user = await User.findOne({ email });
+    const user = await Admin.findOne({ email }) || await Investor.findOne({ email });
 
     if (user && (await bcrypt.compare(password, user.password))) {
         if (!user.status) {
@@ -44,7 +45,8 @@ export const loginUser = asyncHandler(async (req, res) => {
 // @route GET /api/users/me
 // @access Private
 export const myProfile = asyncHandler(async (req, res) => {
-    const {_id, fullname_en,fullname_ar, email} = await User.findById(req.user.id)
+    // const userInfo = await Admin.
+    const {_id, fullname_en,fullname_ar, email} = await Admin.findById(req.user.id) || await Investor.findById(req.user.id)
     res.status(200).json({
         id: _id,
         fullname_en,
@@ -53,27 +55,6 @@ export const myProfile = asyncHandler(async (req, res) => {
     })
 });
 
-//@desc get users by roles
-//@route GET /api/users
-//@ access Private only admin
-
-// export const getUserByRole = asyncHandler(async(req,res)=>{
-//     const {_id, fullname_en , fullname_ar, }
-// }
-
-// )
-
-
-
-
-// @desc Logout user
-// @route POST /api/users/logout
-// @access Private (assuming only authenticated users can logout)
-export const logoutUser = asyncHandler(async (req, res) => {
-    res.status(200).json('Logout successful');
-});
-
-
-const user = {loginUser, myProfile, logoutUser};
+const user = {loginUser, myProfile};
 
 export default user;

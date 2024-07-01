@@ -1,6 +1,7 @@
 import jwt from 'jsonwebtoken';
 import asyncHandler from 'express-async-handler';
-import User from '../models/userModel.js';
+import Admin from '../models/adminModel.js';
+import Investor from '../models/investorModel.js';
 
 export const protect = asyncHandler(async (req, res, next) => {
     let token;
@@ -14,7 +15,7 @@ export const protect = asyncHandler(async (req, res, next) => {
             const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
             // Get user from the token
-            req.user = await User.findById(decoded.id).select('-password'); // not include the password
+            req.user = await Admin.findById(decoded.id).select('-password') || await Investor.findById(decoded.id).select('-password') // not include the password
 
             next();
         } catch (error) {
@@ -30,14 +31,19 @@ export const protect = asyncHandler(async (req, res, next) => {
     }
 });
 
-export const admin = (req, res, next) => {
-    if (req.user && req.user.role === 'admin') {
+export const admin = asyncHandler(async (req, res, next) => {
+    if (req.user) {
+      const admin = await Admin.findById(req.user.id);
+      if (admin) {
         next();
-    } else {
+      } else {
         res.status(403);
         throw new Error('Not authorized as an admin');
+      }
+    } else {
+      res.status(401);
+      throw new Error('Not authorized');
     }
-};
-
+  });
 const auth = { protect, admin };
 export default auth;

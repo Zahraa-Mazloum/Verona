@@ -8,6 +8,7 @@ const currencySchema = new mongoose.Schema({
     },
     symbol:{
         type:String,
+        enum: ['USD', 'AED', 'OMR'],
         required: [true, 'please add the symbol of the currency'],
         },
     description:{
@@ -17,9 +18,8 @@ const currencySchema = new mongoose.Schema({
 },
 {
     timestamps:true,
-    collection : 'currencies',
 });
 
-const Currency = mongoose.model('Currency' , currencySchema);
+const Currency = mongoose.model('Currency' , currencySchema, 'Currency');
 
 export default Currency;
