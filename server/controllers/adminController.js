@@ -165,6 +165,113 @@ export const getUserById = asyncHandler(async (req, res) => {
   res.json(user);
 });
 
-const adminController = { registerUser, getAllAdmins, getUserById,getAllInvestors,getAllEmployees };
+
+// ...
+
+// @desc Update user
+// @route PATCH /api/admin/users/:id
+// @access Private (Admin only)
+export const updateUser = asyncHandler(async (req, res) => {
+  const { id } = req.params;
+  const {
+    fullname_en,
+    fullname_ar,
+    email,
+    phoneNumber,
+    dateOfBirth,
+    password,
+    role,
+    status,
+  } = req.body;
+
+  let user;
+  if (role === 'admin') {
+    user = await Admin.findByIdAndUpdate(id, {
+      fullname_en,
+      fullname_ar,
+      email,
+      phoneNumber,
+      dateOfBirth,
+      password: password ? await bcrypt.hash(password, 10) : undefined,
+      role,
+      status,
+    }, { new: true });
+  } else if (role === 'employee') {
+    user = await Employee.findByIdAndUpdate(id, {
+      fullname_en,
+      fullname_ar,
+      email,
+      phoneNumber,
+      dateOfBirth,
+      password: password ? await bcrypt.hash(password, 10) : undefined,
+      role,
+      status,
+      onboarding: req.body.onboarding,
+      offboarding: req.body.offboarding,
+      salary: req.body.salary,
+      salaryCurrency: req.body.salaryCurrency,
+    }, { new: true });
+  } else if (role === 'investor') {
+    user = await Investor.findByIdAndUpdate(id, {
+      fullname_en,
+      fullname_ar,
+      email,
+      phoneNumber,
+      dateOfBirth,
+      password: password ? await bcrypt.hash(password, 10) : undefined,
+      role,
+      status,
+      passportNumber: req.body.passportNumber,
+      passportExpiryDate: req.body.passportExpiryDate,
+      passportPhoto: req.body.passportPhoto,
+    }, { new: true });
+  } else {
+    res.status(400);
+    throw new Error('Invalid role');
+  }
+
+  if (!user) {
+    res.status(404);
+    throw new Error('User not found');
+  }
+
+  res.json(user);
+});
+
+// @desc Delete user
+// @route DELETE /api/admin/users/:id
+// @access Private (Admin only)
+export const deleteUser = asyncHandler(async (req, res) => {
+  const { id } = req.params;
+
+  let user;
+  if (req.body.role === 'admin') {
+    user = await Admin.findByIdAndRemove(id);
+  } else if (req.body.role === 'employee') {
+    user = await Employee.findByIdAndRemove(id);
+  } else if (req.body.role === 'investor') {
+    user = await Investor.findByIdAndRemove(id);
+  } else {
+    res.status(400);
+    throw new Error('Invalid role');
+  }
+
+  if (!user) {
+    res.status(404);
+    throw new Error('User not found');
+  }
+
+  res.json({ message: 'User deleted successfully' });
+});
+
+const adminController = {
+  registerUser,
+  getAllAdmins,
+  getUserById,
+  getAllInvestors,
+  getAllEmployees,
+  updateUser,
+  deleteUser,
+};
 
 export default adminController;

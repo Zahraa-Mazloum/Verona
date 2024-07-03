@@ -48,9 +48,6 @@ const investorSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  wallets: {
-    type: Number,
-  }
 }, {
   timestamps: true,
 });
