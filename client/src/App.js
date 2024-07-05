@@ -5,6 +5,8 @@ import Profile from './pages/profile/profile';
 import Dashboard from './pages/dashboard/dashboard';
 import useDocumentTitle from './hooks/useDocumentTitle';
 import CurrencyTable from './components/currency/CurrencyTable';
+import EditCurrency from './components/currency/EditCurrency';
+import AddCurrency from './components/currency/AddCurrency';
 import './App.css'
 
 function App() {
@@ -21,6 +23,8 @@ function App() {
         <Route path="Profile" element={<Profile />} />
         <Route path="Dashboard" element={<Dashboard />} />
         <Route path="CurrencyTable" element={<CurrencyTable />} />
+        <Route path="/editCurrency/:id" element={<EditCurrency />} />
+        <Route path="/addCurrency" element={<AddCurrency />} />
       </Route>
     </Routes>
   );

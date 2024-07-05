@@ -3,23 +3,26 @@ import {
   Box, Drawer, List, ListItem, ListItemIcon, ListItemText,
   IconButton, Divider, useMediaQuery
 } from '@mui/material';
-import { Home, BarChart, ExitToApp, Person } from '@mui/icons-material';
+import { ExitToApp } from '@mui/icons-material';
 import { NavLink } from 'react-router-dom';
 import logoImage from '../../images/logo.png';
 import expandedLogoImage from '../../images/logoExpand.png';
 import ArrowCircleRightOutlinedIcon from '@mui/icons-material/ArrowCircleRightOutlined';
 import ArrowCircleLeftOutlinedIcon from '@mui/icons-material/ArrowCircleLeftOutlined';
 import Icon from '@mdi/react';
+import { useTranslation } from 'react-i18next';
 import {
-  mdiViewDashboard, mdiFileSign, mdiAccountTie, mdiAccountGroup, mdiCash,
-  mdiCurrencyUsd, mdiCashMultiple, mdiBankCircleOutline, mdiCashFast,
-  mdiCurrencyBtc, mdiBankOutline, mdiCash100,mdiWalletBifold , mdiCurrencyUsdOff 
+  mdiViewDashboard, mdiFileSign, mdiAccountTie, mdiBankCircleOutline,
+  mdiCashMultiple, mdiBankOutline, mdiCurrencyUsdOff, mdiCurrencyBtc,
+  mdiWalletBifold
 } from '@mdi/js';
 import './sidebar.css';
 
 const Sidebar = ({ open, setOpen }) => {
   const role = localStorage.getItem('role');
   const isMobile = useMediaQuery('(max-width:600px)');
+  const { t, i18n } = useTranslation();
+  const isArabic = i18n.language === 'ar';
 
   useEffect(() => {
     if (isMobile) {
@@ -38,20 +41,20 @@ const Sidebar = ({ open, setOpen }) => {
   };
 
   const menuItems = [
-    { text: 'Dashboard', icon: <Icon path={mdiViewDashboard} size={1} />, path: '/dashboard' },
+    { text: t('DashBoard'), icon: <Icon path={mdiViewDashboard} size={1} />, path: '/dashboard' },
     { text: 'Contracts', icon: <Icon path={mdiFileSign} size={1} />, path: '/contract' },
     role === 'admin' && { text: 'Investors', icon: <Icon path={mdiAccountTie} size={1} />, path: '/investor' },
-    // { text: 'Employees', icon: <Icon path={mdiAccountGroup} size={1} />, path: '/investment' },
     { text: 'Verona Investments', icon: <Icon path={mdiBankCircleOutline} size={1} />, path: '/investment' },
     { text: 'Investment Types', icon: <Icon path={mdiCashMultiple} size={1} />, path: '/investment' },
     { text: 'Overall Verona Investments', icon: <Icon path={mdiBankOutline} size={1} />, path: '/investment' },
     { text: 'New Investments', icon: <Icon path={mdiCurrencyUsdOff} size={1} />, path: '/investment' },
     { text: 'Currencies', icon: <Icon path={mdiCurrencyBtc} size={1} />, path: '/CurrencyTable' },
-    { text: 'Wallets', icon: <Icon path={mdiWalletBifold } size={1} />, path: '/investment' },
+    { text: 'Wallets', icon: <Icon path={mdiWalletBifold} size={1} />, path: '/investment' },
   ].filter(Boolean);
 
   return (
     <Drawer
+      anchor={isArabic ? 'right' : 'left'}
       variant="permanent"
       open={open}
       sx={{
@@ -61,8 +64,8 @@ const Sidebar = ({ open, setOpen }) => {
           overflowX: 'hidden',
           display: 'flex',
           flexDirection: 'column',
-          backgroundColor:'#fdedd7',
-          borderColor: '#fef7ee'
+          backgroundColor: '#fdedd7',
+          borderColor: '#fef7ee',
         },
       }}
     >
@@ -118,7 +121,7 @@ const Sidebar = ({ open, setOpen }) => {
             to={item.path}
             key={index}
             className="navItem"
-            activeClassName="active" 
+            activeClassName="active"
             exact
           >
             <ListItemIcon>{item.icon}</ListItemIcon>
@@ -126,7 +129,8 @@ const Sidebar = ({ open, setOpen }) => {
           </ListItem>
         ))}
       </List>
-      <Divider sx={{ mt: 2, backgroundColor: '#d25716' }} />      <ListItem
+      <Divider sx={{ mt: 2, backgroundColor: '#d25716' }} />
+      <ListItem
         button
         onClick={handleLogout}
         sx={{ mt: 'auto' }}

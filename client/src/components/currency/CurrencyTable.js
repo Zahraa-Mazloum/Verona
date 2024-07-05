@@ -1,39 +1,41 @@
 import React, { useState, useEffect } from 'react';
 import api from '../../api/axios';
-import { DataGrid , gridClasses } from '@mui/x-data-grid';
-import {Button, Paper, TextField, IconButton,InputAdornment, Toolbar, Typography, Box, DialogContentText} from '@mui/material';
-import {  styled } from '@mui/material/styles';
+import { DataGrid, gridClasses } from '@mui/x-data-grid';
+import { Button, Paper, TextField, IconButton, InputAdornment, Toolbar, Typography, Box, Tooltip } from '@mui/material';
+import { styled } from '@mui/material/styles';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import AddIcon from '@mui/icons-material/Add';
 import EditNoteIcon from '@mui/icons-material/EditNote';
 import DeleteSweepIcon from '@mui/icons-material/DeleteSweep';
 import SearchOutlinedIcon from '@mui/icons-material/SearchOutlined';
-import CurrencyFormDialog from './CurrencyFormDialog';
+import { useNavigate } from 'react-router-dom';
 import loader from '../loading.gif';
-import Swal from 'sweetalert2';
 
 const CurrencyTable = () => {
   const [currencies, setCurrencies] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [open, setOpen] = useState(false);
-  const [editingCurrency, setEditingCurrency] = useState(null);
   const [search, setSearch] = useState('');
-
+  const [rowCount, setRowCount] = useState(0);
+  const [open, setOpen] = useState(false);
+  const [anchorEl, setAnchorEl] = useState(null);
+  const [currencyToDelete, setCurrencyToDelete] = useState(null);
+  const navigate = useNavigate();
 
   const StripedDataGrid = styled(DataGrid)(({ theme }) => ({
     [`& .${gridClasses.row}.even`]: {
       backgroundColor: 'rgba(255, 242, 215, 0.5)',
       '&:hover': {
         backgroundColor: theme.palette.grey[200],
+      },
+    },
+  }));
 
-      }
-    }})
-  );  
   const fetchCurrencies = async () => {
     try {
-      const { data } = await api.get('/currency/getCurrencies');
+      const { data, count } = await api.get('/currency/getCurrencies');
       setCurrencies(data);
+      setRowCount(count);
     } catch (error) {
       toast.error('Error fetching currencies');
     } finally {
@@ -45,26 +47,6 @@ const CurrencyTable = () => {
     fetchCurrencies();
   }, []);
 
-  const handleAddCurrency = async (currency) => {
-    try {
-      const { data } = await api.post('/currency/createCurrency', currency);
-      setCurrencies([...currencies, data]);
-      toast.success('Currency added successfully');
-    } catch (error) {
-      toast.error('Error adding currency');
-    }
-  };
-
-  const handleEditCurrency = async (currency) => {
-    try {
-      const { data } = await api.put(`/currency/updateCurrency/${currency._id}`, currency);
-      setCurrencies(currencies.map(c => (c._id === currency._id ? data : c)));
-      toast.success('Currency updated successfully');
-    } catch (error) {
-      toast.error('Error updating currency');
-    }
-  };
-
   const handleDeleteCurrency = async (id) => {
     try {
       await api.delete(`/currency/deleteCurrency/${id}`);
@@ -75,25 +57,21 @@ const CurrencyTable = () => {
     }
   };
 
-  const handleOpenEdit = (currency) => {
-    setEditingCurrency(currency);
-    setOpen(true);
+  const handleOpenConfirmDelete = (event, currency) => {
+    setAnchorEl(event.currentTarget);
+    setCurrencyToDelete(currency);
   };
 
-  const handleConfirmDelete = (currency) => {
-    Swal.fire({
-      title: 'Confirm Delete',
-      text: 'Are you sure you want to delete this currency?',
-      icon: 'warning',
-      showCancelButton: true,
-      confirmButtonColor: '#d33',
-      cancelButtonColor: '#3085d6',
-      confirmButtonText: 'Delete',
-    }).then((result) => {
-      if (result.isConfirmed) {
-        handleDeleteCurrency(currency._id);
-      }
-    });
+  const handleCloseConfirmDelete = () => {
+    setAnchorEl(null);
+    setCurrencyToDelete(null);
+  };
+
+  const handleConfirmDelete = () => {
+    if (currencyToDelete) {
+      handleDeleteCurrency(currencyToDelete._id);
+      handleCloseConfirmDelete();
+    }
   };
 
   const handleSearchChange = (event) => {
@@ -118,34 +96,56 @@ const CurrencyTable = () => {
       renderCell: (params) => (
         <Box display="flex" justifyContent="left">
           <IconButton
-            sx={{
-                color: '#4CAF50',
-                fontSize: 28,
-            }}
-            onClick={() => handleOpenEdit(params.row)}
+            sx={{ color: '#4CAF50', fontSize: 28 }}
+            onClick={() => navigate(`/editCurrency/${params.row._id}`)}
           >
             <EditNoteIcon />
           </IconButton>
-          <IconButton
-            sx={{
-                color: '#FF5722', fontSize: 28,
-            }}
-            onClick={() => handleConfirmDelete(params.row)}
+          <Tooltip
+            title={
+              <Box>
+                <Typography sx={{ textAlign: 'center' }}>Are you sure?</Typography>
+                <Button
+                  variant="contained"
+                  color="error"
+                  onClick={handleConfirmDelete}
+                  size="small"
+                >
+                  Yes
+                </Button>
+                <Button
+                  variant="contained"
+                  onClick={handleCloseConfirmDelete}
+                  size="small"
+                  style={{ marginLeft: 8 }}
+                >
+                  No
+                </Button>
+              </Box>
+            }
+            open={Boolean(anchorEl && currencyToDelete === params.row)}
+            onClose={handleCloseConfirmDelete}
+            placement="right"
+            arrow
           >
-            <DeleteSweepIcon />
-          </IconButton>
+            <IconButton
+              sx={{ color: '#FF5722', fontSize: 28 }}
+              onClick={(event) => handleOpenConfirmDelete(event, params.row)}
+            >
+              <DeleteSweepIcon />
+            </IconButton>
+          </Tooltip>
         </Box>
-      )
-    }
+      ),
+    },
   ];
 
   return (
     <Box p={3}>
       <ToastContainer />
-      <Paper elevation={5} style={{ padding: '15px', marginBottom: '10px',marginLeft:'1%', width: open ? 'calc(100% - 240px)' : 'calc(100% - 60px)' }}>
-
+      <Paper elevation={8} style={{ padding: '15px', marginBottom: '10px', marginLeft: '1%', width: 'calc(100% - 60px)' }}>
         <Toolbar>
-          <Typography variant="h6" component="div" sx={{ flexGrow: 1 , marginLeft: '1%'}}>
+          <Typography variant="h6" component="div" sx={{ flexGrow: 1, marginLeft: '1%' }}>
             Currency Management
           </Typography>
           <TextField
@@ -161,49 +161,47 @@ const CurrencyTable = () => {
               ),
             }}
           />
-         <Button
-  variant="contained"
-  sx={{
-    ml: 2,
-    bgcolor: 'darkorange',
-    '&:hover': {
-      bgcolor: 'orange', 
-    },
-  }}
-  startIcon={<AddIcon />}
-  onClick={() => setOpen(true)}
->
-  Add Currency
-</Button>
+          <Button
+            variant="contained"
+            sx={{
+              ml: 2,
+              bgcolor: 'darkorange',
+              '&:hover': {
+                bgcolor: 'orange',
+              },
+            }}
+            startIcon={<AddIcon />}
+            onClick={() => navigate('/addCurrency')}
+          >
+            Add Currency
+          </Button>
         </Toolbar>
-        <div style={{ width: '100%', overflowX: 'hidden',overflowY: 'hidden' , marginLeft:'2%' }}>
-        <StripedDataGrid
-  style={{ width: open ? 'calc(100% - 240px)' : 'calc(100% - 60px)'}}
-  rows={filteredCurrencies}
-  columns={columns}
-  pageSize={5}
-  rowsPerPageOptions={[5, 10, 25]}
-  pagination={true}
-  getRowId={(row) => row._id}
-  getRowClassName={(params) =>
-    params.indexRelativeToCurrentPage % 2 === 0 ? 'even' : 'odd'
-  }
-/>
-
-
-</div>
+        <div style={{ width: '100%', marginLeft: '2%', height: '100%' }}>
+          {loading ? (
+            <Box
+              display="flex"
+              justifyContent="center"
+              alignItems="center"
+              minHeight="100%"
+            >
+              <img src={loader} alt="Loading..." />
+            </Box>
+          ) : (
+            <StripedDataGrid
+            style={{ width: open ? 'calc(100% - 240px)' : 'calc(100% - 60px)' }}
+              rows={filteredCurrencies}
+              columns={columns}
+              pageSize={10}
+              rowsPerPageOptions={[10]}
+              autoHeight
+              getRowId={(row) => row._id}
+              getRowClassName={(params) =>
+                params.indexRelativeToCurrentPage % 2 === 0 ? 'even' : 'odd'
+              }
+            />
+          )}
+        </div>
       </Paper>
-      <CurrencyFormDialog
-        open={open}
-        onClose={() => {
-          setOpen(false);
-          setEditingCurrency(null);
-        }}
-        onAddCurrency={handleAddCurrency}
-        onEditCurrency={handleEditCurrency}
-        editingCurrency={editingCurrency}
-      />
-
     </Box>
   );
 };
