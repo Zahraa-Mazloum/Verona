@@ -45,7 +45,7 @@ const Sidebar = ({ open, setOpen }) => {
     { text: 'Contracts', icon: <Icon path={mdiFileSign} size={1} />, path: '/contract' },
     role === 'admin' && { text: 'Investors', icon: <Icon path={mdiAccountTie} size={1} />, path: '/investor' },
     { text: 'Verona Investments', icon: <Icon path={mdiBankCircleOutline} size={1} />, path: '/investment' },
-    { text: 'Investment Types', icon: <Icon path={mdiCashMultiple} size={1} />, path: '/investment' },
+    { text: 'Investment Types', icon: <Icon path={mdiCashMultiple} size={1} />, path: '/types' },
     { text: 'Overall Verona Investments', icon: <Icon path={mdiBankOutline} size={1} />, path: '/investment' },
     { text: 'New Investments', icon: <Icon path={mdiCurrencyUsdOff} size={1} />, path: '/investment' },
     { text: 'Currencies', icon: <Icon path={mdiCurrencyBtc} size={1} />, path: '/CurrencyTable' },

@@ -5,7 +5,8 @@ const routeTitles = {
   '/login': 'Login',
   '/profile': 'Profile',
   '/dashboard': 'Dashboard',
-  '/CurrencyTable':'Currency'
+  '/CurrencyTable':'Currency',
+  '/types':'Types'
 };
 
 const useDocumentTitle = () => {
