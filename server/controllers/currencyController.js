@@ -1,11 +1,10 @@
 import asyncHandler from 'express-async-handler';
 import Currency from '../models/currencyModel.js';
 
-
 export const createCurrency = asyncHandler(async (req, res) => {
-    const { name, symbol, description } = req.body;
+    const { name, symbol, description, name_ar, symbol_ar, description_ar } = req.body;
 
-    const currency = new Currency({ name, symbol, description });
+    const currency = new Currency({ name, symbol, description, name_ar, symbol_ar, description_ar });
 
     try {
         await currency.save();
@@ -15,11 +14,24 @@ export const createCurrency = asyncHandler(async (req, res) => {
     }
 });
 
+export const getCurrenciesByLanguage = asyncHandler(async (req, res) => {
+    const { lang } = req.params;
+    let currencies;
 
-export const getCurrencies = asyncHandler(async (req, res) => {
-    const currencies = await Currency.find();
+    // console.log(`Fetching currencies for language: ${lang}`);
+
+    if (lang === 'en') {
+        currencies = await Currency.find({}, 'name symbol description');
+    } else if (lang === 'ar') {
+        currencies = await Currency.find({}, 'name_ar symbol_ar description_ar');
+    } else {
+        return res.status(400).json({ message: 'Invalid language parameter' });
+    }
+
+    console.log(currencies); 
     res.status(200).json(currencies);
 });
+
 
 export const getCurrencyById = asyncHandler(async (req, res) => {
     const currency = await Currency.findById(req.params.id);
@@ -31,15 +43,17 @@ export const getCurrencyById = asyncHandler(async (req, res) => {
     }
 });
 
-
 export const updateCurrency = asyncHandler(async (req, res) => {
-    const { name, symbol, description } = req.body;
+    const { name, symbol, description, name_ar, symbol_ar, description_ar } = req.body;
     const currency = await Currency.findById(req.params.id);
 
     if (currency) {
         currency.name = name || currency.name;
         currency.symbol = symbol || currency.symbol;
         currency.description = description || currency.description;
+        currency.name_ar = name_ar || currency.name_ar;
+        currency.symbol_ar = symbol_ar || currency.symbol_ar;
+        currency.description_ar = description_ar || currency.description_ar;
 
         const updatedCurrency = await currency.save();
         res.status(200).json(updatedCurrency);
@@ -59,6 +73,6 @@ export const deleteCurrency = asyncHandler(async (req, res) => {
     }
 });
 
-const currencyController = { createCurrency, getCurrencies, getCurrencyById, updateCurrency, deleteCurrency };
+const currencyController = { createCurrency, getCurrenciesByLanguage, getCurrencyById, updateCurrency, deleteCurrency };
 
 export default currencyController;

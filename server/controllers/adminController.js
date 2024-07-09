@@ -38,9 +38,7 @@ export const registerUser = asyncHandler(async (req, res) => {
     !email ||
     !phoneNumber ||
     !dateOfBirth ||
-    !password ||
-    !role ||
-    typeof status !== 'boolean'
+    !password
   ) {
     res.status(400);
     throw new Error('Please add all fields');
@@ -97,6 +95,13 @@ export const registerUser = asyncHandler(async (req, res) => {
       salaryCurrency: req.body.salaryCurrency,
     });
   } else if (role === 'investor') {
+    let passportPhoto = null;
+    if (req.file) {
+      passportPhoto = {
+        data: fs.readFileSync(path.join(__dirname, '..', 'uploads', req.file.filename)),
+        contentType: req.file.mimetype
+      };
+    }
     newUser = await Investor.create({
       fullname_en,
       fullname_ar,
@@ -107,8 +112,8 @@ export const registerUser = asyncHandler(async (req, res) => {
       role,
       status,
       passportNumber: req.body.passportNumber,
-      passportExpiryDate: req.body.passportExpiryDate,
-      passportPhoto: req.body.passportPhoto,
+    passportExpiryDate: req.body.passportExpiryDate,
+    passportPhoto: req.files['passportPhoto'][0].path,
     });
   } else {
     res.status(400);
@@ -140,10 +145,28 @@ export const getAllAdmins = asyncHandler(async (req, res) => {
   const admins = await Admin.find({});
   res.json(admins);
 });
-export const getAllInvestors = asyncHandler(async (req, res) => {
-  const investors = await Investor.find({});
-  res.json(investors);
+// export const getAllInvestors = asyncHandler(async (req, res) => {
+//   const investors = await Investor.find({});
+//   res.json(investors);
+// });
+export const getInvestorByLanguage = asyncHandler(async (req, res) => {
+  const { lang } = req.params;
+  let investors;
+
+  if (lang === 'en') {
+    investors = await Investor.find({}, 'fullname_en email phoneNumber dateOfBirth role status passportNumber passportExpiryDate passportPhoto');
+  } else if (lang === 'ar') {
+    investors = await Investor.find({}, 'fullname_ar email phoneNumber dateOfBirth role status passportNumber passportExpiryDate passportPhoto');
+  } else {
+      return res.status(400).json({ message: 'Invalid language parameter' });
+  }
+  console.log(investors); 
+  res.status(200).json(investors);
 });
+
+
+
+
 export const getAllEmployees = asyncHandler(async (req, res) => {
   const employees = await Employee.find({});
   res.json(employees);
@@ -223,7 +246,7 @@ export const updateUser = asyncHandler(async (req, res) => {
       status,
       passportNumber: req.body.passportNumber,
       passportExpiryDate: req.body.passportExpiryDate,
-      passportPhoto: req.body.passportPhoto,
+      passportPhoto,
     }, { new: true });
   } else {
     res.status(400);
@@ -242,20 +265,16 @@ export const updateUser = asyncHandler(async (req, res) => {
 // @route DELETE /api/admin/users/:id
 // @access Private (Admin only)
 export const deleteUser = asyncHandler(async (req, res) => {
-  const { id } = req.params;
+  const user = await Admin.findById(req.params.id) ||await Investor.findById(req.params.id) || await Employee.findById(req.params.id) ;  
 
-  let user;
-  if (req.body.role === 'admin') {
-    user = await Admin.findByIdAndRemove(id);
-  } else if (req.body.role === 'employee') {
-    user = await Employee.findByIdAndRemove(id);
-  } else if (req.body.role === 'investor') {
-    user = await Investor.findByIdAndRemove(id);
+  if (user) {
+    await user.deleteOne();
+    res.status(200).json({ message: 'User removed' });
+
   } else {
-    res.status(400);
-    throw new Error('Invalid role');
-  }
+    res.status(404).json({ message: 'Currency not found' });
 
+  }
   if (!user) {
     res.status(404);
     throw new Error('User not found');
@@ -268,7 +287,7 @@ const adminController = {
   registerUser,
   getAllAdmins,
   getUserById,
-  getAllInvestors,
+  getInvestorByLanguage,
   getAllEmployees,
   updateUser,
   deleteUser,

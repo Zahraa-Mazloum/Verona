@@ -31,3 +31,8 @@ invesmentStatus:{
 
 
 })
+
+
+const Investment = mongoose.model('Investment', invesmentSchma, 'Investments');
+
+export default Investment;

@@ -11,6 +11,7 @@ import connectDB from "./config/db.js"
 import userRoutes from './routes/userRoutes.js';
 import currencyRoutes from './routes/currencyRoutes.js';
 import contractRoutes from './routes/contractRoutes.js';
+import dashboardRoutes from './routes/dashboardRoutes.js'
 // import { notFound, errorHandler } from './middleware/errorMiddleware.js';
 
 
@@ -32,6 +33,7 @@ app.use('/api/user' ,userRoutes);
 app.use('/api/admin', adminRoutes);
 app.use('/api/currency',currencyRoutes)
 app.use('/api/contract',contractRoutes)
+app.use('/api/dash',dashboardRoutes)
 
 
 

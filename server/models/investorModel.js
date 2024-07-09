@@ -5,10 +5,6 @@ const investorSchema = new mongoose.Schema({
     type: String,
     required: [true, 'Please add the full name in English'],
   },
-  fullname_ar: {
-    type: String,
-    required: [true, 'Please add the full name in Arabic'],
-  },
   email: {
     type: String,
     required: [true, 'Please add the email'],
@@ -32,9 +28,8 @@ const investorSchema = new mongoose.Schema({
     default: 'investor',
   },
   status: {
-    type: Boolean,
+    type: String,
     required: true,
-    default: true,
   },
   passportNumber: {
     type: String,
@@ -43,11 +38,17 @@ const investorSchema = new mongoose.Schema({
   passportExpiryDate: {
     type: Date,
     required: true,
+    
   },
   passportPhoto: {
-    type: String,
-    required: true,
+    data: Buffer,
+        contentType: String
   },
+  fullname_ar: {
+    type: String,
+    required: [true, 'Please add the full name in Arabic'],
+  },
+
 }, {
   timestamps: true,
 });

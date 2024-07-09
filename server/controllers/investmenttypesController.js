@@ -1,5 +1,5 @@
 import asyncHandler from "express-async-handler";
-import InvestmentTypes from '../models/invesmentTypes.js'
+import InvestmentTypes from '../models/invesmentTypesModel.js'
 
 export const addInvestmentType = asyncHandler(async(req,res)=>{
 const {title , description} = req.body;
