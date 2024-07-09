@@ -10,7 +10,8 @@ import {
   Toolbar,
   Typography,
   Box,
-  Tooltip
+  Tooltip,
+  Switch
 } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import { ToastContainer, toast } from 'react-toastify';
@@ -19,20 +20,16 @@ import AddIcon from '@mui/icons-material/Add';
 import EditNoteIcon from '@mui/icons-material/EditNote';
 import DeleteSweepIcon from '@mui/icons-material/DeleteSweep';
 import SearchOutlinedIcon from '@mui/icons-material/SearchOutlined';
-import { useNavigate } from 'react-router-dom'; 
+import { useNavigate } from 'react-router-dom';
 import loader from '../loading.gif';
 import { useTranslation } from 'react-i18next';
-import { DatePicker } from '@mui/x-date-pickers/DatePicker';
-import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
-import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 
-
-const CurrencyTable = () => {
+const ContractsTable = () => {
   const { t, i18n } = useTranslation();
-  const [currencies, setCurrencies] = useState([]);
+  const [contract, setContract] = useState([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
-  const [currencyToDelete, setCurrencyToDelete] = useState(null); 
+  const [ContractsToDelete, setContractsToDelete] = useState(null);
   const navigate = useNavigate();
 
   const StripedDataGrid = styled(DataGrid)(({ theme }) => ({
@@ -44,44 +41,42 @@ const CurrencyTable = () => {
     },
   }));
 
-  const fetchCurrencies = async () => {
+  const fetchContract = async () => {
     try {
-      // console.log(`Fetching currencies for language: ${i18n.language}`); 
-      const { data } = await api.get(`/currency/getCurrencies/${i18n.language}`);
-      // console.log(data);
-      setCurrencies(data);
+      const { data } = await api.get(`/contract/allContracts/${i18n.language}`);
+      setContract(data);
     } catch (error) {
-      toast.error('Error fetching currencies');
+      toast.error(t('ErrorFetchingContracts'));
     } finally {
       setLoading(false);
     }
   };
 
   useEffect(() => {
-    fetchCurrencies();
+    fetchContract();
   }, [i18n.language]);
 
-  const handleDeleteCurrency = async (id) => {
+  const handleDeleteContracts = async (id) => {
     try {
-      await api.delete(`/currency/deleteCurrency/${id}`);
-      setCurrencies(currencies.filter(c => c._id !== id));
-      toast.success(t('currencyDeletedSuccessfully'));
+      await api.delete(`/contract/deleteContract/${id}`);
+      setContract(contract.filter(c => c._id !== id));
+      toast.success(t('ContractsDeletedSuccessfully'));
     } catch (error) {
-      toast.error('Error deleting currency');
+      toast.error(t('ErrorDeletingContracts'));
     }
   };
 
-  const handleOpenConfirmDelete = (event, currency) => {
-    setCurrencyToDelete(currency);
+  const handleOpenConfirmDelete = (event, Contracts) => {
+    setContractsToDelete(Contracts);
   };
 
   const handleCloseConfirmDelete = () => {
-    setCurrencyToDelete(null);
+    setContractsToDelete(null);
   };
 
   const handleConfirmDelete = () => {
-    if (currencyToDelete) {
-      handleDeleteCurrency(currencyToDelete._id);
+    if (ContractsToDelete) {
+      handleDeleteContracts(ContractsToDelete._id);
       handleCloseConfirmDelete();
     }
   };
@@ -90,29 +85,107 @@ const CurrencyTable = () => {
     setSearch(event.target.value);
   };
 
-  const safeLowerCase = (str) => (str ? str.toLowerCase() : '');
+  const safeLowerCase = (str) => (typeof str === 'string' ? str.toLowerCase() : '');
 
-  const filteredCurrencies = currencies.filter(currency =>
-    safeLowerCase(i18n.language === 'en' ? currency.name : currency.name_ar).includes(safeLowerCase(search)) ||
-    safeLowerCase(i18n.language === 'en' ? currency.symbol : currency.symbol_ar).includes(safeLowerCase(search)) ||
-    safeLowerCase(i18n.language === 'en' ? currency.description : currency.description_ar).includes(safeLowerCase(search))
+  const filteredContract = contract.filter(Contracts =>
+    safeLowerCase(i18n.language === 'ar' ? Contracts.investorInfo.fullname_ar : Contracts.investorInfo.fullname_en).includes(safeLowerCase(search)) ||
+    safeLowerCase(Contracts.amount.toString()).includes(safeLowerCase(search)) ||
+    safeLowerCase(Contracts.currency).includes(safeLowerCase(search)) ||
+    safeLowerCase(Contracts.contractTime).includes(safeLowerCase(search)) ||
+    safeLowerCase(Contracts.startDate).includes(safeLowerCase(search)) ||
+    safeLowerCase(Contracts.endDate).includes(safeLowerCase(search)) ||
+    safeLowerCase(Contracts.contractPercentage).includes(safeLowerCase(search)) ||
+    safeLowerCase(Contracts.investmentStatus).includes(safeLowerCase(search)) ||
+    safeLowerCase(Contracts.payment.toString()).includes(safeLowerCase(search))
   );
+
+  const handleToggleStatus = async (id, currentStatus) => {
+    try {
+      const newStatus = !currentStatus; 
+      await api.put(`/contract/updateStatus/${id}`, { investmentStatus: newStatus });
+      setContract(contract.map(c => (c._id === id ? { ...c, investmentStatus: newStatus } : c)));
+      toast.success(t('StatusUpdatedSuccessfully'));
+    } catch (error) {
+      toast.error(t('ErrorUpdatingStatus'));
+    }
+  };
 
   const columns = [
     {
-      field: i18n.language === 'ar' ? 'name_ar' : 'name',
-      headerName: t('name'),
+      field: 'investorInfo',
+      headerName: t('Investorname'),
+      flex: 1,
+      renderCell: (params) => (
+        <span>
+          {i18n.language === 'ar' ? params.row.investorInfo.fullname_ar : params.row.investorInfo.fullname_en}
+        </span>
+      ),
+    },
+    {
+      field: 'amount',
+      headerName: t('amount'),
+      flex: 1,
+    },
+    {
+      field: 'currency',
+      headerName: t('currency'),
+      flex: 1,
+      renderCell: (params) => (
+        <span>
+          {i18n.language === 'ar' ? params.row.currency.symbol_ar : params.row.currency.symbol}
+        </span>
+      ),
+    },
+    {
+      field: 'contractTime',
+      headerName: t('contractTime'),
       flex: 1
     },
     {
-      field: i18n.language === 'ar' ? 'symbol_ar' : 'symbol',
-      headerName: t('symbol'),
+      field: 'payment',
+      headerName: t('payment'),
       flex: 1
     },
     {
-      field: i18n.language === 'ar' ? 'description_ar' : 'description',
-      headerName: t('description'),
-      flex: 2
+      field: 'contractPercentage',
+      headerName: t('contractPercentage'),
+      flex: 1,
+      editable: false,
+      readonly: true,
+    },
+    {
+      field: 'startDate',
+      headerName: t('startDate'),
+      flex: 1,
+      renderCell: (params) => (
+        <span>
+          {new Date(params.row.startDate).toLocaleDateString()}
+        </span>
+      ),
+    },
+    {
+      field: 'endDate',
+      headerName: t('endDate'),
+      flex: 1,
+      renderCell: (params) => (
+        <span>
+          {new Date(params.row.endDate).toLocaleDateString()}
+        </span>
+      ),
+      editable: false,
+      readonly: true,
+    },
+    {
+      field: 'investmentStatus',
+      headerName: t('investmentStatus'),
+      flex: 1,
+      renderCell: (params) => (
+        <Switch
+          checked={params.row.investmentStatus}
+          onChange={() => handleToggleStatus(params.row._id, params.row.investmentStatus)}
+          color="primary"
+        />
+      ),
     },
     {
       field: 'actions',
@@ -123,7 +196,7 @@ const CurrencyTable = () => {
         <Box display="flex" justifyContent="left">
           <IconButton
             sx={{ color: '#4CAF50', fontSize: 28 }}
-            onClick={() => navigate(`/editCurrency/${params.row._id}`)}
+            onClick={() => navigate(`/editContracts/${params.row._id}`)}
           >
             <EditNoteIcon />
           </IconButton>
@@ -149,7 +222,7 @@ const CurrencyTable = () => {
                 </Button>
               </Box>
             }
-            open={Boolean(currencyToDelete === params.row)}
+            open={Boolean(ContractsToDelete === params.row)}
             onClose={handleCloseConfirmDelete}
             placement="right"
             arrow
@@ -172,7 +245,7 @@ const CurrencyTable = () => {
       <Paper elevation={8} style={{ padding: '15px', marginBottom: '10px' }}>
         <Toolbar>
           <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-            {t('currencyManagement')}
+            {t('ContractsManagement')}
           </Typography>
           <TextField
             variant="standard"
@@ -197,9 +270,9 @@ const CurrencyTable = () => {
               },
             }}
             startIcon={<AddIcon />}
-            onClick={() => navigate('/addCurrency')}
+            onClick={() => navigate('/addContracts')}
           >
-            {t('addCurrency')}
+            {t('addContracts')}
           </Button>
         </Toolbar>
         <div style={{ width: '100%', height: '100%' }}>
@@ -214,7 +287,7 @@ const CurrencyTable = () => {
             </Box>
           ) : (
             <StripedDataGrid
-              rows={filteredCurrencies}
+              rows={filteredContract}
               columns={columns}
               pageSize={10}
               rowsPerPageOptions={[10]}
@@ -223,8 +296,8 @@ const CurrencyTable = () => {
               getRowClassName={(params) =>
                 params.indexRelativeToCurrentPage % 2 === 0 ? 'even' : 'odd'
               }
-              direction={i18n.language === 'ar'? 'rtl' : 'ltr'} 
-                          />
+              direction={i18n.language === 'ar' ? 'rtl' : 'ltr'}
+            />
           )}
         </div>
       </Paper>
@@ -232,4 +305,4 @@ const CurrencyTable = () => {
   );
 };
 
-export default CurrencyTable;
+export default ContractsTable;

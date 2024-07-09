@@ -5,6 +5,28 @@
   "totalInvestedPerMonth": "إجمالي الاستثمار شهريا",
   "topInvestors": "أفضل المستثمرين",
   "investmentTotalPerType": "إجمالي الاستثمار لكل نوع",
-  "DashBoard":"الرئيسية"
+  "DashBoard":"الرئيسية",
+  "currencyManagement": "إدارة العملات",
+  "addCurrency": "إضافة عملة",
+  "name": "الاسم",
+  "symbol": "الرمز",
+  "description": "الوصف",
+  "search": "بحث...",
+  "areYouSure": "هل أنت متأكد؟",
+  "yes": "نعم",
+  "no": "لا",
+  "actions": "الإجراءات",
+  "fullname":"الاسم الكامل",
+  "email":"البريد الإلكتروني",
+  "phoneNumber":"رقم الهاتف",
+  "dateOfBirth" : "تاريخ الميلاد",
+  "passportNumber" : "رقم جواز السفر",
+  "passportExpiryDate":"تاريخ انتهاء جواز السفر",
+  "status":"الحالة",
+  "addinvestor":"اضافة مستثمر",
+  "cancel":"كلا",
+  "investorManagement":"المستثمرون"
+
+
 
 }

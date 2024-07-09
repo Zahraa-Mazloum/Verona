@@ -19,21 +19,18 @@ import AddIcon from '@mui/icons-material/Add';
 import EditNoteIcon from '@mui/icons-material/EditNote';
 import DeleteSweepIcon from '@mui/icons-material/DeleteSweep';
 import SearchOutlinedIcon from '@mui/icons-material/SearchOutlined';
-import { useNavigate } from 'react-router-dom'; 
+import VisibilityIcon from '@mui/icons-material/Visibility';
+import { useNavigate } from 'react-router-dom';
 import loader from '../loading.gif';
 import { useTranslation } from 'react-i18next';
-import { DatePicker } from '@mui/x-date-pickers/DatePicker';
-import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
-import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 
-
-const CurrencyTable = () => {
+const InvestorsTable = () => {
   const { t, i18n } = useTranslation();
-  const [currencies, setCurrencies] = useState([]);
+  const [investors, setInvestors] = useState([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
-  const [currencyToDelete, setCurrencyToDelete] = useState(null); 
-  const navigate = useNavigate();
+  const [InvestorsToDelete, setInvestorsToDelete] = useState(null); 
+  const navigate = useNavigate(); 
 
   const StripedDataGrid = styled(DataGrid)(({ theme }) => ({
     [`& .${gridClasses.row}.even`]: {
@@ -44,44 +41,42 @@ const CurrencyTable = () => {
     },
   }));
 
-  const fetchCurrencies = async () => {
+  const fetchInvestors = async () => {
     try {
-      // console.log(`Fetching currencies for language: ${i18n.language}`); 
-      const { data } = await api.get(`/currency/getCurrencies/${i18n.language}`);
-      // console.log(data);
-      setCurrencies(data);
+      const { data } = await api.get(`/admin/allInvestors/${i18n.language}`);
+      setInvestors(data);
     } catch (error) {
-      toast.error('Error fetching currencies');
+      toast.error('Error fetching Investors');
     } finally {
       setLoading(false);
     }
   };
 
   useEffect(() => {
-    fetchCurrencies();
+    fetchInvestors();
   }, [i18n.language]);
 
-  const handleDeleteCurrency = async (id) => {
+  const handleDeleteInvestor = async (id) => {
     try {
-      await api.delete(`/currency/deleteCurrency/${id}`);
-      setCurrencies(currencies.filter(c => c._id !== id));
-      toast.success(t('currencyDeletedSuccessfully'));
+      await api.delete(`/admin/deleteUser/${id}`);
+      setInvestors(investors.filter(c => c._id !== id));
+      toast.success(t('Investor Deleted Successfully'));
     } catch (error) {
-      toast.error('Error deleting currency');
+      toast.error('Error deleting Investor');
     }
   };
 
-  const handleOpenConfirmDelete = (event, currency) => {
-    setCurrencyToDelete(currency);
+  const handleOpenConfirmDelete = (event, investor) => {
+    setInvestorsToDelete(investor);
   };
 
   const handleCloseConfirmDelete = () => {
-    setCurrencyToDelete(null);
+    setInvestorsToDelete(null);
   };
 
   const handleConfirmDelete = () => {
-    if (currencyToDelete) {
-      handleDeleteCurrency(currencyToDelete._id);
+    if (InvestorsToDelete) {
+      handleDeleteInvestor(InvestorsToDelete._id);
       handleCloseConfirmDelete();
     }
   };
@@ -92,27 +87,59 @@ const CurrencyTable = () => {
 
   const safeLowerCase = (str) => (str ? str.toLowerCase() : '');
 
-  const filteredCurrencies = currencies.filter(currency =>
-    safeLowerCase(i18n.language === 'en' ? currency.name : currency.name_ar).includes(safeLowerCase(search)) ||
-    safeLowerCase(i18n.language === 'en' ? currency.symbol : currency.symbol_ar).includes(safeLowerCase(search)) ||
-    safeLowerCase(i18n.language === 'en' ? currency.description : currency.description_ar).includes(safeLowerCase(search))
+  const filteredInvestors = investors.filter(investor =>
+    safeLowerCase(i18n.language === 'en' ? investor.fullname_en : investor.fullname_ar).includes(safeLowerCase(search)) ||
+    safeLowerCase(i18n.language === 'en' ? investor.email : investor.email).includes(safeLowerCase(search)) ||
+    safeLowerCase(i18n.language === 'en' ? investor.phoneNumber : investor.phoneNumber).includes(safeLowerCase(search)) ||
+    safeLowerCase(i18n.language === 'en' ? investor.dateOfBirth : investor.dateOfBirth).includes(safeLowerCase(search)) ||
+    safeLowerCase(i18n.language === 'en' ? investor.status : investor.status).includes(safeLowerCase(search)) ||
+    safeLowerCase(i18n.language === 'en' ? investor.passportExpiryDate : investor.passportExpiryDate).includes(safeLowerCase(search)) 
   );
 
   const columns = [
     {
-      field: i18n.language === 'ar' ? 'name_ar' : 'name',
-      headerName: t('name'),
-      flex: 1
+      field: i18n.language === 'ar' ? 'fullname_ar' : 'fullname_en',
+      headerName: t('fullname'),
+      flex: 1,
     },
     {
-      field: i18n.language === 'ar' ? 'symbol_ar' : 'symbol',
-      headerName: t('symbol'),
-      flex: 1
+      field: i18n.language === 'ar' ? 'email' : 'email',
+      headerName: t('email'),
+      flex: 1,
     },
     {
-      field: i18n.language === 'ar' ? 'description_ar' : 'description',
-      headerName: t('description'),
-      flex: 2
+      field: i18n.language === 'ar' ? 'phoneNumber' : 'phoneNumber',
+      headerName: t('phoneNumber'),
+      flex: 1,
+    },
+    {
+      field: i18n.language === 'ar' ? 'dateOfBirth' : 'dateOfBirth',
+      headerName: t('dateOfBirth'),
+      flex: 1,
+      renderCell: (params) => (
+        <span>
+          {new Date(params.row.dateOfBirth).toLocaleDateString()}
+        </span>
+      ),
+    },
+    {
+      field: i18n.language === 'ar' ? 'passportNumber' : 'passportNumber',
+      headerName: t('passportNumber'),
+      flex: 1,
+    },
+    {
+      field: i18n.language === 'ar' ? 'passportExpiryDate' : 'passportExpiryDate',
+      headerName: t('passportExpiryDate'),
+      flex: 1,
+      renderCell: (params) => (
+        <span>
+          {new Date(params.row.passportExpiryDate).toLocaleDateString()}
+        </span>
+      ),    },
+    {
+      field: 'status',
+      headerName: t('status'),
+      flex: 1,
     },
     {
       field: 'actions',
@@ -123,7 +150,7 @@ const CurrencyTable = () => {
         <Box display="flex" justifyContent="left">
           <IconButton
             sx={{ color: '#4CAF50', fontSize: 28 }}
-            onClick={() => navigate(`/editCurrency/${params.row._id}`)}
+            onClick={() => navigate(`/updateUser/${params.row._id}`)}
           >
             <EditNoteIcon />
           </IconButton>
@@ -149,7 +176,7 @@ const CurrencyTable = () => {
                 </Button>
               </Box>
             }
-            open={Boolean(currencyToDelete === params.row)}
+            open={Boolean(InvestorsToDelete === params.row)}
             onClose={handleCloseConfirmDelete}
             placement="right"
             arrow
@@ -161,6 +188,12 @@ const CurrencyTable = () => {
               <DeleteSweepIcon />
             </IconButton>
           </Tooltip>
+          <IconButton
+            sx={{ color: '#2196F3', fontSize: 28 }}
+            onClick={() => navigate(`/viewInvestor/${params.row._id}`)}
+          >
+            <VisibilityIcon />
+          </IconButton>
         </Box>
       ),
     },
@@ -172,7 +205,7 @@ const CurrencyTable = () => {
       <Paper elevation={8} style={{ padding: '15px', marginBottom: '10px' }}>
         <Toolbar>
           <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-            {t('currencyManagement')}
+            {t('investorManagement')}
           </Typography>
           <TextField
             variant="standard"
@@ -197,9 +230,9 @@ const CurrencyTable = () => {
               },
             }}
             startIcon={<AddIcon />}
-            onClick={() => navigate('/addCurrency')}
+            onClick={() => navigate('/addinvestor')}
           >
-            {t('addCurrency')}
+            {t('addinvestor')}
           </Button>
         </Toolbar>
         <div style={{ width: '100%', height: '100%' }}>
@@ -214,7 +247,7 @@ const CurrencyTable = () => {
             </Box>
           ) : (
             <StripedDataGrid
-              rows={filteredCurrencies}
+              rows={filteredInvestors}
               columns={columns}
               pageSize={10}
               rowsPerPageOptions={[10]}
@@ -224,7 +257,7 @@ const CurrencyTable = () => {
                 params.indexRelativeToCurrentPage % 2 === 0 ? 'even' : 'odd'
               }
               direction={i18n.language === 'ar'? 'rtl' : 'ltr'} 
-                          />
+            />
           )}
         </div>
       </Paper>
@@ -232,4 +265,4 @@ const CurrencyTable = () => {
   );
 };
 
-export default CurrencyTable;
+export default InvestorsTable;

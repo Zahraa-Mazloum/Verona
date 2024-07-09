@@ -5,5 +5,26 @@
   "totalInvestedPerMonth": "Total Invested Per Month",
   "topInvestors": "Top Investors",
   "investmentTotalPerType": "Investment Total Per Type",
-  "DashBoard":"DashBoard"
+  "DashBoard":"DashBoard",
+  "currencyManagement": "Currency Management",
+  "addCurrency": "Add Currency",
+  "name": "Name",
+  "symbol": "Symbol",
+  "description": "Description",
+  "search": "Search…",
+  "areYouSure": "Are you sure?",
+  "yes": "Yes",
+  "no": "No",
+  "actions": "Actions",
+  "fullname":"Full name",
+  "email":"Email",
+  "phoneNumber": "Phone Number",
+  "dateOfBirth": "Date Of Birth",
+  "passportNumber" : "Passport Number",
+  "passportExpiryDate":"Passport Expiry Date",
+  "status":"Status",
+  "investorManagement":"Investor Management",
+  "addinvestor":"Add Investor",
+  "cancel":"cancel"
+
 }

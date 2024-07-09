@@ -73,7 +73,7 @@ const Dashboard = () => {
   })) : [];
 
   return (
-    // <Suspense fallback={<Skeleton variant="rectangular" height="100vh" />}>
+    <Suspense fallback={<Skeleton variant="rectangular" height="100vh" />}>
     <Box sx={{ p: 3 }} dir={i18n.language === 'ar' ? 'rtl' : 'ltr'}>
         <Grid container spacing={3}>
           <Grid item xs={12} md={4}>
@@ -139,6 +139,7 @@ const Dashboard = () => {
             <Paper sx={{ p: 2, boxShadow: 3, borderRadius: 2 }}>
               <Typography variant="h6" gutterBottom>
                 {t('topInvestors')}
+                {t('topInvestors')}
               </Typography>
               <Grid container spacing={2}>
                 {loading
@@ -182,7 +183,7 @@ const Dashboard = () => {
           </Grid>
         </Grid>
       </Box>
-    // </Suspense>
+  </Suspense> 
   );
 };
 
