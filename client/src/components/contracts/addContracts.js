@@ -11,10 +11,8 @@ import {
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import api from '../../api/axios';
-import { DatePicker } from '@mui/x-date-pickers/DatePicker';
-import { LocalizationProvider } from '@mui/x-date-pickers';
 import { useTranslation } from 'react-i18next';
-import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
+
 
 const Addcontract = () => {
   const navigate = useNavigate();
@@ -146,19 +144,7 @@ const Addcontract = () => {
                 </MenuItem>
               ))}
             </TextField>
-            {/* <DatePicker
-              label="Start Date"
-              value={contract.startDate}
-              onChange={(date) => handleDateChange('startDate', date)}
-              renderInput={(params) => (
-                <TextField
-                  {...params}
-                  fullWidth
-                  margin="normal"
-                  InputProps={{ style: { borderRadius: '12px' } }}
-                />
-              )}
-            /> */}
+    
             <TextField
               fullWidth
               label="Start Date"

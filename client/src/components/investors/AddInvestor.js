@@ -11,9 +11,6 @@
   import { ToastContainer, toast } from 'react-toastify';
   import 'react-toastify/dist/ReactToastify.css';
   import api from '../../api/axios';
-  import { DatePicker } from '@mui/x-date-pickers/DatePicker';
-  import { LocalizationProvider } from '@mui/x-date-pickers';
-  import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 
   const AddInvestor = () => {
     const navigate = useNavigate();
@@ -106,7 +103,6 @@
     };  
 
     return (
-      <LocalizationProvider dateAdapter={AdapterDateFns}>
         <Box p={3}>
           <ToastContainer />
           <Paper elevation={8} style={{ padding: '15px', marginBottom: '10px', marginLeft: '1%', width: 'calc(100% - 60px)' }}>
@@ -140,22 +136,17 @@
                 onChange={handleInputChange}
                 margin="normal"
                 InputProps={{ style: { borderRadius: '12px' } }}
+              />  <TextField
+                fullWidth
+                label="Date of Birth"
+                name="phoneNudateOfBirthmber"
+                value={investor.dateOfBirth}
+                type='date'
+                onChange={handleInputChange}
+                margin="normal"
+                InputProps={{ style: { borderRadius: '12px' } }}
               />
-  <LocalizationProvider dateAdapter={AdapterDateFns}>
-    <DatePicker
-      label="Date of Birth"
-      value={investor.dateOfBirth}
-      onChange={(date) => handleDateChange('dateOfBirth', date)}
-      renderInput={(params) => (
-        <TextField
-          {...params}
-          fullWidth
-          margin="normal"
-          InputProps={{ style: { borderRadius: '12px' } }}
-        />
-      )}
-    />
-  </LocalizationProvider> 
+   
               <TextField
                 fullWidth
                 label="Password"
@@ -187,19 +178,15 @@
                 onChange={handleInputChange}
                 margin="normal"
                 InputProps={{ style: { borderRadius: '12px' } }}
-              />
-              <DatePicker
+              />        <TextField
+                fullWidth
                 label="Passport Expiry Date"
+                name="passportExpiryDate"
                 value={investor.passportExpiryDate}
-                onChange={(date) => handleDateChange('passportExpiryDate', date)}
-                renderInput={(params) => (
-                  <TextField
-                    {...params}
-                    fullWidth
-                    margin="normal"
-                    InputProps={{ style: { borderRadius: '12px' } }}
-                  />
-                )}
+                onChange={handleInputChange}
+                margin="normal"
+                type='date'
+                InputProps={{ style: { borderRadius: '12px' } }}
               />
               <TextField
                 fullWidth
@@ -257,7 +244,6 @@
             </form>
           </Paper>
         </Box>
-      </LocalizationProvider>
     );
   };
 
