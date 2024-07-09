@@ -1,19 +1,25 @@
 import mongoose from "mongoose";
 
-const invesmentTypeSchema = new mongoose.SchemaType({
-    title:{
+const investmentTypeSchema = new mongoose.Schema({
+    title_en:{
         type:String,
         required: [true, "Please add the title"]
     },
-    description:{
+    title_ar:{
+        type:String,
+        required: [true, "Please add the title"]
+    },
+    description_en:{
+        type:String
+    },
+    description_ar:{
         type:String
     }
-
 },
 {
     timestamps: true,
 });
 
-const Types= mongoose.model('Types' , invesmentTypeSchema , 'Types' )
+const Types = mongoose.model('Types', investmentTypeSchema);
 
 export default Types;
