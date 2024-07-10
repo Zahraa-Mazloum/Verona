@@ -1,4 +1,4 @@
-import Investment from '../models/invesmentsModel.js';
+import Investment from '../models/investmentsModel.js';
 import Contract from '../models/contractModel.js';
 import Investor from '../models/investorModel.js';
 
@@ -17,13 +17,13 @@ export const dashboardStates = async (req, res) => {
         const activeInvestments = await Investment.countDocuments({ invesmentStatus: true });
 
         // Total invested per month
-        const totalInvestedPerMonth = await Contract.aggregate([
+        const totalInvestedPerMonth = await Investment.aggregate([
             { $group: { _id: { month: { $month: '$startDate' }, year: { $year: '$startDate' } }, total: { $sum: '$amount' } } },
             { $sort: { '_id.year': 1, '_id.month': 1 } }
         ]);
 
         // Top 3 investors
-        const topInvestors = await Contract.aggregate([
+        const topInvestors = await Investment.aggregate([
             { $group: { _id: '$investorInfo', totalAmount: { $sum: '$amount' } } },
             { $sort: { totalAmount: -1 } },
             { $limit: 3 },

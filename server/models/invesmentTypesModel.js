@@ -1,11 +1,11 @@
 import mongoose from "mongoose";
 
 const investmentTypeSchema = new mongoose.Schema({
-    title_en:{
+    type_en:{
         type:String,
         required: [true, "Please add the title"]
     },
-    title_ar:{
+    type_ar:{
         type:String,
         required: [true, "Please add the title"]
     },

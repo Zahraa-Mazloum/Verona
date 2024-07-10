@@ -2,12 +2,12 @@ import asyncHandler from "express-async-handler";
 import InvestmentTypes from '../models/invesmentTypesModel.js'
 
 export const addInvestmentType = asyncHandler(async(req,res)=>{
-const {title_en , description_en , title_ar , description_ar} = req.body;
+const {type_en , description_en , type_ar , description_ar} = req.body;
 
-if (!title_en , !title_ar){
+if (!type_en , !type_ar){
     res.status(400).json({message: "Please fill all the fields"})
 }
-const investmentType = new InvestmentTypes({title_en , title_ar , description_en , description_ar})
+const investmentType = new InvestmentTypes({type_en , type_ar , description_en , description_ar})
 
 try{
     await investmentType.save();
@@ -26,9 +26,9 @@ export const getTypesByLanguage = asyncHandler(async (req, res) => {
 
 
     if (lang === 'en') {
-        types = await InvestmentTypes.find({}, 'title_en  description_en');
+        types = await InvestmentTypes.find({}, 'type_en  description_en');
     } else if (lang === 'ar') {
-        types = await InvestmentTypes.find({}, 'title_ar  description_ar');
+        types = await InvestmentTypes.find({}, 'type_ar  description_ar');
     } else {
         return res.status(400).json({ message: 'Invalid language parameter' });
     }
@@ -49,13 +49,13 @@ export const getTypeById = asyncHandler(async (req, res) => {
 });
 
 export const updateType = asyncHandler(async (req, res) => {
-    const { title_en, description_en, title_ar, description_ar } = req.body;
+    const { type_en, description_en, type_ar, description_ar } = req.body;
     const type = await InvestmentTypes.findById(req.params.id);
 
     if (type) {
-        type.title_en = title_en || type.title_en;
+        type.type_en = type_en || type.type_en;
         type.description_en = description_en || type.description_en;
-        type.title_ar = title_ar || type.title_ar;
+        type.type_ar = type_ar || type.type_ar;
         type.description_ar = description_ar || type.description_ar;
 
         const updatedtype = await type.save();

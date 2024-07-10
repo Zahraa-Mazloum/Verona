@@ -1,14 +1,16 @@
 import mongoose from "mongoose";
 
 const contractSchema = new mongoose.Schema({
+    title:{
+        type:String,
+    },
+    title_ar:{
+        type:String,
+    },
     investorInfo: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Investor',
         required: true
-    },
-    amount: {
-        type: Number,
-        required: [true, "Please add the amount"],
     },
     currency: {
         type: mongoose.Schema.Types.ObjectId,
@@ -30,9 +32,7 @@ const contractSchema = new mongoose.Schema({
     contractPercentage: {
         type: Number,
     },
-    payment: {
-        type: Number
-    },
+  
     investmentStatus: {
         type: Boolean,
         default: true
@@ -57,10 +57,7 @@ contractSchema.pre('save', function(next) {
         this.endDate = endDate;
     }
 
-    // Calculate payment based on amount and contractPercentage
-    if (this.isModified('amount') || this.isModified('contractPercentage') || this.isNew) {
-        this.payment = this.amount * (this.contractPercentage / 100);
-    }
+
 
     next();
 });
