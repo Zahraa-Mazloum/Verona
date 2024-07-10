@@ -8,8 +8,8 @@ import { useTranslation } from 'react-i18next';
 
 const Addtypes = () => {
   const navigate = useNavigate();
-  const [types, settypes] = useState({ title_en: '', description_en: '' });
-  const [types_ar, settypes_ar] = useState({ title_ar: '', description_ar: '' });
+  const [types, settypes] = useState({ type_en: '', description_en: '' });
+  const [types_ar, settypes_ar] = useState({ type_ar: '', description_ar: '' });
   const { t, i18n } = useTranslation();
 
 
@@ -48,8 +48,8 @@ const Addtypes = () => {
           <TextField
             fullWidth
             label="Title"
-            name="title_en"
-            value={types.title_en}
+            name="type_en"
+            value={types.type_en}
             onChange={handleInputChange}
             margin="normal"
             InputProps={{ style: { borderRadius: '12px' } }}
@@ -66,8 +66,8 @@ const Addtypes = () => {
           <TextField
             fullWidth
             label="الاسم"
-            name="title_ar"
-            value={types_ar.title_ar}
+            name="type_ar"
+            value={types_ar.type_ar}
             onChange={(event) => {
               const arabicRegex = /^[\u0600-\u06FF\s]+$/;
               if (!arabicRegex.test(event.target.value)) {
@@ -100,7 +100,7 @@ const Addtypes = () => {
             <Button
               variant="outlined"
               color="secondary"
-              onClick={() => navigate('/typesTable')}
+              onClick={() => navigate('/types')}
               sx={{
                 mr: 2,
                 border: '1px solid #ed6c02',

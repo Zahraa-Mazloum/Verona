@@ -46,10 +46,10 @@ const Sidebar = ({ open, setOpen }) => {
     role === 'admin' && { text: 'Investors', icon: <Icon path={mdiAccountTie} size={1} />, path: '/investor' },
     { text: 'Verona Investments', icon: <Icon path={mdiBankCircleOutline} size={1} />, path: '/investment' },
     { text: 'Investment Types', icon: <Icon path={mdiCashMultiple} size={1} />, path: '/types' },
-    { text: 'Overall Verona Investments', icon: <Icon path={mdiBankOutline} size={1} />, path: '/investment' },
-    { text: 'New Investments', icon: <Icon path={mdiCurrencyUsdOff} size={1} />, path: '/investment' },
+    { text: 'Overall Verona Investments', icon: <Icon path={mdiBankOutline} size={1} />, path: '/overallInv' },
+    { text: 'New Investments', icon: <Icon path={mdiCurrencyUsdOff} size={1} />, path: '/NewInvestments' },
     { text: 'Currencies', icon: <Icon path={mdiCurrencyBtc} size={1} />, path: '/CurrencyTable' },
-    { text: 'Wallets', icon: <Icon path={mdiWalletBifold} size={1} />, path: '/investment' },
+    { text: 'Wallets', icon: <Icon path={mdiWalletBifold} size={1} />, path: '/' },
   ].filter(Boolean);
 
   return (

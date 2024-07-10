@@ -16,6 +16,11 @@ import EditContracts  from './components/contracts/editContracts';
 import Types from './components/investmentTypes/investmentTypes';
 import AddTypes from './components/investmentTypes/addInvestmentTypes';
 import EditTypes from './components/investmentTypes/editInvestmentTypes';
+import Investment from './components/investment/investmentTable';
+import AddInvestment from './components/investment/AddInvestments';
+import EditInv from './components/investment/editinvestment';
+import OverallInv from './components/overallInv.js'
+import NewInvestments from './components/newInv/newInv.js'
 import './App.css'
 
 function App() {
@@ -35,14 +40,19 @@ function App() {
         <Route path="Contract" element={<Contract />} />
         <Route path="Investor" element={<Investor />} />
         <Route path="Types" element={<Types />} />
+        <Route path="overallInv" element={<OverallInv />} />
+        <Route path="NewInvestments" element={<NewInvestments />} />
+        <Route path="/investment" element={<Investment />} />
         <Route path="/editCurrency/:id" element={<EditCurrency />} />
         <Route path="/addCurrency" element={<AddCurrency />} />
         <Route path="/viewInvestor/:id" element={<ViewInvestor />} />
         <Route path="/addinvestor" element={<AddInvestor   />} />
         <Route path="/addContracts" element={<AddContract   />} />
         <Route path="/addinvestmentTypes" element={<AddTypes   />} />
+        <Route path="/addinvestment" element={<AddInvestment   />} />
         <Route path="/editContracts/:id" element={<EditContracts    />} />
         <Route path="/editinvestmentTypes/:id" element={<EditTypes    />} />
+        <Route path="/editinvestment/:id" element={<EditInv />} />
 
       </Route>
     </Routes>

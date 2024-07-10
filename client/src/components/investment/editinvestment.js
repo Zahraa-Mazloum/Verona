@@ -4,49 +4,48 @@ import { TextField, Button, Paper, Typography, Box } from '@mui/material';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import api from '../../api/axios';
-import { Title } from 'chart.js';
 import { useTranslation } from 'react-i18next';
 
-const EditContract = () => {
+const EditInvestment = () => {
   const { id } = useParams();
   const navigate = useNavigate();
-  const [contract, setContract] = useState({
-    investorInfo: {
-      fullname_en: '',
-      fullname_ar: ''
+  const [Investment, setInvestment] = useState({
+    title: {
+      title: '',
+      title_ar: ''
     },
-    currency: {
-      symbol_en: '',
-      symbol_ar: ''
+    type: {
+      type_en: '',
+      type_ar: ''
+    },   
+    contract: {
+      title: '',
+      title_ar: ''
     },
-    contractTime: '',
-    startDate: '',
+    amount: '',
     investmentStatus: '',
-    title:'',
-    title_ar: ''
   });
 const[t]=useTranslation()
   useEffect(() => {
-    const fetchContract = async () => {
+    const fetchInvestment = async () => {
       try {
-        const { data } = await api.get(`/contract/investrContract/${id}`);
+        const { data } = await api.get(`/inv/getInvestmentById/${id}`);
         const formattedData = {
           ...data,
-          startDate: data.startDate ? data.startDate.split('T')[0] : ''
         };
-        setContract(formattedData);
+        setInvestment(formattedData);
       } catch (error) {
-        toast.error('Error fetching contract');
+        toast.error('Error fetching Investment');
       }
     };
-    fetchContract();
+    fetchInvestment();
   }, [id]);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     const [mainKey, subKey] = name.split('.');
     if (subKey) {
-      setContract(prevState => ({
+      setInvestment(prevState => ({
         ...prevState,
         [mainKey]: {
           ...prevState[mainKey],
@@ -54,20 +53,20 @@ const[t]=useTranslation()
         }
       }));
     } else {
-      setContract({ ...contract, [name]: value });
+      setInvestment({ ...Investment, [name]: value });
     }
   };
 
-  const handleUpdateContract = async (e) => {
+  const handleUpdateInvestment = async (e) => {
     e.preventDefault();
     try {
-      await api.put(`/contract/editContract/${id}`, contract);
-      toast.success('Contract updated successfully');
+      await api.put(`/inv/updateInvestment/${id}`, Investment);
+      toast.success('Investment updated successfully');
       setTimeout(() => {
-        navigate('/contract');
+        navigate('/Investment');
       }, 1500);
     } catch (error) {
-      toast.error('Error updating contract');
+      toast.error('Error updating Investment');
     }
   };
 
@@ -76,16 +75,16 @@ const[t]=useTranslation()
       <ToastContainer />
       <Paper elevation={8} style={{ padding: '15px', marginBottom: '10px', marginLeft: '1%', width: 'calc(100% - 60px)' }}>
         <Typography variant="h6" component="div" sx={{ flexGrow: 1, marginLeft: '1%' }}>
-          {t('EditContract')}
+          {t('EditInvestment')}
         </Typography>
         <div className='formContainer'>
-          <form onSubmit={handleUpdateContract} style={{ marginTop: '15px' }}>
+          <form onSubmit={handleUpdateInvestment} style={{ marginTop: '15px' }}>
            
             <TextField
               fullWidth
               label="Title (EN)"
               name="title"
-              value={contract.title}
+              value={Investment.titleInv}
               onChange={handleInputChange}
               margin="normal"
               required
@@ -94,7 +93,7 @@ const[t]=useTranslation()
               fullWidth
               label="Title (Ar)"
               name="title_ar"
-              value={contract.title_ar}
+              value={Investment.titleInv_ar}
               onChange={handleInputChange}
               margin="normal"
               required
@@ -102,9 +101,9 @@ const[t]=useTranslation()
             />  
             <TextField
               fullWidth
-              label="Name (English)"
-              name="investorInfo.fullname_en"
-              value={contract.investorInfo.fullname_en}
+              label="Type (En)"
+              name="type.type_en"
+              value={Investment.type.type_en}
               onChange={handleInputChange}
               margin="normal"
               required
@@ -112,49 +111,46 @@ const[t]=useTranslation()
             />
             <TextField
               fullWidth
-              label="Name (Arabic)"
-              name="investorInfo.fullname_ar"
-              value={contract.investorInfo.fullname_ar}
+              label="Type (Ar)"
+              name="type.type_ar"
+              value={Investment.type.type_ar}
+              onChange={handleInputChange}
+              margin="normal"
+              InputProps={{ style: { borderRadius: '12px' } }}
+            />    <TextField
+              fullWidth
+              label="Contract (EN)"
+              name="contract.title"
+              value={Investment.contract.title}
+              onChange={handleInputChange}
+              margin="normal"
+              required
+              InputProps={{ style: { borderRadius: '12px' } }}
+            />
+            <TextField
+              fullWidth
+              label="Contract (AR)"
+              name="contract.title_ar"
+              value={Investment.contract.title_ar}
               onChange={handleInputChange}
               margin="normal"
               InputProps={{ style: { borderRadius: '12px' } }}
             />
+
                  <TextField
               fullWidth
-              label="Currency"
-              name="currency"
-              value={contract.currency.symbol}
+              label="Amount"
+              name="amount"
+              value={Investment.amount}
               onChange={handleInputChange}
               margin="normal"
               InputProps={{ style: { borderRadius: '12px' } }}
             />  
-            <TextField
-              fullWidth
-              label="Contract Time"
-              name="contractTime"
-              value={contract.contractTime}
-              onChange={handleInputChange}
-              margin="normal"
-              InputProps={{ style: { borderRadius: '12px' } }}
-            />
-            <TextField
-              fullWidth
-              label="Start Date"
-              name="startDate"
-              type="date"
-              value={contract.startDate}
-              onChange={handleInputChange}
-              margin="normal"
-              InputLabelProps={{
-                shrink: true,
-              }}
-              InputProps={{ style: { borderRadius: '12px' } }}
-            />
             <TextField
               fullWidth
               label="Investment Status"
               name="investmentStatus"
-              value={contract.investmentStatus}
+              value={Investment.investmentStatus}
               onChange={handleInputChange}
               margin="normal"
               InputProps={{ style: { borderRadius: '12px' } }}
@@ -166,12 +162,12 @@ const[t]=useTranslation()
                 type="submit"
                 sx={{ mr: 2 }}
               >
-                Update Contract
+                Update Investment
               </Button>
               <Button
                 variant="outlined"
                 color="secondary"
-                onClick={() => navigate('/contract')}
+                onClick={() => navigate('/Investment')}
                 sx={{
                   mr: 2,
                   border: '1px solid #ed6c02',
@@ -193,4 +189,4 @@ const[t]=useTranslation()
   );
 };
 
-export default EditContract;
+export default EditInvestment;

@@ -11,7 +11,7 @@ import { useTranslation } from 'react-i18next';
 const Edittypes = () => {
   const { id } = useParams();
   const navigate = useNavigate();
-  const [types, settypes] = useState({ title_en: '', title_ar: '', description_en: '' , description_ar: '' });
+  const [types, settypes] = useState({ type_en: '', type_ar: '', description_en: '' , description_ar: '' });
   const { t, i18n } = useTranslation();
 
   useEffect(() => {
@@ -56,8 +56,8 @@ const Edittypes = () => {
         <TextField
   fullWidth
   label="Title"
-  name="title_en"
-  value={types.title_en}
+  name="type_en"
+  value={types.type_en}
   onChange={handleInputChange}
   margin="normal"
   required
@@ -82,8 +82,8 @@ const Edittypes = () => {
           />        <TextField
   fullWidth
   label="Title"
-  name="title_ar"
-  value={types.title_ar}
+  name="type_ar"
+  value={types.type_ar}
   onChange={handleInputChange}
   margin="normal"
   required
@@ -121,7 +121,7 @@ const Edittypes = () => {
             <Button
               variant="outlined"
               color="secondary"
-              onClick={() => navigate('/typesTable')}
+              onClick={() => navigate('/types')}
               sx={{
                 mr: 2,
                 border: '1px solid #ed6c02', 

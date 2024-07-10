@@ -24,13 +24,12 @@ import loader from '../loading.gif';
 import { useTranslation } from 'react-i18next';
 
 
-
-const Investmenttypes = () => {
+const InvestmentTable = () => {
   const { t, i18n } = useTranslation();
-  const [types, settypes] = useState([]);
+  const [investments, setinvestments] = useState([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
-  const [investmentTypesToDelete, setinvestmentTypesToDelete] = useState(null); 
+  const [investmentToDelete, setinvestmentToDelete] = useState(null); 
   const navigate = useNavigate();
 
   const StripedDataGrid = styled(DataGrid)(({ theme }) => ({
@@ -42,42 +41,44 @@ const Investmenttypes = () => {
     },
   }));
 
-  const fetchtypes = async () => {
+  const fetchinvestments = async () => {
     try {
-      const { data } = await api.get(`/types/getTypesByLanguage/${i18n.language}`);
-      settypes(data);
+      const { data } = await api.get(`/inv/getInvestments/${i18n.language}`);
+      console.log(data)
+      console.log(data.s)
+      setinvestments(data);
     } catch (error) {
-      toast.error('Error fetching types');
+      toast.error('Error fetching investments');
     } finally {
       setLoading(false);
     }
   };
 
   useEffect(() => {
-    fetchtypes();
+    fetchinvestments();
   }, [i18n.language]);
 
-  const handleDeleteinvestmentTypes = async (id) => {
+  const handleDeleteinvestment = async (id) => {
     try {
-      await api.delete(`/types/deleteType/${id}`);
-      settypes(types.filter(c => c._id !== id));
-      toast.success(t('TypesDeletedSuccessfully'));
+      await api.delete(`/inv/deleteInvestment/${id}`);
+      setinvestments(investments.filter(c => c._id !== id));
+      toast.success(t('investmentDeletedSuccessfully'));
     } catch (error) {
-      toast.error('Error deleting Types');
+      toast.error('Error deleting investment');
     }
   };
 
-  const handleOpenConfirmDelete = (event, investmentTypes) => {
-    setinvestmentTypesToDelete(investmentTypes);
+  const handleOpenConfirmDelete = (event, investment) => {
+    setinvestmentToDelete(investment);
   };
 
   const handleCloseConfirmDelete = () => {
-    setinvestmentTypesToDelete(null);
+    setinvestmentToDelete(null);
   };
 
   const handleConfirmDelete = () => {
-    if (investmentTypesToDelete) {
-      handleDeleteinvestmentTypes(investmentTypesToDelete._id);
+    if (investmentToDelete) {
+      handleDeleteinvestment(investmentToDelete._id);
       handleCloseConfirmDelete();
     }
   };
@@ -88,21 +89,82 @@ const Investmenttypes = () => {
 
   const safeLowerCase = (str) => (str ? str.toLowerCase() : '');
 
-  const filteredtypes = types.filter(investmentTypes =>
-    safeLowerCase(i18n.language === 'en' ? investmentTypes.type_en : investmentTypes.type_ar).includes(safeLowerCase(search)) ||
-    safeLowerCase(i18n.language === 'en' ? investmentTypes.description : investmentTypes.description_ar).includes(safeLowerCase(search))
+  const filteredinvestments = investments.filter(investment =>
+    safeLowerCase(i18n.language === 'en' ? investment.titleInv : investment.titleInv_ar).includes(safeLowerCase(search)) ||
+    safeLowerCase(i18n.language === 'en' ? investment.amount : investment.amount).includes(safeLowerCase(search)) ||
+    safeLowerCase(i18n.language === 'en' ? investment.type.type_en : investment.type.type_ar).includes(safeLowerCase(search)) || 
+    safeLowerCase(i18n.language === 'en' ? investment.profit : investment.profit).includes(safeLowerCase(search)) ||
+    safeLowerCase(i18n.language === 'en' ? investment.contract.title : investment.contract.title_ar).includes(safeLowerCase(search)) ||
+    safeLowerCase(i18n.language === 'en' ? investment.contract.investorInfo.fullname_en : investment.contract.investorInfo.fullname_ar).includes(safeLowerCase(search)) ||
+    safeLowerCase(i18n.language === 'en' ? investment.contract.currency.symbol : investment.contract.currency.symbol).includes(safeLowerCase(search)) ||
+    safeLowerCase(i18n.language === 'en' ? investment.investmentStatus : investment.investmentStatus).includes(safeLowerCase(search)) ||
+    safeLowerCase(i18n.language === 'en' ? investment.payment : investment.payment).includes(safeLowerCase(search)) 
   );
 
   const columns = [
     {
-      field: i18n.language === 'ar' ? 'type_ar' : 'type_en',
-      headerName: t('name'),
+      field: i18n.language === 'ar' ? 'contract.investorInfo' : 'contract.investorInfo',
+      headerName: t('contract'),
+      flex: 1,
+      renderCell: (params) => (
+        <span>
+          {i18n.language === 'ar' ? params.row.contract.investorInfo.fullname_ar : params.row.contract.investorInfo.fullname_en}
+        </span>
+      ),
+    },  
+    {
+      field: i18n.language === 'ar' ? 'titleInv_ar' : 'titleInv',
+      headerName: t('title'),
       flex: 1
     },
     {
-      field: i18n.language === 'ar' ? 'description_ar' : 'description_en',
-      headerName: t('description'),
-      flex: 2
+      field: i18n.language === 'ar' ? 'amount' : 'amount',
+      headerName: t('amount'),
+      flex: 1
+    },
+    {
+      field: i18n.language === 'ar' ? 'type' : 'type',
+      headerName: t('type'),
+      flex: 1,
+      renderCell: (params) => (
+        <span>
+          {params.row.type ? (i18n.language === 'ar' ? params.row.type.type_ar : params.row.type.type_en) : ''}
+        </span> 
+),
+    },    {
+      field: i18n.language === 'ar' ? 'profit' : 'profit',
+      headerName: t('profit'),
+      flex: 1
+    },
+  {
+      field: i18n.language === 'ar' ? 'contract' : 'contract',
+      headerName: t('contract'),
+      flex: 1,
+      renderCell: (params) => (
+        <span>
+          {i18n.language === 'ar' ? params.row.contract.title_ar : params.row.contract.title}
+        </span>
+      ),
+    },    {
+      field: i18n.language === 'ar' ? 'currency.symbol_ar' : 'currency.symbol',
+      headerName: t('currency'),
+      flex: 1,
+      renderCell: (params) => (
+        <span>
+          {i18n.language === 'ar' ? params.row.contract.currency.symbol_ar : params.row.contract.currency.symbol}
+        </span>
+      ),
+    },  
+    
+    
+    {
+      field: i18n.language === 'ar' ? 'investmentStatus' : 'investmentStatus',
+      headerName: t('investmentStatus'),
+      flex: 1
+    },  {
+      field: i18n.language === 'ar' ? 'payment' : 'payment',
+      headerName: t('payment'),
+      flex: 1
     },
     {
       field: 'actions',
@@ -113,7 +175,7 @@ const Investmenttypes = () => {
         <Box display="flex" justifyContent="left">
           <IconButton
             sx={{ color: '#4CAF50', fontSize: 28 }}
-            onClick={() => navigate(`/editinvestmentTypes/${params.row._id}`)}
+            onClick={() => navigate(`/editinvestment/${params.row._id}`)}
           >
             <EditNoteIcon />
           </IconButton>
@@ -139,7 +201,7 @@ const Investmenttypes = () => {
                 </Button>
               </Box>
             }
-            open={Boolean(investmentTypesToDelete === params.row)}
+            open={Boolean(investmentToDelete === params.row)}
             onClose={handleCloseConfirmDelete}
             placement="right"
             arrow
@@ -162,7 +224,7 @@ const Investmenttypes = () => {
       <Paper elevation={8} style={{ padding: '15px', marginBottom: '10px' }}>
         <Toolbar>
           <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-            {t('investmentTypesManagement')}
+            {t('investmentManagement')}
           </Typography>
           <TextField
             variant="standard"
@@ -187,9 +249,9 @@ const Investmenttypes = () => {
               },
             }}
             startIcon={<AddIcon />}
-            onClick={() => navigate('/addinvestmentTypes')}
+            onClick={() => navigate('/addinvestment')}
           >
-            {t('addinvestmentTypes')}
+            {t('addinvestment')}
           </Button>
         </Toolbar>
         <div style={{ width: '100%', height: '100%' }}>
@@ -204,7 +266,7 @@ const Investmenttypes = () => {
             </Box>
           ) : (
             <StripedDataGrid
-              rows={filteredtypes}
+              rows={filteredinvestments}
               columns={columns}
               pageSize={10}
               rowsPerPageOptions={[10]}
@@ -222,4 +284,4 @@ const Investmenttypes = () => {
   );
 };
 
-export default Investmenttypes;
+export default InvestmentTable;

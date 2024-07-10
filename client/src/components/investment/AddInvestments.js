@@ -14,66 +14,66 @@ import api from '../../api/axios';
 import { useTranslation } from 'react-i18next';
 
 
-const Addcontract = () => {
+const Addinvestment = () => {
   const navigate = useNavigate();
-  const [contract, setcontract] = useState({
+  const [investment, setinvestment] = useState({
     title: '',
-    investorInfo: '',
-    currency: '',
-    contractTime: '',
-    startDate: '',
-    investmentStatus: ''
+    amount: '',
+    investmentTime: '',
+    type: '',
+    contract: '',
+    investmentStatus: '',
+    payment: '',
   });
-  const [contract_ar, setcontract_ar] = useState({
+  const [investment_ar, setinvestment_ar] = useState({
     title_ar: '',
-    fullname_ar: '',
   });
   const { t, i18n } = useTranslation();
-  const [investors, setInvestors] = useState([]);
-  const [currencies, setCurrencies] = useState([]);
+  const [contracts, setContracts] = useState([]);
+  const [types, setTypes] = useState([]);
 
   useEffect(() =>{
-    const fetchInvestors = async () => {
+    const fetchContracts = async () => {
       try {
-        const response = await api.get(`/admin/allInvestors/${i18n.language}`);
-        setInvestors(response.data);
+        const response = await api.get(`/contract/allContracts/${i18n.language}`);
+        setContracts(response.data);
       } catch (error) {
         console.error('Error fetching investors:', error);
       }
     };
 
-    const fetchCurrencies = async () => {
+    const fetchTypes = async () => {
       try {
-        const response = await api.get(`/currency/getCurrencies/${i18n.language}`);
-        setCurrencies(response.data);
+        const response = await api.get(`/types/getTypesByLanguage/${i18n.language}`);
+        setTypes(response.data);
       } catch (error) {
-        console.error('Error fetching currencies:', error);
+        console.error('Error fetching types:', error);
       }
     };
 
-    fetchInvestors();
-    fetchCurrencies();
+    fetchContracts();
+    fetchTypes();
   }, []);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setcontract({ ...contract, [name]: value });
+    setinvestment({ ...investment, [name]: value });
   };
 
   const handleInputChangeAr = (e) => {
     const { name, value } = e.target;
-    setcontract_ar({ ...contract_ar, [name]: value });
+    setinvestment_ar({ ...investment_ar, [name]: value });
   };
 
 
-  const handleAddcontract = async (e) => {
+  const handleAddinvestment = async (e) => {
     e.preventDefault();
-    const fullContract = { ...contract, ...contract_ar };
+    const fullinvestment = { ...investment, ...investment_ar };
     try {
-      await api.post('/contract/newContract', fullContract);
-      toast.success('Contract added successfully');
+      await api.post('/inv/createInvestment', fullinvestment);
+      toast.success('Investment added successfully');
       setTimeout(() => {
-        navigate('/contract');
+        navigate('/investment');
       }, 1500);
     } catch (error) {
       if (error.response && error.response.data) {
@@ -101,92 +101,73 @@ const Addcontract = () => {
         <ToastContainer />
         <Paper elevation={8} style={{ padding: '15px', marginBottom: '10px', marginLeft: '1%', width: 'calc(100% - 60px)' }}>
           <Typography variant="h6" component="div" sx={{ flexGrow: 1, marginLeft: '1%' }}>
-            Add Contract
+            Add investment
           </Typography>
-          <form onSubmit={handleAddcontract} style={{ marginTop: '15px' }}>
+          <form onSubmit={handleAddinvestment} style={{ marginTop: '15px' }}>
           <TextField
-                fullWidth
-                label="title (EN)"
-                name="title"
-                value={contract.title}
-                onChange={handleInputChange}
-                margin="normal"
-                InputProps={{ style: { borderRadius: '12px' } }}
-              />      <TextField
-                fullWidth
-                label="title (Ar)"
-                name="title_ar"
-                value={contract_ar.title_ar}
-                onChange={handleInputChangeAr}
-                margin="normal"
-                InputProps={{ style: { borderRadius: '12px' } }}
-              />
+            fullWidth
+            label="title"
+            name="titleInv"
+            value={investment.titleInv}
+            onChange={handleInputChange}
+            margin="normal"
+            InputProps={{ style: { borderRadius: '12px' } }}
+          />     
+            <TextField
+            fullWidth
+            label="titleInv_ar"
+            name="titleInv_ar"
+            value={investment.title_ar}
+            onChange={handleInputChange}
+            margin="normal"
+            InputProps={{ style: { borderRadius: '12px' } }}
+          />  <TextField
+            fullWidth
+            label="amount"
+            name="amount"
+            value={investment.amount}
+            onChange={handleInputChange}
+            margin="normal"
+            InputProps={{ style: { borderRadius: '12px' } }}
+          />
             <TextField
               fullWidth
               select
-              label="Full Name (EN)"
-              name="investorInfo"
-              value={contract.investorInfo}
+              label="type"
+              name="type"
+              value={investment.type}
               onChange={handleInputChange}
               margin="normal"
               InputProps={{ style: { borderRadius: '12px' } }}
             >
-              {investors.map((investor) => (
-                <MenuItem key={investor._id} value={investor._id}>
-                  {investor.fullname_en}
+              {types.map((type) => (
+                <MenuItem key={type._id} value={type._id}>
+                  {type.type_en}
                 </MenuItem>
               ))}
-            </TextField>
-      
-            <TextField
+            </TextField>     
+              <TextField
               fullWidth
               select
-              label="Currency"
-              name="currency"
-              value={contract.currency}
+              label="contract"
+              name="contract"
+              value={investment.contract}
               onChange={handleInputChange}
               margin="normal"
               InputProps={{ style: { borderRadius: '12px' } }}
             >
-              {currencies.map((currency) => (
-                <MenuItem key={currency._id} value={currency._id}>
-                  {currency.symbol}
+              {contracts.map((contract) => (
+                <MenuItem key={contract._id} value={contract._id}>
+                  {contract.title}
                 </MenuItem>
               ))}
-            </TextField>
-    
-            <TextField
-              fullWidth
-              label="Start Date"
-              name="startDate"
-              type="date"
-              value={contract.startDate}
-              onChange={handleInputChange}
-              margin="normal"
-              InputLabelProps={{
-                shrink: true,
-              }}
-              InputProps={{ style: { borderRadius: '12px' } }}
-            />
-            <TextField
-              fullWidth
-              select
-              label="Contract Time"
-              name="contractTime"
-              value={contract.contractTime}
-              onChange={handleInputChange}
-              margin="normal"
-              InputProps={{ style: { borderRadius: '12px' } }}
-            >
-              <MenuItem value="year">Year</MenuItem>
-              <MenuItem value="month">Month</MenuItem>
             </TextField>
             <TextField
               fullWidth
               select
               label="Investment Status"
               name="investmentStatus"
-              value={contract.investmentStatus}
+              value={investment.investmentStatus}
               onChange={handleInputChange}
               margin="normal"
               InputProps={{ style: { borderRadius: '12px' } }}
@@ -201,12 +182,12 @@ const Addcontract = () => {
                 type="submit"
                 sx={{ mr: 2 }}
               >
-                Add Contract
+                Add investment
               </Button>
               <Button
                 variant="outlined"
                 color="secondary"
-                onClick={() => navigate('/contract')}
+                onClick={() => navigate('/investment')}
                 sx={{
                   mr: 2,
                   border: '1px solid #ed6c02',
@@ -227,4 +208,4 @@ const Addcontract = () => {
    );
 };
 
-export default Addcontract;
+export default Addinvestment;

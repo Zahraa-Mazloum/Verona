@@ -88,16 +88,14 @@ const ContractsTable = () => {
   const safeLowerCase = (str) => (typeof str === 'string' ? str.toLowerCase() : '');
 
   const filteredContract = contract.filter(Contracts =>
+    safeLowerCase(i18n.language === 'ar' ? Contracts.title_ar : Contracts.title).includes(safeLowerCase(search)) ||
     safeLowerCase(i18n.language === 'ar' ? Contracts.investorInfo.fullname_ar : Contracts.investorInfo.fullname_en).includes(safeLowerCase(search)) ||
-    safeLowerCase(Contracts.amount.toString()).includes(safeLowerCase(search)) ||
     safeLowerCase(Contracts.currency).includes(safeLowerCase(search)) ||
     safeLowerCase(Contracts.contractTime).includes(safeLowerCase(search)) ||
     safeLowerCase(Contracts.startDate).includes(safeLowerCase(search)) ||
     safeLowerCase(Contracts.endDate).includes(safeLowerCase(search)) ||
     safeLowerCase(Contracts.contractPercentage).includes(safeLowerCase(search)) ||
-    safeLowerCase(Contracts.investmentStatus).includes(safeLowerCase(search)) ||
-    safeLowerCase(Contracts.payment.toString()).includes(safeLowerCase(search))
-  );
+    safeLowerCase(Contracts.investmentStatus).includes(safeLowerCase(search))  );
 
   const handleToggleStatus = async (id, currentStatus) => {
     try {
@@ -112,6 +110,15 @@ const ContractsTable = () => {
 
   const columns = [
     {
+      field: 'title',
+      headerName: t('title'),
+      flex: 1,
+      renderCell: (params) => (
+        <span>
+          {i18n.language === 'ar' ? params.row.title_ar : params.row.title}
+        </span>
+      ),
+    },    {
       field: 'investorInfo',
       headerName: t('Investorname'),
       flex: 1,
@@ -120,11 +127,6 @@ const ContractsTable = () => {
           {i18n.language === 'ar' ? params.row.investorInfo.fullname_ar : params.row.investorInfo.fullname_en}
         </span>
       ),
-    },
-    {
-      field: 'amount',
-      headerName: t('amount'),
-      flex: 1,
     },
     {
       field: 'currency',
@@ -141,11 +143,7 @@ const ContractsTable = () => {
       headerName: t('contractTime'),
       flex: 1
     },
-    {
-      field: 'payment',
-      headerName: t('payment'),
-      flex: 1
-    },
+
     {
       field: 'contractPercentage',
       headerName: t('contractPercentage'),
