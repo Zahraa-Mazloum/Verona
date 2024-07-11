@@ -42,7 +42,7 @@ const investorSchema = new mongoose.Schema({
   },
   passportPhoto: {
     data: Buffer,
-        contentType: String
+    contentType: String
   },
   fullname_ar: {
     type: String,

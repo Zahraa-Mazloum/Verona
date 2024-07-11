@@ -30,6 +30,8 @@ export const registerUser = asyncHandler(async (req, res) => {
     password,
     role,
     status,
+    passportNumber,
+    passportExpiryDate
   } = req.body;
 
   if (
@@ -38,7 +40,9 @@ export const registerUser = asyncHandler(async (req, res) => {
     !email ||
     !phoneNumber ||
     !dateOfBirth ||
-    !password
+    !password ||
+    !passportNumber ||
+    !passportExpiryDate
   ) {
     res.status(400);
     throw new Error('Please add all fields');
@@ -96,10 +100,10 @@ export const registerUser = asyncHandler(async (req, res) => {
     });
   } else if (role === 'investor') {
     let passportPhoto = null;
-    if (req.file) {
+    if (req.files && req.files.passportPhoto && req.files.passportPhoto[0]) {
       passportPhoto = {
-        data: fs.readFileSync(path.join(__dirname, '..', 'uploads', req.file.filename)),
-        contentType: req.file.mimetype
+        data: req.files.passportPhoto[0].buffer,
+        contentType: req.files.passportPhoto[0].mimetype,
       };
     }
     newUser = await Investor.create({
@@ -111,9 +115,9 @@ export const registerUser = asyncHandler(async (req, res) => {
       password: hashedPassword,
       role,
       status,
-      passportNumber: req.body.passportNumber,
-    passportExpiryDate: req.body.passportExpiryDate,
-    passportPhoto: req.files['passportPhoto'][0].path,
+      passportNumber,
+      passportExpiryDate,
+      passportPhoto,
     });
   } else {
     res.status(400);
@@ -246,7 +250,7 @@ export const updateUser = asyncHandler(async (req, res) => {
       status,
       passportNumber: req.body.passportNumber,
       passportExpiryDate: req.body.passportExpiryDate,
-      passportPhoto,
+      passportPhoto:req.body.passportPhoto,
     }, { new: true });
   } else {
     res.status(400);

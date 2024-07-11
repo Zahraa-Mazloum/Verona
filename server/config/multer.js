@@ -1,13 +1,6 @@
 import multer from 'multer';
 
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    cb(null, 'uploads/');
-  },
-  filename: (req, file, cb) => {
-    cb(null, `${Date.now()}-${file.originalname}`);
-  },
-});
+const storage = multer.memoryStorage();
 
 const upload = multer({
   storage: storage,
@@ -19,8 +12,6 @@ const upload = multer({
     }
   },
   limits: { fileSize: 5 * 1024 * 1024 },
-}).fields([
-  { name: 'passportPhoto', maxCount: 1 },
-]);
+});
 
 export default upload;

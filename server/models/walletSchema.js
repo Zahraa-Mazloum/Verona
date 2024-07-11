@@ -1,13 +1,14 @@
-import mongoose from "mongoose";
-import Investor from "./investorModel";
+import mongoose from 'mongoose';
 
 const walletSchema = new mongoose.Schema({
-Investor: {
+  investorInfo: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: "Investor",
-},
-amount: {
+    ref: 'Investor',
+  },
+  amount: {
     type: Number,
-    required:[true, "Please add the amount"]
-},
-})
+  },
+});
+
+const Wallet = mongoose.model('Wallet', walletSchema, 'Wallet');
+export default Wallet;

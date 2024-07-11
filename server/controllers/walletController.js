@@ -1,12 +1,12 @@
 import asyncHandler from "express-async-handler";
 import Wallet from '../models/walletSchema.js';
-import Investor from "../models/investorModel";
+import Investor from "../models/investorModel.js";
 
 export const createWallet = asyncHandler(async (req, res) => {
     const { investorInfo: investorId, amount } = req.body;
 
     if (!investorId || !amount) {
-        res.status(400).json({ message: "Invalid request. Investor  and amount are required." });
+        res.status(400).json({ message: "Invalid request. Investor and amount are required." });
         return;
     }
 
@@ -32,28 +32,38 @@ export const createWallet = asyncHandler(async (req, res) => {
 });
 
 export const getWallets = asyncHandler(async (req, res) => {
-    const wallets = await Wallet.find().populate('investorInfo currency');
-    res.status(200).json(wallets);
-});
-
-export const getWalletById = asyncHandler(async (req, res) => {
-    const wallet = await Wallet.findById(req.params.id).populate('investorInfo currency');
-    if (wallet) {
-        res.status(200).json(wallet);
-    } else {
-        res.status(404).json({ message: 'Wallet not found' });
+    try {
+      const wallets = await Wallet.find().populate('investorInfo');
+      res.status(200).json(wallets);
+    } catch (error) {
+      res.status(500).json({ message: error.message });
     }
-});
-
+  });
+  
+  export const getWalletById = asyncHandler(async (req, res) => {
+    try {
+      const wallet = await Wallet.findById(req.params.id).populate('investorInfo');
+      if (wallet) {
+        res.status(200).json(wallet);
+      } else {
+        res.status(404).json({ message: 'Wallet not found' });
+      }
+    } catch (error) {
+      res.status(500).json({ message: error.message });
+    }
+  });
+  
 
 export const updateWallet = asyncHandler(async (req, res) => {
     const { investorInfo, amount } = req.body;
+
     const wallet = await Wallet.findById(req.params.id);
 
     if (wallet) {
         wallet.investorInfo = investorInfo || wallet.investorInfo;
         wallet.amount = amount || wallet.amount;
-        const updatedWallet = await Wallet.save();
+
+        const updatedWallet = await wallet.save();
         res.status(200).json(updatedWallet);
     } else {
         res.status(404).json({ message: 'Wallet not found' });
@@ -62,14 +72,11 @@ export const updateWallet = asyncHandler(async (req, res) => {
 
 export const deleteWallet = asyncHandler(async (req, res) => {
     const wallet = await Wallet.findById(req.params.id);
+
     if (wallet) {
-        await wallet.deleteOne();
+        await wallet.remove();
         res.status(200).json({ message: 'Wallet removed' });
     } else {
         res.status(404).json({ message: 'Wallet not found' });
     }
 });
-
-const walletController = { createWallet, getWallets, getWalletById, updateWallet, deleteWallet };
-
-export default walletController;

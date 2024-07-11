@@ -14,6 +14,7 @@ import contractRoutes from './routes/contractRoutes.js';
 import dashboardRoutes from './routes/dashboardRoutes.js';
 import investmentTypes from './routes/investmentTypesRoutes.js';
 import investment from './routes/investmentRoutes.js';
+import wallet from './routes/walletRoutes.js'
 // import { notFound, errorHandler } from './middleware/errorMiddleware.js';
 
 
@@ -38,6 +39,7 @@ app.use('/api/contract',contractRoutes)
 app.use('/api/dash',dashboardRoutes)
 app.use('/api/types',investmentTypes)
 app.use('/api/inv' , investment)
+app.use('/api/wallet' , wallet)
 
 
 
