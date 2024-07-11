@@ -21,6 +21,9 @@ import AddInvestment from './components/investment/AddInvestments';
 import EditInv from './components/investment/editinvestment';
 import OverallInv from './components/overallInv.js'
 import NewInvestments from './components/newInv/newInv.js'
+import WalletTable from './components/wallets/walletTable.js'
+import AddWallet from './components/wallets/addWallets.js'
+
 import './App.css'
 
 function App() {
@@ -42,11 +45,13 @@ function App() {
         <Route path="Types" element={<Types />} />
         <Route path="overallInv" element={<OverallInv />} />
         <Route path="NewInvestments" element={<NewInvestments />} />
+        <Route path="wallets" element={<WalletTable />} />
         <Route path="/investment" element={<Investment />} />
         <Route path="/editCurrency/:id" element={<EditCurrency />} />
         <Route path="/addCurrency" element={<AddCurrency />} />
         <Route path="/viewInvestor/:id" element={<ViewInvestor />} />
         <Route path="/addinvestor" element={<AddInvestor   />} />
+        <Route path="/addWallet" element={<AddWallet   />} />
         <Route path="/addContracts" element={<AddContract   />} />
         <Route path="/addinvestmentTypes" element={<AddTypes   />} />
         <Route path="/addinvestment" element={<AddInvestment   />} />

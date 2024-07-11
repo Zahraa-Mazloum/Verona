@@ -10,7 +10,7 @@ import {
   Toolbar,
   Typography,
   Box,
-  Tooltip
+  Tooltip,
 } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import { ToastContainer, toast } from 'react-toastify';
@@ -19,18 +19,17 @@ import AddIcon from '@mui/icons-material/Add';
 import EditNoteIcon from '@mui/icons-material/EditNote';
 import DeleteSweepIcon from '@mui/icons-material/DeleteSweep';
 import SearchOutlinedIcon from '@mui/icons-material/SearchOutlined';
-import VisibilityIcon from '@mui/icons-material/Visibility';
 import { useNavigate } from 'react-router-dom';
 import loader from '../loading.gif';
 import { useTranslation } from 'react-i18next';
 
-const InvestorsTable = () => {
+const WalletsTable = () => {
   const { t, i18n } = useTranslation();
-  const [investors, setInvestors] = useState([]);
+  const [wallets, setWallets] = useState([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
-  const [investorToDelete, setInvestorToDelete] = useState(null); 
-  const navigate = useNavigate(); 
+  const [walletToDelete, setWalletToDelete] = useState(null);
+  const navigate = useNavigate();
 
   const StripedDataGrid = styled(DataGrid)(({ theme }) => ({
     [`& .${gridClasses.row}.even`]: {
@@ -41,42 +40,42 @@ const InvestorsTable = () => {
     },
   }));
 
-  const fetchInvestors = async () => {
+  const fetchWallets = async () => {
     try {
-      const { data } = await api.get(`/admin/allInvestors/${i18n.language}`);
-      setInvestors(data);
+      const { data } = await api.get(`/wallet/getWallets/${i18n.language}`);
+      setWallets(data);
     } catch (error) {
-      toast.error('Error fetching Investors');
+      toast.error(t('ErrorFetchingWallets'));
     } finally {
       setLoading(false);
     }
   };
 
   useEffect(() => {
-    fetchInvestors();
+    fetchWallets();
   }, [i18n.language]);
 
-  const handleDeleteInvestor = async (id) => {
+  const handleDeleteWallet = async (id) => {
     try {
-      await api.delete(`/admin/deleteUser/${id}`);
-      setInvestors(investors.filter(c => c._id !== id));
-      toast.success(t('Investor Deleted Successfully'));
+      await api.delete(`/wallet/deleteWallet/${id}`);
+      setWallets(wallets.filter((w) => w._id !== id));
+      toast.success(t('WalletDeletedSuccessfully'));
     } catch (error) {
-      toast.error('Error deleting Investor');
+      toast.error(t('ErrorDeletingWallet'));
     }
   };
 
-  const handleOpenConfirmDelete = (event, investor) => {
-    setInvestorToDelete(investor);
+  const handleOpenConfirmDelete = (event, wallet) => {
+    setWalletToDelete(wallet);
   };
 
   const handleCloseConfirmDelete = () => {
-    setInvestorToDelete(null);
+    setWalletToDelete(null);
   };
 
   const handleConfirmDelete = () => {
-    if (investorToDelete) {
-      handleDeleteInvestor(investorToDelete._id);
+    if (walletToDelete) {
+      handleDeleteWallet(walletToDelete._id);
       handleCloseConfirmDelete();
     }
   };
@@ -85,87 +84,65 @@ const InvestorsTable = () => {
     setSearch(event.target.value);
   };
 
-  const safeLowerCase = (str) => (str ? str.toLowerCase() : '');
+  const safeLowerCase = (str) => (typeof str === 'string' ? str.toLowerCase() : '');
 
-  const filteredInvestors = investors.filter(investor =>
-    safeLowerCase(i18n.language === 'en' ? investor.fullname_en : investor.fullname_ar).includes(safeLowerCase(search)) ||
-    safeLowerCase(i18n.language === 'en' ? investor.email : investor.email).includes(safeLowerCase(search)) ||
-    safeLowerCase(i18n.language === 'en' ? investor.phoneNumber : investor.phoneNumber).includes(safeLowerCase(search)) ||
-    safeLowerCase(i18n.language === 'en' ? investor.dateOfBirth : investor.dateOfBirth).includes(safeLowerCase(search)) ||
-    safeLowerCase(i18n.language === 'en' ? investor.status : investor.status).includes(safeLowerCase(search)) ||
-    safeLowerCase(i18n.language === 'en' ? investor.passportExpiryDate : investor.passportExpiryDate).includes(safeLowerCase(search)) 
-  );
+  const filteredWallets = wallets.filter((wallet) => {
+    const investorInfo = wallet.investorInfo || {};
+    return (
+      safeLowerCase(investorInfo.fullname_en).includes(safeLowerCase(search)) ||
+      safeLowerCase(wallet.currency).includes(safeLowerCase(search)) ||
+      safeLowerCase(wallet.amount.toString()).includes(safeLowerCase(search))
+    );
+  });
 
   const columns = [
     {
-      field: i18n.language === 'ar' ? 'fullname_ar' : 'fullname_en',
-      headerName: t('fullname'),
-      flex: 1,
-    },
-    {
-      field: 'email',
-      headerName: t('email'),
-      flex: 1,
-    },
-    {
-      field: 'phoneNumber',
-      headerName: t('phoneNumber'),
-      flex: 1,
-    },
-    {
-      field: 'dateOfBirth',
-      headerName: t('dateOfBirth'),
+      field: 'investorInfo',
+      headerName: t('InvestorName'),
       flex: 1,
       renderCell: (params) => (
         <span>
-          {new Date(params.row.dateOfBirth).toLocaleDateString()}
+          {i18n.language === 'ar' ? params.row.investorInfo?.fullname_ar : params.row.investorInfo?.fullname_en}
         </span>
       ),
     },
     {
-      field: 'passportNumber',
-      headerName: t('passportNumber'),
-      flex: 1,
-    },
-    {
-      field: 'passportExpiryDate',
-      headerName: t('passportExpiryDate'),
+      field: 'currency',
+      headerName: t('Currency'),
       flex: 1,
       renderCell: (params) => (
-        <span>
-          {new Date(params.row.passportExpiryDate).toLocaleDateString()}
-        </span>
-      ),    
+        <span>{i18n.language === 'ar' ? params.row.currency?.symbol_ar : params.row.currency?.symbol}</span>
+      ),
     },
     {
-      field: 'status',
-      headerName: t('status'),
+      field: 'amount',
+      headerName: t('Amount'),
       flex: 1,
     },
     {
       field: 'actions',
-      headerName: t('actions'),
+      headerName: t('Actions'),
       sortable: false,
       flex: 1,
       renderCell: (params) => (
         <Box display="flex" justifyContent="left">
           <IconButton
             sx={{ color: '#4CAF50', fontSize: 28 }}
-            onClick={() => navigate(`/updateUser/${params.row._id}`)}
+            onClick={() => navigate(`/editWallet/${params.row._id}`)}
           >
             <EditNoteIcon />
           </IconButton>
           <Tooltip
             title={
               <Box>
-                <Typography sx={{ textAlign: 'center' }}>{t('areYouSure')}</Typography>
+                <Typography sx={{ textAlign: 'center' }}>{t('AreYouSure')}</Typography>
                 <Button
                   variant="contained"
                   color="error"
                   onClick={handleConfirmDelete}
                   size="small"
                 >
-                  {t('yes')}
+                  {t('Yes')}
                 </Button>
                 <Button
                   variant="contained"
@@ -173,11 +150,11 @@ const InvestorsTable = () => {
                   size="small"
                   style={{ marginLeft: 8 }}
                 >
-                  {t('no')}
+                  {t('No')}
                 </Button>
               </Box>
             }
-            open={Boolean(investorToDelete === params.row)}
+            open={Boolean(walletToDelete === params.row)}
             onClose={handleCloseConfirmDelete}
             placement="right"
             arrow
@@ -189,12 +166,6 @@ const InvestorsTable = () => {
               <DeleteSweepIcon />
             </IconButton>
           </Tooltip>
-          <IconButton
-            sx={{ color: '#2196F3', fontSize: 28 }}
-            onClick={() => navigate(`/viewInvestor/${params.row._id}`)}
-          >
-            <VisibilityIcon />
-          </IconButton>
         </Box>
       ),
     },
@@ -206,11 +177,11 @@ const InvestorsTable = () => {
       <Paper elevation={8} style={{ padding: '15px', marginBottom: '10px' }}>
         <Toolbar>
           <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-            {t('investorManagement')}
+            {t('WalletsManagement')}
           </Typography>
           <TextField
             variant="standard"
-            placeholder={t('search')}
+            placeholder={t('Search')}
             value={search}
             onChange={handleSearchChange}
             InputProps={{
@@ -231,9 +202,9 @@ const InvestorsTable = () => {
               },
             }}
             startIcon={<AddIcon />}
-            onClick={() => navigate('/addinvestor')}
+            onClick={() => navigate('/AddWallet')}
           >
-            {t('addinvestor')}
+            {t('AddWallet')}
           </Button>
         </Toolbar>
         <div style={{ width: '100%', height: '100%' }}>
@@ -248,7 +219,7 @@ const InvestorsTable = () => {
             </Box>
           ) : (
             <StripedDataGrid
-              rows={filteredInvestors}
+              rows={filteredWallets}
               columns={columns}
               pageSize={10}
               rowsPerPageOptions={[10]}
@@ -266,4 +237,4 @@ const InvestorsTable = () => {
   );
 };
 
-export default InvestorsTable;
+export default WalletsTable;

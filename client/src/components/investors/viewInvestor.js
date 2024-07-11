@@ -1,76 +1,72 @@
-import React, { useEffect, useState } from 'react';
-import api from '../../api/axios';
+import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
-import { Box, Typography, Paper, Avatar, Grid } from '@mui/material';
+import api from '../../api/axios';
+import { Box, Typography, Paper, Avatar } from '@mui/material';
 import { useTranslation } from 'react-i18next';
-import loader from '../loading.gif';
+import { Buffer } from 'buffer';
 
-const ViewInvestor = () => {
-  const { t, i18n } = useTranslation();
+
+const InvestorDetails = () => {
   const { id } = useParams();
   const [investor, setInvestor] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const { t } = useTranslation();
 
   useEffect(() => {
     const fetchInvestor = async () => {
       try {
         const { data } = await api.get(`/admin/userProfile/${id}`);
+        console.log(data);
         setInvestor(data);
       } catch (error) {
         console.error('Error fetching investor details', error);
-      } finally {
-        setLoading(false);
       }
     };
 
     fetchInvestor();
   }, [id]);
 
-  if (loading) {
-    return (
-      <Box display="flex" justifyContent="center" alignItems="center" minHeight="100vh">
-        <img src={loader} alt="Loading..." />
-      </Box>
-    );
-  }
-
   if (!investor) {
-    return (
-      <Box display="flex" justifyContent="center" alignItems="center" minHeight="100vh">
-        <Typography variant="h5">{t('Investor not found')}</Typography>
-      </Box>
-    );
+    return <div>Loading...</div>;
   }
+  const passportPhotoSrc = `data:${investor.passportPhoto.contentType};base64,${Buffer.from(investor.passportPhoto.data).toString('base64')}`;
 
   return (
-    <Box p={3} bgcolor="#f7f7f7">
-      <Paper elevation={8} style={{ padding: '20px', backgroundColor: '#ffffff' }}>
-        <Grid container spacing={3} alignItems="center">
-          <Grid item>
-            <Avatar
-              alt={investor.fullname_en}
-              src={investor.passportPhoto}
-              sx={{ width: 100, height: 100 }}
-            />
-          </Grid>
-          <Grid item>
-            <Typography variant="h4" gutterBottom style={{ color: '#d25716' }}>
-              {investor.fullname_en}
-            </Typography>
-          </Grid>
-        </Grid>
-        <Box mt={3}>
-          <Typography variant="body1"><strong>{t('email')}:</strong> {investor.email}</Typography>
-          <Typography variant="body1"><strong>{t('phoneNumber')}:</strong> {investor.phoneNumber}</Typography>
-          <Typography variant="body1"><strong>{t('dateOfBirth')}:</strong> {new Date(investor.dateOfBirth).toLocaleDateString()}</Typography>
-          <Typography variant="body1"><strong>{t('passportNumber')}:</strong> {investor.passportNumber}</Typography>
-          <Typography variant="body1"><strong>{t('passportExpiryDate')}:</strong> {new Date(investor.passportExpiryDate).toLocaleDateString()}</Typography>
-          <Typography variant="body1"><strong>{t('status')}:</strong> {investor.status}</Typography>
-          <Typography variant="imag"><strong>{t('passport')}:</strong> {investor.passportPhoto}</Typography>
-        </Box>
+    <Box p={3}>
+      <Paper elevation={8} style={{ padding: '15px' }}>
+        <Typography variant="h6" gutterBottom>
+          {t('investorDetails')}
+        </Typography>
+        <Avatar 
+          alt={investor.fullname}
+          src={passportPhotoSrc}
+          sx={{ width: 100, height: 100, marginBottom: 2 }}
+        />
+        <Typography variant="body1">
+          {t('fullname')}: {investor.fullname_en}
+        </Typography>
+        <Typography variant="body1">
+          {t('email')}: {investor.email}
+        </Typography>
+        <Typography variant="body1">
+          {t('phoneNumber')}: {investor.phoneNumber}
+        </Typography>
+        <Typography variant="body1">
+          {t('dateOfBirth')}: {new Date(investor.dateOfBirth).toLocaleDateString()}
+        </Typography>
+        <Typography variant="body1">
+          {t('passportNumber')}: {investor.passportNumber}
+        </Typography>
+        <Typography variant="body1">
+          {t('passportExpiryDate')}: {new Date(investor.passportExpiryDate).toLocaleDateString()}
+        </Typography>
+        <Typography variant="body1">
+          {t('status')}: {investor.status}
+        </Typography>
+     
+   
       </Paper>
     </Box>
   );
 };
 
-export default ViewInvestor;
+export default InvestorDetails;
