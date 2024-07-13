@@ -1,50 +1,48 @@
 import express from 'express';
 import bodyParser from 'body-parser';
-import mongoose, { Mongoose } from 'mongoose';
+import mongoose from 'mongoose';
 import cors from 'cors';
-import {config} from "dotenv";
+import { config } from 'dotenv';
 import helmet from 'helmet';
 import morgan from 'morgan';
 import adminRoutes from './routes/adminRoutes.js';
 import investorRoutes from './routes/investorRoutes.js';
-import connectDB from "./config/db.js"
+import connectDB from './config/db.js';
 import userRoutes from './routes/userRoutes.js';
 import currencyRoutes from './routes/currencyRoutes.js';
 import contractRoutes from './routes/contractRoutes.js';
 import dashboardRoutes from './routes/dashboardRoutes.js';
-import investmentTypes from './routes/investmentTypesRoutes.js';
-import investment from './routes/investmentRoutes.js';
-import wallet from './routes/walletRoutes.js'
-// import { notFound, errorHandler } from './middleware/errorMiddleware.js';
+import investmentTypesRoutes from './routes/investmentTypesRoutes.js';
+import investmentRoutes from './routes/investmentRoutes.js';
+import walletRoutes from './routes/walletRoutes.js';
 
+// Configuration
+config();
+connectDB();
 
-// Configuration 
+const app = express();
 
-config()
-connectDB()
-const app =express();
 app.use(express.json());
 app.use(helmet());
-app.use(helmet.crossOriginResourcePolicy({policy:"cross-origin"}));
-app.use(morgan("common")); 
-app.use(bodyParser.json());
-app.use (bodyParser.urlencoded({extended:true}));
+app.use(helmet.crossOriginResourcePolicy({ policy: "cross-origin" }));
+app.use(morgan("common"));
+app.use(bodyParser.json({ limit: '50mb' }));
+app.use(bodyParser.urlencoded({ extended: true, limit: '50mb' , parameterLimit: 10000 }));
 app.use(cors());
 
-// Routes 
-app.use('/api/user' ,userRoutes);
+// Routes
+app.use('/api/user', userRoutes);
 app.use('/api/admin', adminRoutes);
-app.use('/api/currency',currencyRoutes)
-app.use('/api/contract',contractRoutes)
-app.use('/api/dash',dashboardRoutes)
-app.use('/api/types',investmentTypes)
-app.use('/api/inv' , investment)
-app.use('/api/wallet' , wallet)
+app.use('/api/currency', currencyRoutes);
+app.use('/api/contract', contractRoutes);
+app.use('/api/dash', dashboardRoutes);
+app.use('/api/types', investmentTypesRoutes);
+app.use('/api/inv', investmentRoutes);
+app.use('/api/wallet', walletRoutes);
 
 
+const PORT = process.env.PORT || 9000;
 
-const Port = process.env.PORT || 9000;
-
-app.listen(Port,(req,res)=>
-    {console.log(`server listen on port ${Port}`)
-    })
+app.listen(PORT, () => {
+    console.log(`Server is listening on port ${PORT}`);
+});

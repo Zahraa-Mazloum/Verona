@@ -239,6 +239,13 @@ export const updateUser = asyncHandler(async (req, res) => {
       salaryCurrency: req.body.salaryCurrency,
     }, { new: true });
   } else if (role === 'investor') {
+    let passportPhoto = null;
+    if (req.files && req.files.passportPhoto && req.files.passportPhoto[0]) {
+      passportPhoto = {
+        data: req.files.passportPhoto[0].buffer,
+        contentType: req.files.passportPhoto[0].mimetype,
+      };
+    }
     user = await Investor.findByIdAndUpdate(id, {
       fullname_en,
       fullname_ar,
@@ -250,7 +257,7 @@ export const updateUser = asyncHandler(async (req, res) => {
       status,
       passportNumber: req.body.passportNumber,
       passportExpiryDate: req.body.passportExpiryDate,
-      passportPhoto:req.body.passportPhoto,
+      passportPhoto,
     }, { new: true });
   } else {
     res.status(400);

@@ -11,7 +11,7 @@ const upload = multer({
       cb(new Error('Invalid file type, only JPEG and PNG is allowed!'), false);
     }
   },
-  limits: { fileSize: 5 * 1024 * 1024 },
+  limits: { fileSize: 5 * 1024 * 1024 },  
 });
 
 export default upload;

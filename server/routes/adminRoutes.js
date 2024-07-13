@@ -14,7 +14,7 @@ router.get('/allAdmin', getAllAdmins);
 router.get('/allInvestors/:lang', getInvestorByLanguage);
 router.get('/allEmployees', getAllEmployees);
 router.get('/userProfile/:id', getUserById);
-router.put('/updateUser/:id', updateUser);
+router.put('/updateUser/:id',uploadMiddleware, updateUser);
 router.delete('/deleteUser/:id', deleteUser);
 
 export default router;

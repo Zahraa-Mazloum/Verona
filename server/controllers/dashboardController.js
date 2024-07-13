@@ -14,22 +14,52 @@ export const dashboardStates = async (req, res) => {
         ]);
 
         // Active investments
-        const activeInvestments = await Investment.countDocuments({ invesmentStatus: true });
+        const activeInvestments = await Investment.countDocuments({ investmentStatus: true });
 
         // Total invested per month
         const totalInvestedPerMonth = await Investment.aggregate([
-            { $group: { _id: { month: { $month: '$startDate' }, year: { $year: '$startDate' } }, total: { $sum: '$amount' } } },
+            {
+                $lookup: {
+                    from: 'contracts',
+                    localField: 'contract',
+                    foreignField: '_id',
+                    as: 'contract'
+                }
+            },
+            { $unwind: '$contract' },
+            {
+                $group: {
+                    _id: { month: { $month: '$contract.startDate' }, year: { $year: '$contract.startDate' } },
+                    total: { $sum: '$amount' }
+                }
+            },
             { $sort: { '_id.year': 1, '_id.month': 1 } }
         ]);
+        
 
         // Top 3 investors
         const topInvestors = await Investment.aggregate([
-            { $group: { _id: '$investorInfo', totalAmount: { $sum: '$amount' } } },
+            {
+                $lookup: {
+                    from: 'contracts',
+                    localField: 'contract',
+                    foreignField: '_id',
+                    as: 'contract'
+                }
+            },
+            { $unwind: '$contract' },
+            {
+                $group: {
+                    _id: '$contract.investorInfo',
+                    totalAmount: { $sum: '$amount' },
+                    profit: { $sum: '$profit' }
+                }
+            },
             { $sort: { totalAmount: -1 } },
             { $limit: 3 },
             {
                 $lookup: {
-                    from: 'investors',
+                    from: 'Investors',
                     localField: '_id',
                     foreignField: '_id',
                     as: 'investor'
@@ -38,8 +68,9 @@ export const dashboardStates = async (req, res) => {
             { $unwind: '$investor' },
             {
                 $project: {
-                    name: '$investor.name',
-                    totalAmount: 1
+                    name: '$investor.fullname_en',
+                    totalAmount: 1,
+                    profit:1
                 }
             }
         ]);
@@ -82,5 +113,5 @@ export const dashboardStates = async (req, res) => {
     }
 };
 
-const dashboardController = {dashboardStates}
+const dashboardController = { dashboardStates };
 export default dashboardController;
