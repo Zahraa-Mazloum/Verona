@@ -1,9 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState , Suspense } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { TextField, Button, Paper, Typography, Box, MenuItem } from '@mui/material';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import api from '../../api/axios';
+import Loading from '../loading.js';
+
 
 const AddCurrency = () => {
   const navigate = useNavigate();
@@ -35,6 +37,8 @@ const AddCurrency = () => {
   };
 
   return (
+    <Suspense fallback={<Loading />}>
+
     <Box p={3}>
       <ToastContainer />
       <Paper elevation={8} style={{ padding: '15px', marginBottom: '10px', marginLeft: '1%', width: 'calc(100% - 60px)' }}>
@@ -143,6 +147,8 @@ const AddCurrency = () => {
         </form>
       </Paper>
     </Box>
+    </Suspense>
+
   );
 };
 

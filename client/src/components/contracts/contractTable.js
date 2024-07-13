@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, Suspense } from 'react';
 import api from '../../api/axios';
 import { DataGrid, gridClasses } from '@mui/x-data-grid';
 import {
@@ -21,6 +21,7 @@ import EditNoteIcon from '@mui/icons-material/EditNote';
 import DeleteSweepIcon from '@mui/icons-material/DeleteSweep';
 import SearchOutlinedIcon from '@mui/icons-material/SearchOutlined';
 import { useNavigate } from 'react-router-dom';
+import Loading from '../loading.js';
 import loader from '../loading.gif';
 import { useTranslation } from 'react-i18next';
 
@@ -238,68 +239,70 @@ const ContractsTable = () => {
   ];
 
   return (
-    <Box p={3}>
-      <ToastContainer />
-      <Paper elevation={8} style={{ padding: '15px', marginBottom: '10px' }}>
-        <Toolbar>
-          <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-            {t('ContractsManagement')}
-          </Typography>
-          <TextField
-            variant="standard"
-            placeholder={t('search')}
-            value={search}
-            onChange={handleSearchChange}
-            InputProps={{
-              startAdornment: (
-                <InputAdornment position="start">
-                  <SearchOutlinedIcon />
-                </InputAdornment>
-              ),
-            }}
-          />
-          <Button
-            variant="contained"
-            sx={{
-              ml: 2,
-              bgcolor: 'darkorange',
-              '&:hover': {
-                bgcolor: 'orange',
-              },
-            }}
-            startIcon={<AddIcon />}
-            onClick={() => navigate('/addContracts')}
-          >
-            {t('addContracts')}
-          </Button>
-        </Toolbar>
-        <div style={{ width: '100%', height: '100%' }}>
-          {loading ? (
-            <Box
-              display="flex"
-              justifyContent="center"
-              alignItems="center"
-              minHeight="100%"
-            >
-              <img src={loader} alt="Loading..." />
-            </Box>
-          ) : (
-            <StripedDataGrid
-              rows={filteredContract}
-              columns={columns}
-              pageSize={10}
-              rowsPerPageOptions={[10]}
-              autoHeight
-              getRowId={(row) => row._id}
-              getRowClassName={(params) =>
-                params.indexRelativeToCurrentPage % 2 === 0 ? 'even' : 'odd'
-              }
-              direction={i18n.language === 'ar' ? 'rtl' : 'ltr'}
+    <Suspense fallback={<Loading />}>
+      <Box p={3}>
+        <ToastContainer />
+        <Paper elevation={8} style={{ padding: '15px', marginBottom: '10px' }}>
+          <Toolbar>
+            <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
+              {t('ContractsManagement')}
+            </Typography>
+            <TextField
+              variant="standard"
+              placeholder={t('search')}
+              value={search}
+              onChange={handleSearchChange}
+              InputProps={{
+                startAdornment: (
+                  <InputAdornment position="start">
+                    <SearchOutlinedIcon />
+                  </InputAdornment>
+                ),
+              }}
             />
-          )}
-        </div>
-      </Paper>
-    </Box>
+            <Button
+              variant="contained"
+              sx={{
+                ml: 2,
+                bgcolor: 'darkorange',
+                '&:hover': {
+                  bgcolor: 'orange',
+                },
+              }}
+              startIcon={<AddIcon />}
+              onClick={() => navigate('/addContracts')}
+            >
+              {t('addContracts')}
+            </Button>
+          </Toolbar>
+          <div style={{ width: '100%', height: '100%' }}>
+            {loading ? (
+              <Box
+                display="flex"
+                justifyContent="center"
+                alignItems="center"
+                minHeight="100%"
+              >
+                <img src={loader} alt="Loading..." />
+              </Box>
+            ) : (
+              <StripedDataGrid
+                rows={filteredContract}
+                columns={columns}
+                pageSize={10}
+                rowsPerPageOptions={[10]}
+                autoHeight
+                getRowId={(row) => row._id}
+                getRowClassName={(params) =>
+                  params.indexRelativeToCurrentPage % 2 === 0 ? 'even' : 'odd'
+                }
+                direction={i18n.language === 'ar' ? 'rtl' : 'ltr'}
+              />
+            )}
+          </div>
+        </Paper>
+      </Box>
+    </Suspense>
   );
 };
 

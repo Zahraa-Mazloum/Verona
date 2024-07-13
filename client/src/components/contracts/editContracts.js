@@ -1,11 +1,11 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect,Suspense } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { TextField, Button, Paper, Typography, Box } from '@mui/material';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import api from '../../api/axios';
-import { Title } from 'chart.js';
 import { useTranslation } from 'react-i18next';
+import Loading from '../loading.js';
 
 const EditContract = () => {
   const { id } = useParams();
@@ -72,6 +72,8 @@ const[t]=useTranslation()
   };
 
   return (
+    <Suspense fallback={<Loading />}>
+
     <Box p={3}>
       <ToastContainer />
       <Paper elevation={8} style={{ padding: '15px', marginBottom: '10px', marginLeft: '1%', width: 'calc(100% - 60px)' }}>
@@ -190,6 +192,7 @@ const[t]=useTranslation()
         </div>
       </Paper>
     </Box>
+    </Suspense>
   );
 };
 

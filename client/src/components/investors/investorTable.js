@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect,Suspense } from 'react';
 import api from '../../api/axios';
 import { DataGrid, gridClasses } from '@mui/x-data-grid';
 import {
@@ -21,6 +21,7 @@ import DeleteSweepIcon from '@mui/icons-material/DeleteSweep';
 import SearchOutlinedIcon from '@mui/icons-material/SearchOutlined';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import { useNavigate } from 'react-router-dom';
+import Loading from '../loading.js';
 import loader from '../loading.gif';
 import { useTranslation } from 'react-i18next';
 
@@ -201,6 +202,7 @@ const InvestorsTable = () => {
   ];
 
   return (
+    <Suspense fallback={<Loading />}>
     <Box p={3}>
       <ToastContainer />
       <Paper elevation={8} style={{ padding: '15px', marginBottom: '10px' }}>
@@ -263,6 +265,7 @@ const InvestorsTable = () => {
         </div>
       </Paper>
     </Box>
+    </Suspense>
   );
 };
 

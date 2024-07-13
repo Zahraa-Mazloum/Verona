@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, Suspense } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
   TextField,
@@ -12,7 +12,7 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import api from '../../api/axios';
 import { useTranslation } from 'react-i18next';
-
+import Loading from '../loading.js';
 
 const Addcontract = () => {
   const navigate = useNavigate();
@@ -53,7 +53,7 @@ const Addcontract = () => {
 
     fetchInvestors();
     fetchCurrencies();
-  }, []);
+  }, [i18n.language]);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -64,7 +64,6 @@ const Addcontract = () => {
     const { name, value } = e.target;
     setcontract_ar({ ...contract_ar, [name]: value });
   };
-
 
   const handleAddcontract = async (e) => {
     e.preventDefault();
@@ -93,10 +92,9 @@ const Addcontract = () => {
       }
     }
   };
-  
 
   return (
- 
+    <Suspense fallback={<Loading />}>
       <Box p={3}>
         <ToastContainer />
         <Paper elevation={8} style={{ padding: '15px', marginBottom: '10px', marginLeft: '1%', width: 'calc(100% - 60px)' }}>
@@ -104,23 +102,24 @@ const Addcontract = () => {
             Add Contract
           </Typography>
           <form onSubmit={handleAddcontract} style={{ marginTop: '15px' }}>
-          <TextField
-                fullWidth
-                label="title (EN)"
-                name="title"
-                value={contract.title}
-                onChange={handleInputChange}
-                margin="normal"
-                InputProps={{ style: { borderRadius: '12px' } }}
-              />      <TextField
-                fullWidth
-                label="title (Ar)"
-                name="title_ar"
-                value={contract_ar.title_ar}
-                onChange={handleInputChangeAr}
-                margin="normal"
-                InputProps={{ style: { borderRadius: '12px' } }}
-              />
+            <TextField
+              fullWidth
+              label="title (EN)"
+              name="title"
+              value={contract.title}
+              onChange={handleInputChange}
+              margin="normal"
+              InputProps={{ style: { borderRadius: '12px' } }}
+            />
+            <TextField
+              fullWidth
+              label="title (Ar)"
+              name="title_ar"
+              value={contract_ar.title_ar}
+              onChange={handleInputChangeAr}
+              margin="normal"
+              InputProps={{ style: { borderRadius: '12px' } }}
+            />
             <TextField
               fullWidth
               select
@@ -137,7 +136,6 @@ const Addcontract = () => {
                 </MenuItem>
               ))}
             </TextField>
-      
             <TextField
               fullWidth
               select
@@ -154,7 +152,6 @@ const Addcontract = () => {
                 </MenuItem>
               ))}
             </TextField>
-    
             <TextField
               fullWidth
               label="Start Date"
@@ -224,7 +221,8 @@ const Addcontract = () => {
           </form>
         </Paper>
       </Box>
-   );
+    </Suspense>
+  );
 };
 
 export default Addcontract;

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState , Suspense} from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
   TextField,
@@ -11,7 +11,7 @@ import {
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import api from '../../api/axios';
-
+import Loading from '../loading.js';
 const AddInvestor = () => {
   const navigate = useNavigate();
   const [investor, setInvestor] = useState({
@@ -51,7 +51,7 @@ const AddInvestor = () => {
         e.target.value = null;
       }
     } else {
-      toast.error('Please select a file smaller than 5 MB.');
+      toast.error('Please select a file smaller than 5 MB');
       e.target.value = null;
     }
   };
@@ -84,8 +84,8 @@ const AddInvestor = () => {
       }
     }
   };
-
   return (
+    <Suspense fallback={<Loading />}>
     <Box p={3}>
       <ToastContainer />
       <Paper elevation={8} style={{ padding: '15px', marginBottom: '10px', marginLeft: '1%', width: 'calc(100% - 60px)' }}>
@@ -231,6 +231,7 @@ const AddInvestor = () => {
         </form>
       </Paper>
     </Box>
+    </Suspense>
   );
 };
 

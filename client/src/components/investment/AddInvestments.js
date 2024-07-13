@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect,Suspense } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
   TextField,
@@ -12,6 +12,7 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import api from '../../api/axios';
 import { useTranslation } from 'react-i18next';
+import Loading from '../loading.js';
 
 
 const Addinvestment = () => {
@@ -96,7 +97,7 @@ const Addinvestment = () => {
   
 
   return (
- 
+    <Suspense fallback={<Loading />}>
       <Box p={3}>
         <ToastContainer />
         <Paper elevation={8} style={{ padding: '15px', marginBottom: '10px', marginLeft: '1%', width: 'calc(100% - 60px)' }}>
@@ -205,6 +206,7 @@ const Addinvestment = () => {
           </form>
         </Paper>
       </Box>
+      </Suspense>
    );
 };
 

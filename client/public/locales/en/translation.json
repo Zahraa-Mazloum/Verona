@@ -25,6 +25,7 @@
   "status":"Status",
   "investorManagement":"Investor Management",
   "addinvestor":"Add Investor",
-  "cancel":"cancel"
+  "cancel":"cancel",
+  "TotalAmount": "Total Amount"
 
 }

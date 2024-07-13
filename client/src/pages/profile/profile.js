@@ -1,6 +1,8 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState,Suspense } from 'react';
 import api from '../../api/axios';
 import { Typography, Container, Box } from '@mui/material';
+import Loading from '../../components/loading.js';
+
 
 const Profile = () => {
   const [userData, setUserData] = useState(null);
@@ -34,6 +36,7 @@ const Profile = () => {
   }, []);
 
   return (
+    <Suspense fallback={<Loading />}>
     <Container maxWidth="sm">
       <Box sx={{ mt: 4 }}>
         <Typography variant="h4" align="center" gutterBottom>
@@ -60,6 +63,7 @@ const Profile = () => {
         )}
       </Box>
     </Container>
+    </Suspense>
   );
 };
 

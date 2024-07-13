@@ -1,9 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, Suspense } from 'react';
 import { AppBar, Toolbar, IconButton, Box, Menu, MenuItem } from '@mui/material';
 import { Notifications, AccountCircle, Language } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
 import i18n from 'i18next';
-import  './Header.css'
+import  './Header.css';
+import Loading from '../loading.js';
 
 const Header = ({ open }) => {
   const [anchorEl, setAnchorEl] = useState(null);
@@ -30,6 +31,7 @@ const Header = ({ open }) => {
   };
 
   return (
+    <Suspense fallback={<Loading />}>
     <AppBar
       position="static"
       sx={{
@@ -61,6 +63,7 @@ const Header = ({ open }) => {
         </Menu>
       </Toolbar>
     </AppBar>
+    </Suspense>
   );
 };
 

@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, Suspense } from 'react';
 import {
   Box, Drawer, List, ListItem, ListItemIcon, ListItemText,
   IconButton, Divider, useMediaQuery
@@ -17,6 +17,7 @@ import {
   mdiWalletBifold
 } from '@mdi/js';
 import './sidebar.css';
+import Loading from '../loading.js';
 
 const Sidebar = ({ open, setOpen }) => {
   const role = localStorage.getItem('role');
@@ -53,6 +54,7 @@ const Sidebar = ({ open, setOpen }) => {
   ].filter(Boolean);
 
   return (
+    <Suspense fallback={<Loading />}>
     <Drawer
       anchor={isArabic ? 'right' : 'left'}
       variant="permanent"
@@ -141,6 +143,7 @@ const Sidebar = ({ open, setOpen }) => {
         <ListItemText primary={open && 'Logout'} />
       </ListItem>
     </Drawer>
+    </Suspense>
   );
 };
 

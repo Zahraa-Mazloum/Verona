@@ -1,10 +1,10 @@
-import React, { useState, useEffect, Suspense, startTransition } from 'react';
+import React, { useState, useEffect, Suspense } from 'react';
 import api from '../../api/axios';
 import { Grid, Paper, Typography, Box, Card, CardContent, Skeleton, Avatar } from '@mui/material';
 import PeopleIcon from '@mui/icons-material/People';
 import AttachMoneyIcon from '@mui/icons-material/AttachMoney';
 import TrendingUpIcon from '@mui/icons-material/TrendingUp';
-import { Line, Doughnut, Bar } from 'react-chartjs-2'; 
+import { Line, Doughnut } from 'react-chartjs-2';
 import { Chart, CategoryScale, LinearScale, BarController, BarElement, LineController, LineElement, PointElement, Tooltip, Legend, Title, ArcElement } from 'chart.js';
 import i18n from 'i18next';
 import { useTranslation } from 'react-i18next';
@@ -21,15 +21,22 @@ const Dashboard = () => {
     const fetchStats = async () => {
       try {
         const response = await api.get('/dash/dashboard');
+        console.log('API Response:', response.data);  
         setStats(response.data);
         setLoading(false);
       } catch (error) {
         console.error('Error fetching investment stats:', error);
       }
     };
-  
+
     fetchStats();
   }, []);
+
+  useEffect(() => {
+    if (stats) {
+      console.log('Stats updated:', stats); 
+    }
+  }, [stats]);
 
   const totalInvestedChartData = {
     labels: stats ? stats.totalInvestedPerMonth.map(month => `${month._id.month}/${month._id.year}`) : [],
@@ -55,26 +62,15 @@ const Dashboard = () => {
     ],
   };
 
-  const totalInvestmentPerMonthData = {
-    labels: stats ? stats.totalInvestedPerMonth.map(month => `${month._id.month}/${month._id.year}`) : [],
-    datasets: [
-      {
-        label: t('totalInvestmentPerMonth'),
-        data: stats ? stats.totalInvestedPerMonth.map(month => month.total) : [],
-        backgroundColor: '#ed7622',
-      },
-    ],
-  };
-
-  const topInvestors = stats ? stats.topInvestors.map(investor => ({
+  const topInvestors = stats?.topInvestors?.map(investor => ({
     name: investor.name,
-    amount: `$${investor.totalAmount.toFixed(2)}`,
-    increase: '+N/A%', 
-  })) : [];
+    amount: investor.totalAmount.toFixed(2),
+    profit: investor.profit.toFixed(2),
+  })) || [];
 
   return (
     <Suspense fallback={<Skeleton variant="rectangular" height="100vh" />}>
-    <Box sx={{ p: 3 }} dir={i18n.language === 'ar' ? 'rtl' : 'ltr'}>
+      <Box sx={{ p: 3 }} dir={i18n.language === 'ar' ? 'rtl' : 'ltr'}>
         <Grid container spacing={3}>
           <Grid item xs={12} md={4}>
             <Card sx={{ boxShadow: 3, backgroundColor: '#ffffff', borderRadius: 2 }}>
@@ -139,32 +135,39 @@ const Dashboard = () => {
             <Paper sx={{ p: 2, boxShadow: 3, borderRadius: 2 }}>
               <Typography variant="h6" gutterBottom>
                 {t('topInvestors')}
-                {t('topInvestors')}
               </Typography>
-              <Grid container spacing={2}>
-                {loading
-                  ? [0, 1, 2].map((index) => (
-                      <Grid item xs={12} key={index}>
-                        <Skeleton variant="rectangular" height={100} />
-                      </Grid>
-                    ))
-                  : topInvestors.map((investor, index) => (
+              {loading ? (
+                [0, 1, 2].map((index) => (
+                  <Grid item xs={12} key={index}>
+                    <Skeleton variant="rectangular" height={100} />
+                  </Grid>
+                ))
+              ) : (
+                topInvestors.length > 0 && (
+                  <Grid container spacing={2}>
+                    {topInvestors.map((investor, index) => (
                       <Grid item xs={12} key={index}>
                         <Card sx={{ boxShadow: 2, backgroundColor: '#ffffff', borderRadius: 2 }}>
                           <CardContent sx={{ display: 'flex', alignItems: 'center' }}>
-                            <Avatar sx={{ mr: 2, bgcolor: '#d25716' }}>{investor.name.charAt(0)}</Avatar>
+                            <Avatar sx={{ mr: 2, bgcolor: '#d25716' }}>
+                              {investor.name.charAt(0)}
+                            </Avatar>
                             <Box>
                               <Typography variant="h6">{investor.name}</Typography>
-                              <Typography variant="body2">{investor.amount}</Typography>
-                              <Typography variant="body2" color="textSecondary">
-                                {investor.increase}
-                              </Typography>
+                              <Typography variant="body2"> 
+                                 <span style={{ fontSize: 12, color: 'gray' }}>{t('Total Amount: ')}
+                              </span>
+                              {investor.amount}</Typography>
+                              <Typography variant="body2"> <span style={{ fontSize: 12, color: 'gray' }}>{t('Profit: ')}
+                              </span>{investor.profit}</Typography>                             
                             </Box>
                           </CardContent>
                         </Card>
                       </Grid>
                     ))}
-              </Grid>
+                  </Grid>
+                )
+              )}
             </Paper>
           </Grid>
           <Grid item xs={12} md={6}>
@@ -183,7 +186,7 @@ const Dashboard = () => {
           </Grid>
         </Grid>
       </Box>
-  </Suspense> 
+    </Suspense>
   );
 };
 

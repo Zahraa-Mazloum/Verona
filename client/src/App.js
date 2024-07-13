@@ -1,4 +1,5 @@
 import { Routes, Route, Navigate } from 'react-router-dom';
+import { Suspense } from 'react';
 import Login from "../src/pages/login/login";
 import RequireAuth from './components/RequireAuth';
 import Profile from './pages/profile/profile';
@@ -22,7 +23,9 @@ import EditInv from './components/investment/editinvestment';
 import OverallInv from './components/overallInv.js'
 import NewInvestments from './components/newInv/newInv.js'
 import WalletTable from './components/wallets/walletTable.js'
-import AddWallet from './components/wallets/addWallets.js'
+import AddWallet from './components/wallets/addWallets.js';
+import UpdateUser from './components/investors/EditInvestorInfo.js';
+import Loading from './components/loading.js';
 
 import './App.css'
 
@@ -30,6 +33,8 @@ function App() {
   useDocumentTitle();
 
   return (
+    <Suspense fallback={<Loading />}>
+
     <Routes>
       {/* public routes */}
       <Route path="/login" element={<Login />} />
@@ -48,6 +53,7 @@ function App() {
         <Route path="wallets" element={<WalletTable />} />
         <Route path="/investment" element={<Investment />} />
         <Route path="/editCurrency/:id" element={<EditCurrency />} />
+        <Route path="/updateUser/:id" element={<UpdateUser />} />
         <Route path="/addCurrency" element={<AddCurrency />} />
         <Route path="/viewInvestor/:id" element={<ViewInvestor />} />
         <Route path="/addinvestor" element={<AddInvestor   />} />
@@ -61,6 +67,7 @@ function App() {
 
       </Route>
     </Routes>
+    </Suspense>
   );
 }
 

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect,Suspense } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { TextField, Button, Paper, Typography, Box, MenuItem } from '@mui/material';
 import { ToastContainer, toast } from 'react-toastify';
@@ -6,6 +6,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import api from '../../api/axios';
 import { BorderColor, Title } from '@mui/icons-material';
 import { useTranslation } from 'react-i18next';
+import Loading from '../loading.js';
 
 
 const Edittypes = () => {
@@ -45,6 +46,7 @@ const Edittypes = () => {
   };
 
   return (
+    <Suspense fallback={<Loading />}>
     <Box p={3}>
       <ToastContainer />
       <Paper elevation={8} style={{ padding: '15px', marginBottom: '10px', marginLeft: '1%', width: 'calc(100% - 60px)' }}>
@@ -141,6 +143,7 @@ const Edittypes = () => {
         </div>
       </Paper>
     </Box>
+    </Suspense>
   );
 };
 

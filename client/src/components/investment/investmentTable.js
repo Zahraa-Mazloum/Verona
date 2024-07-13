@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect,Suspense } from 'react';
 import api from '../../api/axios';
 import { DataGrid, gridClasses } from '@mui/x-data-grid';
 import {
@@ -20,7 +20,8 @@ import EditNoteIcon from '@mui/icons-material/EditNote';
 import DeleteSweepIcon from '@mui/icons-material/DeleteSweep';
 import SearchOutlinedIcon from '@mui/icons-material/SearchOutlined';
 import { useNavigate } from 'react-router-dom'; 
-import loader from '../loading.gif';
+import Loading from '../loading.js';
+import loader from '../loading.gif'
 import { useTranslation } from 'react-i18next';
 
 
@@ -104,7 +105,7 @@ const InvestmentTable = () => {
   const columns = [
     {
       field: i18n.language === 'ar' ? 'contract.investorInfo' : 'contract.investorInfo',
-      headerName: t('contract'),
+      headerName: t('InvestorName'),
       flex: 1,
       renderCell: (params) => (
         <span>
@@ -219,6 +220,7 @@ const InvestmentTable = () => {
   ];
 
   return (
+    <Suspense fallback={<Loading />}>
     <Box p={3}>
       <ToastContainer />
       <Paper elevation={8} style={{ padding: '15px', marginBottom: '10px' }}>
@@ -281,6 +283,7 @@ const InvestmentTable = () => {
         </div>
       </Paper>
     </Box>
+    </Suspense>
   );
 };
 
