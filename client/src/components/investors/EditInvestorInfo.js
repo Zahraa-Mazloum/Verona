@@ -1,6 +1,13 @@
-import React, { useState, useEffect,Suspense } from 'react';
+import React, { useState, useEffect, Suspense } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { TextField, Button, Paper, Typography, Box } from '@mui/material';
+import {
+  TextField,
+  Button,
+  Paper,
+  Typography,
+  Box,
+  MenuItem
+} from '@mui/material';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import api from '../../api/axios';
@@ -9,6 +16,8 @@ import Loading from '../loading.js';
 const EditInvestor = () => {
   const { id } = useParams();
   const navigate = useNavigate();
+  const [isEdit, setIsEdit] = useState(false);
+
   const [investor, setInvestor] = useState({
     fullname_en: '',
     email: '',
@@ -19,94 +28,116 @@ const EditInvestor = () => {
     status: '',
     passportNumber: '',
     passportExpiryDate: '',
-    fullname_ar: '',
-    passportPhoto: ''
+    passportPhoto: null
   });
-  const [selectedFile, setSelectedFile] = useState(null);
+
+  const [investor_ar, setInvestor_ar] = useState({
+    fullname_ar: '',
+  });
 
   useEffect(() => {
-    const fetchInvestor = async () => {
-      try {
-        const { data } = await api.get(`/admin/userProfile/${id}`);
-        setInvestor({
-          ...data,
-          dateOfBirth: data.dateOfBirth ? new Date(data.dateOfBirth).toISOString().split('T')[0] : '',
-          passportExpiryDate: data.passportExpiryDate ? new Date(data.passportExpiryDate).toISOString().split('T')[0] : '',
-        });
-      } catch (error) {
-        toast.error('Error fetching investor');
-      }
-    };
-    fetchInvestor();
+    if (id) {
+      setIsEdit(true);
+      fetchInvestorDetails(id);
+    }
   }, [id]);
+
+  const fetchInvestorDetails = async (id) => {
+    try {
+      const response = await api.get(`/admin/userProfile/${id}`);
+      const investorData = response.data;
+      setInvestor({
+        ...investorData,
+        passportPhoto: null
+      });
+      setInvestor_ar({
+        fullname_ar: investorData.fullname_ar,
+      });
+    } catch (error) {
+      console.error('Failed to fetch investor details', error);
+    }
+  };
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setInvestor({ ...investor, [name]: value });
   };
 
-  const handleFileChange = (e) => {
-    const file = e.target.files[0];
-    if (file && file.size > 5 * 1024 * 1024) {
-      toast.error('File size exceeds 5 MB');
-    } else {
-      setSelectedFile(file);
-    }
-  };
-  const convertToBase64 = (file) => {
-    return new Promise((resolve, reject) => {
-      const reader = new FileReader();
-      reader.readAsDataURL(file);
-      reader.onload = () => resolve(reader.result);
-      reader.onerror = error => reject(error);
-    });
+  const handleInputChangeAr = (e) => {
+    const { name, value } = e.target;
+    setInvestor_ar({ ...investor_ar, [name]: value });
   };
 
-  const handleUpdateInvestor = async (e) => {
-    e.preventDefault();
-    try {
-      if (selectedFile) {
-        const base64File = await convertToBase64(selectedFile);
-        investor.passportPhoto = base64File;
+  const handleFileChange = (e) => {
+    const file = e.target.files[0];
+
+    if (file && file.size <= 5 * 1024 * 1024) {
+      if (file.type === 'image/jpeg' || file.type === 'image/png') {
+        setInvestor({ ...investor, passportPhoto: file });
+      } else {
+        toast.error('Please select a valid image file (JPEG or PNG) smaller than 5 MB.');
+        e.target.value = null;
       }
-      await api.put(`/admin/updateUser/${id}`, investor);
-      toast.success('Investor updated successfully');
+    } else {
+      toast.error('Please select a file smaller than 5 MB');
+      e.target.value = null;
+    }
+  };
+
+  const handleEditInvestor = async (e) => {
+    e.preventDefault();
+
+    const fullInvestor = { ...investor, ...investor_ar };
+    const formData = new FormData();
+    Object.keys(fullInvestor).forEach((key) => {
+      formData.append(key, fullInvestor[key]);
+    });
+
+    try {
+      if (isEdit) {
+        await api.put(`/admin/updateUser/${id}`, formData, {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
+        });
+        toast.success('Investor updated successfully');
+      } else {
+        await api.post('/admin/registration', formData, {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
+        });
+        toast.success('Investor added successfully');
+      }
       setTimeout(() => {
         navigate('/investor');
       }, 1500);
     } catch (error) {
-      toast.error('Error updating investor');
+      if (error.response && error.response.data) {
+        const errorMessage = error.response.data.message || 'An error occurred';
+        toast.error(errorMessage);
+      } else {
+        console.error('Error without a response data');
+      }
     }
   };
 
   return (
     <Suspense fallback={<Loading />}>
-    <Box p={3}>
-      <ToastContainer />
-      <Paper elevation={8} style={{ padding: '15px', marginBottom: '10px', marginLeft: '1%', width: 'calc(100% - 60px)' }}>
-        <Typography variant="h6" component="div" sx={{ flexGrow: 1, marginLeft: '1%' }}>
-          Edit Investor
-        </Typography>
-        <div className='formContainer'>
-          <form onSubmit={handleUpdateInvestor} style={{ marginTop: '15px' }}>
+      <Box p={3}>
+        <ToastContainer />
+        <Paper elevation={8} style={{ padding: '15px', marginBottom: '10px', marginLeft: '1%', width: 'calc(100% - 60px)' }}>
+          <Typography variant="h6" component="div" sx={{ flexGrow: 1, marginLeft: '1%' }}>
+            {isEdit ? 'Edit Investor' : 'Add Investor'}
+          </Typography>
+          <form onSubmit={handleEditInvestor} style={{ marginTop: '15px' }}>
             <TextField
               fullWidth
-              label="Full Name (English)"
+              label="Full Name (EN)"
               name="fullname_en"
               value={investor.fullname_en}
               onChange={handleInputChange}
               margin="normal"
-              required
-              InputProps={{ style: { borderRadius: '12px' } }}
-            />
-            <TextField
-              fullWidth
-              label="Full Name (Arabic)"
-              name="fullname_ar"
-              value={investor.fullname_ar}
-              onChange={handleInputChange}
-              margin="normal"
-              required
               InputProps={{ style: { borderRadius: '12px' } }}
             />
             <TextField
@@ -116,7 +147,6 @@ const EditInvestor = () => {
               value={investor.email}
               onChange={handleInputChange}
               margin="normal"
-              required
               InputProps={{ style: { borderRadius: '12px' } }}
             />
             <TextField
@@ -126,7 +156,6 @@ const EditInvestor = () => {
               value={investor.phoneNumber}
               onChange={handleInputChange}
               margin="normal"
-              required
               InputProps={{ style: { borderRadius: '12px' } }}
             />
             <TextField
@@ -134,9 +163,9 @@ const EditInvestor = () => {
               label="Date of Birth"
               name="dateOfBirth"
               value={investor.dateOfBirth}
+              type="date"
               onChange={handleInputChange}
               margin="normal"
-              type="date"
               InputLabelProps={{ shrink: true }}
               InputProps={{ style: { borderRadius: '12px' } }}
             />
@@ -144,23 +173,25 @@ const EditInvestor = () => {
               fullWidth
               label="Password"
               name="password"
+              type="password"
               value={investor.password}
               onChange={handleInputChange}
               margin="normal"
-              type="password"
-              required
               InputProps={{ style: { borderRadius: '12px' } }}
             />
             <TextField
               fullWidth
-              label="Status"
+              select
+              label="Active"
               name="status"
               value={investor.status}
               onChange={handleInputChange}
               margin="normal"
-              required
               InputProps={{ style: { borderRadius: '12px' } }}
-            />
+            >
+              <MenuItem value="active">True</MenuItem>
+              <MenuItem value="inactive">False</MenuItem>
+            </TextField>
             <TextField
               fullWidth
               label="Passport Number"
@@ -168,7 +199,6 @@ const EditInvestor = () => {
               value={investor.passportNumber}
               onChange={handleInputChange}
               margin="normal"
-              required
               InputProps={{ style: { borderRadius: '12px' } }}
             />
             <TextField
@@ -176,21 +206,35 @@ const EditInvestor = () => {
               label="Passport Expiry Date"
               name="passportExpiryDate"
               value={investor.passportExpiryDate}
+              type="date"
               onChange={handleInputChange}
               margin="normal"
-              type="date"
               InputLabelProps={{ shrink: true }}
-              required
               InputProps={{ style: { borderRadius: '12px' } }}
             />
             <TextField
               fullWidth
-              label="Passport Photo"
-              name="passportPhoto"
               type="file"
+              name="passportPhoto"
               onChange={handleFileChange}
               margin="normal"
               InputLabelProps={{ shrink: true }}
+              InputProps={{ style: { borderRadius: '12px' } }}
+            />
+            <TextField
+              fullWidth
+              label="Full Name (AR)"
+              name="fullname_ar"
+              value={investor_ar.fullname_ar}
+              onChange={(event) => {
+                const arabicRegex = /^[\u0600-\u06FF\s]+$/;
+                if (!arabicRegex.test(event.target.value)) {
+                  toast.error("Please enter a valid Arabic name");
+                } else {
+                  handleInputChangeAr(event);
+                }
+              }}
+              margin="normal"
               InputProps={{ style: { borderRadius: '12px' } }}
             />
             <Box mt={2} display="flex" justifyContent="flex-end">
@@ -200,7 +244,7 @@ const EditInvestor = () => {
                 type="submit"
                 sx={{ mr: 2 }}
               >
-                Update Investor
+                {isEdit ? 'Update Investor' : 'Add Investor'}
               </Button>
               <Button
                 variant="outlined"
@@ -213,17 +257,16 @@ const EditInvestor = () => {
                   color: 'black',
                   '&:hover': {
                     borderColor: '#e65100',
-                    color: '#e65100'
-                  }
+                    color: '#e65100',
+                  },
                 }}
               >
                 Cancel
               </Button>
             </Box>
           </form>
-        </div>
-      </Paper>
-    </Box>
+        </Paper>
+      </Box>
     </Suspense>
   );
 };

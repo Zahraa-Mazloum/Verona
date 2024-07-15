@@ -1,11 +1,11 @@
-import React, { useState, useEffect,Suspense } from 'react';
+import React, { useState, useEffect, Suspense } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import api from '../../api/axios';
 import { Box, Typography, Paper, Avatar, Grid, IconButton } from '@mui/material';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import { useTranslation } from 'react-i18next';
 import { Buffer } from 'buffer';
-import Loading from '../loading.js'; 
+import Loading from '../loading.js';
 import loader from '../loading.gif';
 
 const InvestorDetails = () => {
@@ -44,7 +44,6 @@ const InvestorDetails = () => {
     fetchContracts();
   }, [id]);
 
-
   if (loadingInvestor || loadingContracts) {
     return <img src={loader} alt="Loading..." style={{ display: 'block', margin: 'auto' }} />;
   }
@@ -53,78 +52,85 @@ const InvestorDetails = () => {
     return <div>{t('noInvestorDetails')}</div>;
   }
 
-  const passportPhotoSrc = `data:${investor.passportPhoto.contentType};base64,${Buffer.from(investor.passportPhoto.data).toString('base64')}`;
+  let passportPhotoSrc = '';
+  if (investor.passportPhoto && investor.passportPhoto.data) {
+    passportPhotoSrc = `data:${investor.passportPhoto.contentType};base64,${Buffer.from(investor.passportPhoto.data).toString('base64')}`;
+  }
 
   return (
     <Suspense fallback={<Loading />}>
-    <Box p={3}>
-      <Paper elevation={8} style={{ padding: '15px' }}>
-        <IconButton   onClick={() => navigate('/investor')} style={{ marginBottom: '10px' }}>
-          <ArrowBackIcon /> 
-        </IconButton>
-        <Grid container spacing={2}>
-          <Grid item xs={12} md={8}>
-            <Typography variant="h6" gutterBottom>
-              {t('investorDetails')}
-            </Typography>
-            <Typography variant="body1">
-              {t('fullname')}: {investor.fullname_en}
-            </Typography>
-            <Typography variant="body1">
-              {t('email')}: {investor.email}
-            </Typography>
-            <Typography variant="body1">
-              {t('phoneNumber')}: {investor.phoneNumber}
-            </Typography>
-            <Typography variant="body1">
-              {t('dateOfBirth')}: {new Date(investor.dateOfBirth).toLocaleDateString()}
-            </Typography>
-            <Typography variant="body1">
-              {t('passportNumber')}: {investor.passportNumber}
-            </Typography>
-            <Typography variant="body1">
-              {t('passportExpiryDate')}: {new Date(investor.passportExpiryDate).toLocaleDateString()}
-            </Typography>
-            <Typography variant="body1">
-              {t('status')}: {investor.status}
-            </Typography>          </Grid>
-          <Grid item xs={12} md={4} container justifyContent="center" alignItems="center">
-            <Avatar
-              alt={investor.fullname}
-              src={passportPhotoSrc}
-              sx={{ width: 300, height: 100, aspectRatio: '1/1', marginBottom: 2 }}
-            />
+      <Box p={3}>
+        <Paper elevation={8} style={{ padding: '15px' }}>
+          <IconButton onClick={() => navigate('/investor')} style={{ marginBottom: '10px' }}>
+            <ArrowBackIcon />
+          </IconButton>
+          <Grid container spacing={2}>
+            <Grid item xs={12} md={8}>
+              <Typography variant="h6" gutterBottom>
+                {t('investorDetails')}
+              </Typography>
+              <Typography variant="body1">
+                {t('fullname')}: {investor.fullname_en}
+              </Typography>
+              <Typography variant="body1">
+                {t('email')}: {investor.email}
+              </Typography>
+              <Typography variant="body1">
+                {t('phoneNumber')}: {investor.phoneNumber}
+              </Typography>
+              <Typography variant="body1">
+                {t('dateOfBirth')}: {new Date(investor.dateOfBirth).toLocaleDateString()}
+              </Typography>
+              <Typography variant="body1">
+                {t('passportNumber')}: {investor.passportNumber}
+              </Typography>
+              <Typography variant="body1">
+                {t('passportExpiryDate')}: {new Date(investor.passportExpiryDate).toLocaleDateString()}
+              </Typography>
+              <Typography variant="body1">
+                {t('status')}: {investor.status}
+              </Typography>
+            </Grid>
+            <Grid item xs={12} md={4} container justifyContent="center" alignItems="center">
+              {passportPhotoSrc && (
+                <Avatar
+                  alt={investor.fullname}
+                  src={passportPhotoSrc}
+                  sx={{ width: 300, height: 'auto', aspectRatio: '4/3', marginBottom: 2 }}
+                />
+              )}
+            </Grid>
           </Grid>
-        </Grid>
-        <Box mt={3}>
-          <Typography variant="h6" gutterBottom>
-            {t('contractDetails')}
-          </Typography>
-          {contracts.length > 0 ? (
-            contracts.map(contract => (
-              <Paper key={contract._id} elevation={2} style={{ padding: '10px', marginBottom: '10px' }}>
-           <Typography variant="body1">
-                  {t('title')}: {contract.title}
-                </Typography>
-                <Typography variant="body1">
-                  {t('currency')}: {contract.currency.name}
-                </Typography>
-                <Typography variant="body1">
-                  {t('contractTime')}: {contract.contractTime}
-                </Typography>
-                <Typography variant="body1">
-                  {t('startDate')}: {new Date(contract.startDate).toLocaleDateString()}
-                </Typography>
-                <Typography variant="body1">
-                  {t('investmentStatus')}: {contract.investmentStatus}
-                </Typography>              </Paper>
-            ))
-          ) : (
-            <Typography variant="body1">{t('noContractsYet')}</Typography>
-          )}
-        </Box>
-      </Paper>
-    </Box>
+          <Box mt={3}>
+            <Typography variant="h6" gutterBottom>
+              {t('contractDetails')}
+            </Typography>
+            {contracts.length > 0 ? (
+              contracts.map((contract) => (
+                <Paper key={contract._id} elevation={2} style={{ padding: '10px', marginBottom: '10px' }}>
+                  <Typography variant="body1">
+                    {t('title')}: {contract.title}
+                  </Typography>
+                  <Typography variant="body1">
+                    {t('currency')}: {contract.currency.name}
+                  </Typography>
+                  <Typography variant="body1">
+                    {t('contractTime')}: {contract.contractTime}
+                  </Typography>
+                  <Typography variant="body1">
+                    {t('startDate')}: {new Date(contract.startDate).toLocaleDateString()}
+                  </Typography>
+                  <Typography variant="body1">
+                    {t('investmentStatus')}: {contract.investmentStatus}
+                  </Typography>
+                </Paper>
+              ))
+            ) : (
+              <Typography variant="body1">{t('noContractsYet')}</Typography>
+            )}
+          </Box>
+        </Paper>
+      </Box>
     </Suspense>
   );
 };

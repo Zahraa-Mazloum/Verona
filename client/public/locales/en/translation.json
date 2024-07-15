@@ -5,7 +5,6 @@
   "totalInvestedPerMonth": "Total Invested Per Month",
   "topInvestors": "Top Investors",
   "investmentTotalPerType": "Investment Total Per Type",
-  "DashBoard":"DashBoard",
   "currencyManagement": "Currency Management",
   "addCurrency": "Add Currency",
   "name": "Name",
@@ -26,6 +25,21 @@
   "investorManagement":"Investor Management",
   "addinvestor":"Add Investor",
   "cancel":"cancel",
-  "TotalAmount": "Total Amount"
-
+  "TotalAmount": "Total Amount: ",
+  "DashBoard": "DashBoard",
+  "Contracts": "Contracts",
+  "Investors": "Investors",
+  "VeronaInvestments": "Verona Investments",
+  "InvestmentTypes": "Investment Types",
+  "OverallVeronaInvestments": "Overall Verona Investments",
+  "NewInvestments": "New Investments",
+  "Currencies": "Currencies",
+  "Wallets": "Wallets",
+  "Logout": "Logout",
+  "Profit" : "Profit:",
+  "title": "Title",
+  "addContracts" : "Add Contract",
+  "Investorname" : "Investor Name",
+  "ContractsManagement": "Contracts Management",
+  "currency" : "Currency"
 }

@@ -64,6 +64,7 @@ const Dashboard = () => {
 
   const topInvestors = stats?.topInvestors?.map(investor => ({
     name: investor.name,
+    namear: investor.namear,
     amount: investor.totalAmount.toFixed(2),
     profit: investor.profit.toFixed(2),
   })) || [];
@@ -150,15 +151,17 @@ const Dashboard = () => {
                         <Card sx={{ boxShadow: 2, backgroundColor: '#ffffff', borderRadius: 2 }}>
                           <CardContent sx={{ display: 'flex', alignItems: 'center' }}>
                             <Avatar sx={{ mr: 2, bgcolor: '#d25716' }}>
-                              {investor.name.charAt(0)}
+                            {i18n.language === 'ar' ? investor.namear.charAt(0) : investor.name.charAt(0)}
                             </Avatar>
                             <Box>
-                              <Typography variant="h6">{investor.name}</Typography>
-                              <Typography variant="body2"> 
-                                 <span style={{ fontSize: 12, color: 'gray' }}>{t('Total Amount: ')}
+                            <Typography variant="h6">
+                              {i18n.language === 'ar' ? investor.namear : investor.name}
+                              </Typography>      
+                            <Typography variant="body2"> 
+                                 <span style={{ fontSize: 12, color: 'gray' }}>{t('TotalAmount')}
                               </span>
                               {investor.amount}</Typography>
-                              <Typography variant="body2"> <span style={{ fontSize: 12, color: 'gray' }}>{t('Profit: ')}
+                              <Typography variant="body2"> <span style={{ fontSize: 12, color: 'gray' }}>{t('Profit')}
                               </span>{investor.profit}</Typography>                             
                             </Box>
                           </CardContent>

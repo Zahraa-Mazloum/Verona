@@ -5,7 +5,6 @@
   "totalInvestedPerMonth": "إجمالي الاستثمار شهريا",
   "topInvestors": "أفضل المستثمرين",
   "investmentTotalPerType": "إجمالي الاستثمار لكل نوع",
-  "DashBoard":"الرئيسية",
   "currencyManagement": "إدارة العملات",
   "addCurrency": "إضافة عملة",
   "name": "الاسم",
@@ -25,7 +24,25 @@
   "status":"الحالة",
   "addinvestor":"اضافة مستثمر",
   "cancel":"كلا",
-  "investorManagement":"المستثمرون"
+  "DashBoard": "لوحة القيادة",
+  "investorManagement":"المستثمرون",
+  "Contracts": "العقود",
+  "Investors": "المستثمرين",
+  "VeronaInvestments": "استثمارات فيرونا",
+  "InvestmentTypes": "أنواع الاستثمارات",
+  "OverallVeronaInvestments": "إجمالي استثمارات فيرونا",
+  "NewInvestments": "استثمارات جديدة",
+  "Currencies": "العملات",
+  "Wallets": "محفظة",
+  "Logout": "تسجيل الخروج",
+  "TotalAmount": "المبلغ الإجمالي: ",
+  "Profit" : "ربح:",
+  "title" : "عنوان", 
+  "addContracts"  : "إضافة عقد",
+  "Investorname" : "اسم المستثمر",
+  "ContractsManagement": "إدارة العقود",
+  "currency" : "عملة"
+
 
 
 

@@ -24,6 +24,7 @@ import { useNavigate } from 'react-router-dom';
 import Loading from '../loading.js';
 import loader from '../loading.gif';
 import { useTranslation } from 'react-i18next';
+import './ContractsTable.css'
 
 const ContractsTable = () => {
   const { t, i18n } = useTranslation();
@@ -119,6 +120,7 @@ const ContractsTable = () => {
           {i18n.language === 'ar' ? params.row.title_ar : params.row.title}
         </span>
       ),
+      align: i18n.language === 'ar' ? 'right' : 'left'
     },    {
       field: 'investorInfo',
       headerName: t('Investorname'),
@@ -128,6 +130,7 @@ const ContractsTable = () => {
           {i18n.language === 'ar' ? params.row.investorInfo.fullname_ar : params.row.investorInfo.fullname_en}
         </span>
       ),
+      align: i18n.language === 'ar' ? 'right' : 'left'
     },
     {
       field: 'currency',
@@ -138,11 +141,14 @@ const ContractsTable = () => {
           {i18n.language === 'ar' ? params.row.currency.symbol_ar : params.row.currency.symbol}
         </span>
       ),
+      align: i18n.language === 'ar' ? 'right' : 'left'
     },
     {
       field: 'contractTime',
       headerName: t('contractTime'),
-      flex: 1
+      flex: 1,
+      align: i18n.language === 'ar' ? 'right' : 'left'
+
     },
 
     {
@@ -151,6 +157,8 @@ const ContractsTable = () => {
       flex: 1,
       editable: false,
       readonly: true,
+      align: i18n.language === 'ar' ? 'right' : 'left'
+
     },
     {
       field: 'startDate',
@@ -161,6 +169,7 @@ const ContractsTable = () => {
           {new Date(params.row.startDate).toLocaleDateString()}
         </span>
       ),
+            align: i18n.language === 'ar' ? 'right' : 'left'
     },
     {
       field: 'endDate',
@@ -173,6 +182,7 @@ const ContractsTable = () => {
       ),
       editable: false,
       readonly: true,
+      align: i18n.language === 'ar' ? 'right' : 'left'
     },
     {
       field: 'investmentStatus',
@@ -185,12 +195,15 @@ const ContractsTable = () => {
           color="primary"
         />
       ),
+      align: i18n.language === 'ar' ? 'right' : 'left'
     },
     {
       field: 'actions',
       headerName: t('actions'),
       sortable: false,
+      cellClassName: 'right-align-cell',
       flex: 1,
+      align: i18n.language === 'ar' ? 'right' : 'left',
       renderCell: (params) => (
         <Box display="flex" justifyContent="left">
           <IconButton
