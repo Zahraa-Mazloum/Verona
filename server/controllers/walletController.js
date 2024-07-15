@@ -74,7 +74,7 @@ export const deleteWallet = asyncHandler(async (req, res) => {
     const wallet = await Wallet.findById(req.params.id);
 
     if (wallet) {
-        await wallet.remove();
+        await wallet.deleteOne();
         res.status(200).json({ message: 'Wallet removed' });
     } else {
         res.status(404).json({ message: 'Wallet not found' });

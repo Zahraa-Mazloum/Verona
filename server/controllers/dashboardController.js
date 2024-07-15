@@ -69,6 +69,7 @@ export const dashboardStates = async (req, res) => {
             {
                 $project: {
                     name: '$investor.fullname_en',
+                    namear: '$investor.fullname_ar',
                     totalAmount: 1,
                     profit:1
                 }
