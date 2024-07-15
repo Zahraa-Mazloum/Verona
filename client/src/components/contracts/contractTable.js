@@ -62,9 +62,9 @@ const ContractsTable = () => {
     try {
       await api.delete(`/contract/deleteContract/${id}`);
       setContract(contract.filter(c => c._id !== id));
-      toast.success(t('ContractsDeletedSuccessfully'));
+      toast.success(t('ContractDeletedSuccessfully'));
     } catch (error) {
-      toast.error(t('ErrorDeletingContracts'));
+      toast.error(t('ErrorDeletingContract'));
     }
   };
 

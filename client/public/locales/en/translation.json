@@ -41,5 +41,13 @@
   "addContracts" : "Add Contract",
   "Investorname" : "Investor Name",
   "ContractsManagement": "Contracts Management",
-  "currency" : "Currency"
-}
+  "currency" : "Currency",
+  "contractTime" : "Contract Time",
+  "contractPercentage" : "Contract Percentage",
+  "startDate": "Start Date",
+  "endDate": "End Date",
+  "investmentStatus": "Investment Status",
+  "ErrorFetchingContracts": "Error Fetching Contracts",
+  "ContractDeletedSuccessfully": "Contract Deleted Successfully",
+  "ErrorDeletingContract" : "Error Deleting Contract"
+ }

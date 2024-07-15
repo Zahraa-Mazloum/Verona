@@ -41,7 +41,9 @@
   "addContracts"  : "إضافة عقد",
   "Investorname" : "اسم المستثمر",
   "ContractsManagement": "إدارة العقود",
-  "currency" : "عملة"
+  "currency" : "عملة",
+  "contractTime" : "وقت العقد"
+
 
 
 
