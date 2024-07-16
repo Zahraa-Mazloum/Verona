@@ -158,9 +158,9 @@ export const getInvestorByLanguage = asyncHandler(async (req, res) => {
   let investors;
 
   if (lang === 'en') {
-    investors = await Investor.find({}, 'fullname_en email phoneNumber dateOfBirth role status passportNumber passportExpiryDate passportPhoto');
+    investors = await Investor.find({}, 'fullname_en fullname_ar email phoneNumber dateOfBirth role status passportNumber passportExpiryDate passportPhoto');
   } else if (lang === 'ar') {
-    investors = await Investor.find({}, 'fullname_ar email phoneNumber dateOfBirth role status passportNumber passportExpiryDate passportPhoto');
+    investors = await Investor.find({}, 'fullname_ar fullname_en email phoneNumber dateOfBirth role status passportNumber passportExpiryDate passportPhoto');
   } else {
       return res.status(400).json({ message: 'Invalid language parameter' });
   }

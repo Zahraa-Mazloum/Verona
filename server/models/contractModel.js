@@ -1,16 +1,14 @@
 import mongoose from "mongoose";
 
 const contractSchema = new mongoose.Schema({
-    title:{
-        type:String,
-    },
-    title_ar:{
-        type:String,
-    },
     investorInfo: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Investor',
         required: true
+    },
+    amount:{
+          type: Number,
+          required : true
     },
     currency: {
         type: mongoose.Schema.Types.ObjectId,
@@ -20,6 +18,11 @@ const contractSchema = new mongoose.Schema({
     contractTime: {
         type: String,
         enum: ['month', 'year'],
+        required: [true, "Please enter the duration"]
+    }, 
+      contractTime_ar: {
+        type: String,
+        enum: ['شهر' , 'سنة'],
         required: [true, "Please enter the duration"]
     },
     startDate: {
@@ -32,7 +35,12 @@ const contractSchema = new mongoose.Schema({
     contractPercentage: {
         type: Number,
     },
-  
+    profit:{
+type:Number,
+    },
+  payment:{
+    type: Number,
+  },
     investmentStatus: {
         type: Boolean,
         default: true
@@ -46,10 +54,10 @@ contractSchema.pre('save', function(next) {
         const startDate = this.startDate;
         let endDate = new Date(startDate);
 
-        if (this.contractTime === 'month') {
+        if (this.contractTime === 'month' || this.contractTime === 'شهر') {
             endDate.setMonth(startDate.getMonth() + 1);
             this.contractPercentage = 2; 
-        } else if (this.contractTime === 'year') {
+        } else if (this.contractTime === 'year' || this.contractTime ==='سنة') {
             endDate.setFullYear(startDate.getFullYear() + 1);
             this.contractPercentage = 36; 
         }
@@ -57,6 +65,9 @@ contractSchema.pre('save', function(next) {
         this.endDate = endDate;
     }
 
+    if (this.isModified('amount') || this.isNew)
+    this.profit=this.amount * (this.contractPercentage / 100)
+    this.payment = this.amount + this.profit;
 
 
     next();

@@ -21,9 +21,9 @@ export const getCurrenciesByLanguage = asyncHandler(async (req, res) => {
     // console.log(`Fetching currencies for language: ${lang}`);
 
     if (lang === 'en') {
-        currencies = await Currency.find({}, 'name symbol description');
+        currencies = await Currency.find({}, 'name symbol symbol_ar description');
     } else if (lang === 'ar') {
-        currencies = await Currency.find({}, 'name_ar symbol_ar description_ar');
+        currencies = await Currency.find({}, 'name_ar symbol symbol_ar description_ar');
     } else {
         return res.status(400).json({ message: 'Invalid language parameter' });
     }

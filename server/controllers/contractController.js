@@ -3,9 +3,9 @@ import Contract from '../models/contractModel.js';
 
 // Create Contract
 export const createContract = asyncHandler(async (req, res) => {
-  const { title , title_ar, investorInfo: investorId, currency: currencyId, contractTime, startDate } = req.body;
+  const {investorInfo: investorId, amount, currency: currencyId, contractTime,contractTime_ar, startDate } = req.body;
   
-  const contract = new Contract({title , title_ar, investorInfo: investorId, currency: currencyId, contractTime, startDate });
+  const contract = new Contract({investorInfo: investorId,amount, currency: currencyId, contractTime, contractTime_ar,startDate });
 
   try {
     await contract.save();
@@ -33,15 +33,15 @@ export const getContractById = asyncHandler(async (req, res) => {
 
 // Update Contract
 export const updateContract = asyncHandler(async (req, res) => {
-  const { title,title_ar,investorInfo, currency, contractTime, startDate } = req.body;
+  const { investorInfo,amount, currency, contractTime,contractTime_ar, startDate } = req.body;
   const contract = await Contract.findById(req.params.id);
 
   if (contract) {
-    contract.title = title || contract.title;
-    contract.title = title_ar || contract.title_ar;
     contract.investorInfo = investorInfo || contract.investorInfo;
+    contract.amount = amount || contract.amount;
     contract.currency = currency || contract.currency;
     contract.contractTime = contractTime || contract.contractTime;
+    contract.contractTime_ar = contractTime_ar || contract.contractTime_ar;
     contract.startDate = startDate || contract.startDate;
 
     const updatedContract = await contract.save();
