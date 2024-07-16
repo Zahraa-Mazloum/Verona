@@ -90,7 +90,6 @@ const ContractsTable = () => {
   const safeLowerCase = (str) => (typeof str === 'string' ? str.toLowerCase() : '');
 
   const filteredContract = contract.filter(Contracts =>
-    safeLowerCase(i18n.language === 'ar' ? Contracts.title_ar : Contracts.title).includes(safeLowerCase(search)) ||
     safeLowerCase(i18n.language === 'ar' ? Contracts.investorInfo.fullname_ar : Contracts.investorInfo.fullname_en).includes(safeLowerCase(search)) ||
     safeLowerCase(Contracts.currency).includes(safeLowerCase(search)) ||
     safeLowerCase(Contracts.contractTime).includes(safeLowerCase(search)) ||
@@ -112,16 +111,6 @@ const ContractsTable = () => {
 
   const columns = [
     {
-      field: 'title',
-      headerName: t('title'),
-      flex: 1,
-      renderCell: (params) => (
-        <span>
-          {i18n.language === 'ar' ? params.row.title_ar : params.row.title}
-        </span>
-      ),
-      align: i18n.language === 'ar' ? 'right' : 'left'
-    },    {
       field: 'investorInfo',
       headerName: t('Investorname'),
       flex: 1,
@@ -131,6 +120,13 @@ const ContractsTable = () => {
         </span>
       ),
       align: i18n.language === 'ar' ? 'right' : 'left'
+    },
+    {
+      field: 'amount',
+      headerName: t('amount'),
+      flex: 1,
+      align: i18n.language === 'ar' ? 'right' : 'left'
+
     },
     {
       field: 'currency',
@@ -147,17 +143,12 @@ const ContractsTable = () => {
       field: 'contractTime',
       headerName: t('contractTime'),
       flex: 1,
-      align: i18n.language === 'ar' ? 'right' : 'left'
-
-    },
-
-    {
-      field: 'contractPercentage',
-      headerName: t('contractPercentage'),
-      flex: 1,
-      editable: false,
-      readonly: true,
-      align: i18n.language === 'ar' ? 'right' : 'left'
+      align: i18n.language === 'ar' ? 'right' : 'left',
+      renderCell: (params) => (
+        <span>
+          {i18n.language === 'ar' ? params.row.contractTime_ar : params.row.contractTime}
+        </span>
+      ),
 
     },
     {
@@ -180,6 +171,22 @@ const ContractsTable = () => {
           {new Date(params.row.endDate).toLocaleDateString()}
         </span>
       ),
+      editable: false,
+      readonly: true,
+      align: i18n.language === 'ar' ? 'right' : 'left'
+    },
+    {
+      field: 'contractPercentage',
+      headerName: t('contractPercentage'),
+      flex: 1,
+      editable: false,
+      readonly: true,
+      align: i18n.language === 'ar' ? 'right' : 'left'
+    },
+    {
+      field: 'payment',
+      headerName: t('payment'),
+      flex: 1,
       editable: false,
       readonly: true,
       align: i18n.language === 'ar' ? 'right' : 'left'
@@ -285,7 +292,7 @@ const ContractsTable = () => {
               startIcon={<AddIcon />}
               onClick={() => navigate('/addContracts')}
             >
-              {t('addContracts')}
+              {t('addContract')}
             </Button>
           </Toolbar>
           <div style={{ width: '100%', height: '100%' }}>

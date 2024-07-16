@@ -1,4 +1,4 @@
-import React, { useState, useEffect,Suspense } from 'react';
+import React, { useState, useEffect, Suspense } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { TextField, Button, Paper, Typography, Box } from '@mui/material';
 import { ToastContainer, toast } from 'react-toastify';
@@ -19,13 +19,14 @@ const EditContract = () => {
       symbol_en: '',
       symbol_ar: ''
     },
+    amount: '',
     contractTime: '',
     startDate: '',
     investmentStatus: '',
-    title:'',
-    title_ar: ''
   });
-const[t]=useTranslation()
+
+  const [t] = useTranslation();
+
   useEffect(() => {
     const fetchContract = async () => {
       try {
@@ -73,125 +74,119 @@ const[t]=useTranslation()
 
   return (
     <Suspense fallback={<Loading />}>
-
-    <Box p={3}>
-      <ToastContainer />
-      <Paper elevation={8} style={{ padding: '15px', marginBottom: '10px', marginLeft: '1%', width: 'calc(100% - 60px)' }}>
-        <Typography variant="h6" component="div" sx={{ flexGrow: 1, marginLeft: '1%' }}>
-          {t('EditContract')}
-        </Typography>
-        <div className='formContainer'>
-          <form onSubmit={handleUpdateContract} style={{ marginTop: '15px' }}>
-           
-            <TextField
-              fullWidth
-              label="Title (EN)"
-              name="title"
-              value={contract.title}
-              onChange={handleInputChange}
-              margin="normal"
-              required
-              InputProps={{ style: { borderRadius: '12px' } }}
-            />          <TextField
-              fullWidth
-              label="Title (Ar)"
-              name="title_ar"
-              value={contract.title_ar}
-              onChange={handleInputChange}
-              margin="normal"
-              required
-              InputProps={{ style: { borderRadius: '12px' } }}
-            />  
-            <TextField
-              fullWidth
-              label="Name (English)"
-              name="investorInfo.fullname_en"
-              value={contract.investorInfo.fullname_en}
-              onChange={handleInputChange}
-              margin="normal"
-              required
-              InputProps={{ style: { borderRadius: '12px' } }}
-            />
-            <TextField
-              fullWidth
-              label="Name (Arabic)"
-              name="investorInfo.fullname_ar"
-              value={contract.investorInfo.fullname_ar}
-              onChange={handleInputChange}
-              margin="normal"
-              InputProps={{ style: { borderRadius: '12px' } }}
-            />
-                 <TextField
-              fullWidth
-              label="Currency"
-              name="currency"
-              value={contract.currency.symbol}
-              onChange={handleInputChange}
-              margin="normal"
-              InputProps={{ style: { borderRadius: '12px' } }}
-            />  
-            <TextField
-              fullWidth
-              label="Contract Time"
-              name="contractTime"
-              value={contract.contractTime}
-              onChange={handleInputChange}
-              margin="normal"
-              InputProps={{ style: { borderRadius: '12px' } }}
-            />
-            <TextField
-              fullWidth
-              label="Start Date"
-              name="startDate"
-              type="date"
-              value={contract.startDate}
-              onChange={handleInputChange}
-              margin="normal"
-              InputLabelProps={{
-                shrink: true,
-              }}
-              InputProps={{ style: { borderRadius: '12px' } }}
-            />
-            <TextField
-              fullWidth
-              label="Investment Status"
-              name="investmentStatus"
-              value={contract.investmentStatus}
-              onChange={handleInputChange}
-              margin="normal"
-              InputProps={{ style: { borderRadius: '12px' } }}
-            />
-            <Box mt={2} display="flex" justifyContent="flex-end">
-              <Button
-                variant="contained"
-                color="warning"
-                type="submit"
-                sx={{ mr: 2 }}
-              >
-                Update Contract
-              </Button>
-              <Button
-                variant="outlined"
-                color="secondary"
-                onClick={() => navigate('/contract')}
-                sx={{
-                  mr: 2,
-                  border: '1px solid #ed6c02',
-                  borderRadius: '10px',
-                  color: 'black',
-                  '&:hover': {
-                    borderColor: '#e65100',
-                    color: '#e65100'
-                  }
+      <Box p={3}>
+        <ToastContainer />
+        <Paper elevation={8} style={{ padding: '15px', marginBottom: '10px', marginLeft: '1%', width: 'calc(100% - 60px)' }}>
+          <Typography variant="h6" component="div" sx={{ flexGrow: 1, marginLeft: '1%' }}>
+            {t('EditContract')}
+          </Typography>
+          <div className='formContainer'>
+            <form onSubmit={handleUpdateContract} style={{ marginTop: '15px' }}>
+              <TextField
+                fullWidth
+                label={t('FullName')}
+                name="investorInfo.fullname_en"
+                value={contract.investorInfo.fullname_en}
+                onChange={handleInputChange}
+                margin="normal"
+                InputProps={{ style: { borderRadius: '12px' } }}
+                disabled={true} 
+              />
+              <TextField
+                fullWidth
+                label={t('FullNameAr')}
+                name="investorInfo.fullname_ar"
+                value={contract.investorInfo.fullname_ar}
+                onChange={handleInputChange}
+                margin="normal"
+                InputProps={{ style: { borderRadius: '12px' } }}
+                disabled={true} 
+              />
+              <TextField
+                fullWidth
+                label={t("amount")}
+                name="amount"
+                type="number"
+                required
+                value={contract.amount}
+                onChange={handleInputChange}
+                margin="normal"
+                InputProps={{ style: { borderRadius: '12px' } }}
+              />
+              <TextField
+                fullWidth
+                label={t('currency')}
+                name="currency.symbol"
+                value={contract.currency.symbol}
+                onChange={handleInputChange}
+                margin="normal"
+                InputProps={{ style: { borderRadius: '12px' } }}
+                disabled={true} 
+              />
+              <TextField
+                fullWidth
+                label="Contract Time"
+                name="contractTime"
+                value={contract.contractTime}
+                onChange={handleInputChange}
+                margin="normal"
+                InputProps={{ style: { borderRadius: '12px' } }}
+                required
+              />
+              <TextField
+                fullWidth
+                label="Start Date"
+                name="startDate"
+                type="date"
+                value={contract.startDate}
+                onChange={handleInputChange}
+                margin="normal"
+                required
+                InputLabelProps={{
+                  shrink: true,
                 }}
-              >
-                Cancel
-              </Button>
-            </Box>
-          </form>
-        </div>
-      </Paper>
-    </Box>
+                InputProps={{ style: { borderRadius: '12px' } }}
+              />
+              <TextField
+                fullWidth
+                label="Investment Status"
+                name="investmentStatus"
+                value={contract.investmentStatus}
+                onChange={handleInputChange}
+                margin="normal"
+                InputProps={{ style: { borderRadius: '12px' } }}
+              />
+              <Box mt={2} display="flex" justifyContent="flex-end">
+                <Button
+                  variant="contained"
+                  color="warning"
+                  type="submit"
+                  sx={{ mr: 2 }}
+                >
+                {t('UpdateContract')}
+                </Button>
+                <Button
+                  variant="outlined"
+                  color="secondary"
+                  onClick={() => navigate('/contract')}
+                  sx={{
+                    mr: 2,
+                    border: '1px solid #ed6c02',
+                    borderRadius: '10px',
+                    color: 'black',
+                    '&:hover': {
+                      borderColor: '#e65100',
+                      color: '#e65100'
+                    }
+                  }}
+                >
+                {t('cancel')}
+                </Button>
+              </Box>
+            </form>
+          </div>
+        </Paper>
+      </Box>
     </Suspense>
   );
 };

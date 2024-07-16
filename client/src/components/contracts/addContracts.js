@@ -1,44 +1,38 @@
 import React, { useState, useEffect, Suspense } from 'react';
 import { useNavigate } from 'react-router-dom';
-import {
-  TextField,
-  Button,
-  Paper,
-  Typography,
-  Box,
-  MenuItem
-} from '@mui/material';
+import { TextField, Button, Paper, Typography, Box, MenuItem } from '@mui/material';
 import { ToastContainer, toast } from 'react-toastify';
+import { useTranslation } from 'react-i18next';
+
 import 'react-toastify/dist/ReactToastify.css';
 import api from '../../api/axios';
-import { useTranslation } from 'react-i18next';
 import Loading from '../loading.js';
 
 const Addcontract = () => {
   const navigate = useNavigate();
-  const [contract, setcontract] = useState({
-    title: '',
+  const [contract, setContract] = useState({
     investorInfo: '',
+    amount: '',
     currency: '',
     contractTime: '',
     startDate: '',
     investmentStatus: ''
   });
-  const [contract_ar, setcontract_ar] = useState({
-    title_ar: '',
+  const [contract_ar, setContractAr] = useState({
     fullname_ar: '',
+    contractTime_ar: '',
   });
   const { t, i18n } = useTranslation();
   const [investors, setInvestors] = useState([]);
   const [currencies, setCurrencies] = useState([]);
 
-  useEffect(() =>{
+  useEffect(() => {
     const fetchInvestors = async () => {
       try {
         const response = await api.get(`/admin/allInvestors/${i18n.language}`);
         setInvestors(response.data);
       } catch (error) {
-        console.error('Error fetching investors:', error);
+        console.error({ message: t('Errorfetchinginvestors:'), error });
       }
     };
 
@@ -47,7 +41,7 @@ const Addcontract = () => {
         const response = await api.get(`/currency/getCurrencies/${i18n.language}`);
         setCurrencies(response.data);
       } catch (error) {
-        console.error('Error fetching currencies:', error);
+        console.error({ message: t('Errorfetchingcurrencies:'), error });
       }
     };
 
@@ -57,20 +51,25 @@ const Addcontract = () => {
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setcontract({ ...contract, [name]: value });
+    setContract({ ...contract, [name]: value });
+
+    if (name === 'contractTime') {
+      const contractTime_ar = value === 'year' ? 'سنة' : 'شهر';
+      setContractAr({ ...contract_ar, contractTime_ar });
+    }
   };
 
   const handleInputChangeAr = (e) => {
     const { name, value } = e.target;
-    setcontract_ar({ ...contract_ar, [name]: value });
+    setContractAr({ ...contract_ar, [name]: value });
   };
 
-  const handleAddcontract = async (e) => {
+  const handleAddContract = async (e) => {
     e.preventDefault();
     const fullContract = { ...contract, ...contract_ar };
     try {
       await api.post('/contract/newContract', fullContract);
-      toast.success('Contract added successfully');
+      toast.success(t('Contractaddedsuccessfully'));
       setTimeout(() => {
         navigate('/contract');
       }, 1500);
@@ -85,45 +84,30 @@ const Addcontract = () => {
           const errorMessage = preContent.split('\n')[0];
           toast.error(errorMessage);
         } else {
-          toast.error('An error occurred');
+          toast.error(t('Anerroroccurred'));
         }
       } else {
-        console.error('Error without a response data');
+        console.error({ message: t('Errorwithoutaresponsedata'), error });
       }
     }
   };
 
+  const isRTL = i18n.language === 'ar';
+
   return (
     <Suspense fallback={<Loading />}>
-      <Box p={3}>
+      <Box p={3} style={{ direction: isRTL ? 'rtl' : 'ltr', textAlign: isRTL ? 'right' : 'left' }}>
         <ToastContainer />
         <Paper elevation={8} style={{ padding: '15px', marginBottom: '10px', marginLeft: '1%', width: 'calc(100% - 60px)' }}>
           <Typography variant="h6" component="div" sx={{ flexGrow: 1, marginLeft: '1%' }}>
-            Add Contract
+            {t('AddContract')}
           </Typography>
-          <form onSubmit={handleAddcontract} style={{ marginTop: '15px' }}>
-            <TextField
-              fullWidth
-              label="title (EN)"
-              name="title"
-              value={contract.title}
-              onChange={handleInputChange}
-              margin="normal"
-              InputProps={{ style: { borderRadius: '12px' } }}
-            />
-            <TextField
-              fullWidth
-              label="title (Ar)"
-              name="title_ar"
-              value={contract_ar.title_ar}
-              onChange={handleInputChangeAr}
-              margin="normal"
-              InputProps={{ style: { borderRadius: '12px' } }}
-            />
+          <form onSubmit={handleAddContract} style={{ marginTop: '15px' }} >
             <TextField
               fullWidth
               select
-              label="Full Name (EN)"
+              required
+              label={t('FullName')}
               name="investorInfo"
               value={contract.investorInfo}
               onChange={handleInputChange}
@@ -132,14 +116,27 @@ const Addcontract = () => {
             >
               {investors.map((investor) => (
                 <MenuItem key={investor._id} value={investor._id}>
-                  {investor.fullname_en}
+                  {`${investor.fullname_en} (${investor.fullname_ar})`}
                 </MenuItem>
               ))}
             </TextField>
+
+            <TextField
+              fullWidth
+              label={t("amount")}
+              name="amount"
+              type="number"
+              required
+              value={contract.amount}
+              onChange={handleInputChange}
+              margin="normal"
+              InputProps={{ style: { borderRadius: '12px' } }}
+            />
             <TextField
               fullWidth
               select
-              label="Currency"
+              required
+              label={t("currency")}
               name="currency"
               value={contract.currency}
               onChange={handleInputChange}
@@ -148,15 +145,16 @@ const Addcontract = () => {
             >
               {currencies.map((currency) => (
                 <MenuItem key={currency._id} value={currency._id}>
-                  {currency.symbol}
+                  {`${currency.symbol} (${currency.symbol_ar})`}
                 </MenuItem>
               ))}
             </TextField>
             <TextField
               fullWidth
-              label="Start Date"
+              label={t("StartDate")}
               name="startDate"
               type="date"
+              required
               value={contract.startDate}
               onChange={handleInputChange}
               margin="normal"
@@ -168,7 +166,8 @@ const Addcontract = () => {
             <TextField
               fullWidth
               select
-              label="Contract Time"
+              required
+              label={t("ContractTime")}
               name="contractTime"
               value={contract.contractTime}
               onChange={handleInputChange}
@@ -181,7 +180,8 @@ const Addcontract = () => {
             <TextField
               fullWidth
               select
-              label="Investment Status"
+              required
+              label={t("InvestmentStatus")}
               name="investmentStatus"
               value={contract.investmentStatus}
               onChange={handleInputChange}
@@ -198,7 +198,7 @@ const Addcontract = () => {
                 type="submit"
                 sx={{ mr: 2 }}
               >
-                Add Contract
+                {t('AddContract')}
               </Button>
               <Button
                 variant="outlined"
@@ -215,7 +215,7 @@ const Addcontract = () => {
                   },
                 }}
               >
-                Cancel
+                {t('cancel')}
               </Button>
             </Box>
           </form>
