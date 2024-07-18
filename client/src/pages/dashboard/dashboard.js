@@ -31,6 +31,7 @@ const Dashboard = () => {
 
     fetchStats();
   }, []);
+  
 
   useEffect(() => {
     if (stats) {
@@ -38,18 +39,36 @@ const Dashboard = () => {
     }
   }, [stats]);
 
-  const totalInvestedChartData = {
-    labels: stats ? stats.totalInvestedPerMonth.map(month => `${month._id.month}/${month._id.year}`) : [],
-    datasets: [
-      {
-        label: t('totalInvested'),
-        data: stats ? stats.totalInvestedPerMonth.map(month => month.total) : [],
-        borderColor: '#d25716',
-        backgroundColor: 'rgba(210, 87, 22, 0.1)',
+  const getTotalInvestedChartData = () => {
+    if (!stats) return { labels: [], datasets: [] };
+
+    const months = Array.from(new Set(stats.totalInvestedPerMonth.map(data => `${data._id.month}/${data._id.year}`)));
+    const currencyMap = {};
+
+    const colors = [
+      '#d25716', '#ed7622', '#f19446', '#fad7ae', 
+      '#76c7c0', '#4caf50', '#ff9800', '#9c27b0',
+    ]; // Add more colors if needed
+
+    stats.totalInvestedPerMonth.forEach(data => {
+      if (!currencyMap[data._id.currency]) {
+        currencyMap[data._id.currency] = new Array(months.length).fill(0);
+      }
+      const index = months.indexOf(`${data._id.month}/${data._id.year}`);
+      currencyMap[data._id.currency][index] = data.total;
+    });
+
+    return {
+      labels: months,
+      datasets: Object.keys(currencyMap).map((currency, index) => ({
+        label: `${t('totalInvested')} (${currency})`,
+        data: currencyMap[currency],
+        borderColor: colors[index % colors.length],
+        backgroundColor: colors[index % colors.length] + '33',
         fill: true,
         tension: 0.4,
-      },
-    ],
+      }))
+    };
   };
 
   const investmentTypesChartData = {
@@ -57,7 +76,8 @@ const Dashboard = () => {
     datasets: [
       {
         data: stats ? stats.investmentsPerType.map(type => type.totalAmount) : [],
-        backgroundColor: ['#d25716', '#ed7622', '#f19446', '#fad7ae'],
+        backgroundColor: ['#d25716', '#ed7622', '#f19446', '#fad7ae', '#76c7c0', '#4caf50', '#ff9800', '#9c27b0'],
+        hoverBackgroundColor: ['#c44c13', '#db6720', '#e38541', '#eac39a', '#69b1a9', '#3e8b3d', '#e68900', '#83219f'],
       },
     ],
   };
@@ -65,9 +85,13 @@ const Dashboard = () => {
   const topInvestors = stats?.topInvestors?.map(investor => ({
     name: investor.name,
     namear: investor.namear,
+    currency: investor.currency,
     amount: investor.totalAmount.toFixed(2),
     profit: investor.profit.toFixed(2),
   })) || [];
+  console.log(topInvestors);
+
+  const totalInvestedChartData = getTotalInvestedChartData();
 
   return (
     <Suspense fallback={<Skeleton variant="rectangular" height="100vh" />}>
@@ -133,7 +157,7 @@ const Dashboard = () => {
             </Paper>
           </Grid>
           <Grid item xs={12} md={6}>
-            <Paper sx={{ p: 2, boxShadow: 3, borderRadius: 2 }}>
+            <Paper sx={{ p: 2, boxShadow: 3, borderRadius: 2 }}>  
               <Typography variant="h6" gutterBottom>
                 {t('topInvestors')}
               </Typography>
@@ -160,9 +184,11 @@ const Dashboard = () => {
                             <Typography variant="body2"> 
                                  <span style={{ fontSize: 12, color: 'gray' }}>{t('TotalAmount')}
                               </span>
-                              {investor.amount}</Typography>
+                               {`${investor.profit} ${investor.currency}`}</Typography>
                               <Typography variant="body2"> <span style={{ fontSize: 12, color: 'gray' }}>{t('Profit')}
-                              </span>{investor.profit}</Typography>                             
+                              </span>      {`${investor.profit} ${investor.currency}`}
+
+                              </Typography>                             
                             </Box>
                           </CardContent>
                         </Card>
@@ -182,7 +208,23 @@ const Dashboard = () => {
                 <Skeleton variant="rectangular" height={500} />
               ) : (
                 <Box sx={{ mt: 2, height: '360px' }}>
-                  <Doughnut data={investmentTypesChartData} options={{ responsive: true, maintainAspectRatio: false }} />
+                  <Doughnut data={investmentTypesChartData} options={{ 
+                    responsive: true, 
+                    maintainAspectRatio: false,
+                    plugins: {
+                      legend: {
+                        display: true,
+                        position: 'top',
+                      },
+                      tooltip: {
+                        callbacks: {
+                          label: function (tooltipItem) {
+                            return `${tooltipItem.label}: ${tooltipItem.raw}`;
+                          },
+                        },
+                      },
+                    },
+                  }} />
                 </Box>
               )}
             </Paper>

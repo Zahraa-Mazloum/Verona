@@ -12,8 +12,8 @@ const EditInvestment = () => {
   const navigate = useNavigate();
   const [Investment, setInvestment] = useState({
     title: {
-      title: '',
-      title_ar: ''
+      titleInv: '',
+      titleInv_ar: ''
     },
     type: {
       type_en: '',
@@ -85,7 +85,7 @@ const[t]=useTranslation()
             <TextField
               fullWidth
               label="Title (EN)"
-              name="title"
+              name="titleInv"
               value={Investment.titleInv}
               onChange={handleInputChange}
               margin="normal"
@@ -94,7 +94,7 @@ const[t]=useTranslation()
             />          <TextField
               fullWidth
               label="Title (Ar)"
-              name="title_ar"
+              name="titleInv_ar"
               value={Investment.titleInv_ar}
               onChange={handleInputChange}
               margin="normal"
@@ -119,26 +119,8 @@ const[t]=useTranslation()
               onChange={handleInputChange}
               margin="normal"
               InputProps={{ style: { borderRadius: '12px' } }}
-            />    <TextField
-              fullWidth
-              label="Contract (EN)"
-              name="contract.title"
-              value={Investment.contract.title}
-              onChange={handleInputChange}
-              margin="normal"
-              required
-              InputProps={{ style: { borderRadius: '12px' } }}
-            />
-            <TextField
-              fullWidth
-              label="Contract (AR)"
-              name="contract.title_ar"
-              value={Investment.contract.title_ar}
-              onChange={handleInputChange}
-              margin="normal"
-              InputProps={{ style: { borderRadius: '12px' } }}
-            />
-
+            /> 
+          
                  <TextField
               fullWidth
               label="Amount"

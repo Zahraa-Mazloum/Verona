@@ -117,7 +117,7 @@ const Addcontract = () => {
               {investors.map((investor) => (
                 <MenuItem key={investor._id} value={investor._id}>
                   {`${investor.fullname_en} (${investor.fullname_ar})`}
-                </MenuItem>
+                </MenuItem> 
               ))}
             </TextField>
 
@@ -132,7 +132,7 @@ const Addcontract = () => {
               margin="normal"
               InputProps={{ style: { borderRadius: '12px' } }}
             />
-            <TextField
+               <TextField
               fullWidth
               select
               required

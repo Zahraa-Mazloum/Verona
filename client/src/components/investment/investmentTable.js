@@ -10,7 +10,8 @@ import {
   Toolbar,
   Typography,
   Box,
-  Tooltip
+  Tooltip,
+  Switch
 } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import { ToastContainer, toast } from 'react-toastify';
@@ -27,7 +28,7 @@ import { useTranslation } from 'react-i18next';
 
 const InvestmentTable = () => {
   const { t, i18n } = useTranslation();
-  const [investments, setinvestments] = useState([]);
+  const [investments, setInvestments] = useState([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
   const [investmentToDelete, setinvestmentToDelete] = useState(null); 
@@ -47,7 +48,7 @@ const InvestmentTable = () => {
       const { data } = await api.get(`/inv/getInvestments/${i18n.language}`);
       console.log(data)
       console.log(data.s)
-      setinvestments(data);
+      setInvestments(data);
     } catch (error) {
       toast.error('Error fetching investments');
     } finally {
@@ -62,7 +63,7 @@ const InvestmentTable = () => {
   const handleDeleteinvestment = async (id) => {
     try {
       await api.delete(`/inv/deleteInvestment/${id}`);
-      setinvestments(investments.filter(c => c._id !== id));
+      setInvestments(investments.filter(c => c._id !== id));
       toast.success(t('investmentDeletedSuccessfully'));
     } catch (error) {
       toast.error('Error deleting investment');
@@ -94,34 +95,45 @@ const InvestmentTable = () => {
     safeLowerCase(i18n.language === 'en' ? investment.titleInv : investment.titleInv_ar).includes(safeLowerCase(search)) ||
     safeLowerCase(i18n.language === 'en' ? investment.amount : investment.amount).includes(safeLowerCase(search)) ||
     safeLowerCase(i18n.language === 'en' ? investment.type.type_en : investment.type.type_ar).includes(safeLowerCase(search)) || 
-    safeLowerCase(i18n.language === 'en' ? investment.profit : investment.profit).includes(safeLowerCase(search)) ||
-    safeLowerCase(i18n.language === 'en' ? investment.contract.title : investment.contract.title_ar).includes(safeLowerCase(search)) ||
-    safeLowerCase(i18n.language === 'en' ? investment.contract.investorInfo.fullname_en : investment.contract.investorInfo.fullname_ar).includes(safeLowerCase(search)) ||
-    safeLowerCase(i18n.language === 'en' ? investment.contract.currency.symbol : investment.contract.currency.symbol).includes(safeLowerCase(search)) ||
+    safeLowerCase(i18n.language === 'en' ? investment.currency.symbol : investment.currency.symbol).includes(safeLowerCase(search)) ||
     safeLowerCase(i18n.language === 'en' ? investment.investmentStatus : investment.investmentStatus).includes(safeLowerCase(search)) ||
-    safeLowerCase(i18n.language === 'en' ? investment.payment : investment.payment).includes(safeLowerCase(search)) 
+    safeLowerCase(i18n.language === 'en' ? investment.date : investment.date).includes(safeLowerCase(search)) 
   );
+  const handleToggleStatus = async (id, currentStatus) => {
+    try {
+      const newStatus = !currentStatus; 
+      await api.put(`/inv/updateInvStatus/${id}`, { investmentStatus: newStatus });
+      setInvestments(investments.map(c => (c._id === id ? { ...c, investmentStatus: newStatus } : c)));
+      toast.success(t('StatusUpdatedSuccessfully'));
+    } catch (error) {
+      toast.error(t('ErrorUpdatingStatus'));
+    }
+  };
 
   const columns = [
-    {
-      field: i18n.language === 'ar' ? 'contract.investorInfo' : 'contract.investorInfo',
-      headerName: t('InvestorName'),
-      flex: 1,
-      renderCell: (params) => (
-        <span>
-          {i18n.language === 'ar' ? params.row.contract.investorInfo.fullname_ar : params.row.contract.investorInfo.fullname_en}
-        </span>
-      ),
-    },  
-    {
+     {
       field: i18n.language === 'ar' ? 'titleInv_ar' : 'titleInv',
       headerName: t('title'),
-      flex: 1
+      flex: 1,
+      align: i18n.language === 'ar' ? 'right' : 'left'
+
     },
     {
       field: i18n.language === 'ar' ? 'amount' : 'amount',
       headerName: t('amount'),
-      flex: 1
+      flex: 1,
+      align: i18n.language === 'ar' ? 'right' : 'left'
+    },
+    {
+      field: 'currency',
+      headerName: t('currency'),
+      flex: 1,
+      renderCell: (params) => (
+        <span>
+          {i18n.language === 'ar' ? params.row.currency.symbol_ar : params.row.currency.symbol}
+        </span>
+      ),
+      align: i18n.language === 'ar' ? 'right' : 'left'
     },
     {
       field: i18n.language === 'ar' ? 'type' : 'type',
@@ -132,40 +144,40 @@ const InvestmentTable = () => {
           {params.row.type ? (i18n.language === 'ar' ? params.row.type.type_ar : params.row.type.type_en) : ''}
         </span> 
 ),
-    },    {
-      field: i18n.language === 'ar' ? 'profit' : 'profit',
-      headerName: t('profit'),
-      flex: 1
-    },
-  {
-      field: i18n.language === 'ar' ? 'contract' : 'contract',
-      headerName: t('contract'),
-      flex: 1,
-      renderCell: (params) => (
-        <span>
-          {i18n.language === 'ar' ? params.row.contract.title_ar : params.row.contract.title}
-        </span>
-      ),
-    },    {
-      field: i18n.language === 'ar' ? 'currency.symbol_ar' : 'currency.symbol',
-      headerName: t('currency'),
-      flex: 1,
-      renderCell: (params) => (
-        <span>
-          {i18n.language === 'ar' ? params.row.contract.currency.symbol_ar : params.row.contract.currency.symbol}
-        </span>
-      ),
-    },  
-    
-    
+      align: i18n.language === 'ar' ? 'right' : 'left'
+
+    }, 
     {
-      field: i18n.language === 'ar' ? 'investmentStatus' : 'investmentStatus',
+      field: 'dateInv',
+      headerName: t('dateInv'),
+      flex: 1,
+      renderCell: (params) => (
+        <span>
+          {new Date(params.row.dateInv).toLocaleDateString()}
+        </span>
+      ),
+            align: i18n.language === 'ar' ? 'right' : 'left'
+    },
+    {
+      field: i18n.language === 'ar' ? 'description' : 'description',
+      headerName: t('description'),
+      flex: 1,
+      align: i18n.language === 'ar' ? 'right' : 'left'
+
+    },
+ 
+    {
+      field: 'investmentStatus',
       headerName: t('investmentStatus'),
-      flex: 1
-    },  {
-      field: i18n.language === 'ar' ? 'payment' : 'payment',
-      headerName: t('payment'),
-      flex: 1
+      flex: 1,
+      renderCell: (params) => (
+        <Switch
+          checked={params.row.investmentStatus}
+          onChange={() => handleToggleStatus(params.row._id, params.row.investmentStatus)}
+          color="primary"
+        />
+      ),
+      align: i18n.language === 'ar' ? 'right' : 'left'
     },
     {
       field: 'actions',

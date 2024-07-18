@@ -10,7 +10,7 @@ import {
 } from '@mui/material';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import api from '../../api/axios';
+import api from '../../api/axios.js';
 import { useTranslation } from 'react-i18next';
 import Loading from '../loading.js';
 
@@ -18,28 +18,29 @@ import Loading from '../loading.js';
 const Addinvestment = () => {
   const navigate = useNavigate();
   const [investment, setinvestment] = useState({
-    title: '',
+    titleInv: '',
     amount: '',
-    investmentTime: '',
+    currency: '',
     type: '',
-    contract: '',
+    dateInv: '',
+    description: '',
     investmentStatus: '',
-    payment: '',
   });
   const [investment_ar, setinvestment_ar] = useState({
-    title_ar: '',
+    titleInv_ar: '',
   });
   const { t, i18n } = useTranslation();
-  const [contracts, setContracts] = useState([]);
+  const [currencies, setCurrencies] = useState([]);
   const [types, setTypes] = useState([]);
 
   useEffect(() =>{
-    const fetchContracts = async () => {
+
+    const fetchCurrencies = async () => {
       try {
-        const response = await api.get(`/contract/allContracts/${i18n.language}`);
-        setContracts(response.data);
+        const response = await api.get(`/currency/getCurrencies/${i18n.language}`);
+        setCurrencies(response.data);
       } catch (error) {
-        console.error('Error fetching investors:', error);
+        console.error({ message: t('Errorfetchingcurrencies:'), error });
       }
     };
 
@@ -52,7 +53,7 @@ const Addinvestment = () => {
       }
     };
 
-    fetchContracts();
+    fetchCurrencies();
     fetchTypes();
   }, []);
 
@@ -94,15 +95,16 @@ const Addinvestment = () => {
       }
     }
   };
-  
+  const isRTL = i18n.language === 'ar';
+
 
   return (
     <Suspense fallback={<Loading />}>
-      <Box p={3}>
-        <ToastContainer />
+      <Box p={3} style={{ direction: isRTL ? 'rtl' : 'ltr', textAlign: isRTL ? 'right' : 'left' }}>
+      <ToastContainer />
         <Paper elevation={8} style={{ padding: '15px', marginBottom: '10px', marginLeft: '1%', width: 'calc(100% - 60px)' }}>
           <Typography variant="h6" component="div" sx={{ flexGrow: 1, marginLeft: '1%' }}>
-            Add investment
+             {t('AddInvestment')}
           </Typography>
           <form onSubmit={handleAddinvestment} style={{ marginTop: '15px' }}>
           <TextField
@@ -118,8 +120,8 @@ const Addinvestment = () => {
             fullWidth
             label="titleInv_ar"
             name="titleInv_ar"
-            value={investment.title_ar}
-            onChange={handleInputChange}
+            value={investment.titleInv_ar}
+            onChange={handleInputChangeAr}
             margin="normal"
             InputProps={{ style: { borderRadius: '12px' } }}
           />  <TextField
@@ -147,22 +149,46 @@ const Addinvestment = () => {
                 </MenuItem>
               ))}
             </TextField>     
-              <TextField
+            <TextField
               fullWidth
               select
-              label="contract"
-              name="contract"
-              value={investment.contract}
+              required
+              label={t("currency")}
+              name="currency"
+              value={investment.currency}
               onChange={handleInputChange}
               margin="normal"
               InputProps={{ style: { borderRadius: '12px' } }}
             >
-              {contracts.map((contract) => (
-                <MenuItem key={contract._id} value={contract._id}>
-                  {contract.title}
+              {currencies.map((currency) => (
+                <MenuItem key={currency._id} value={currency._id}>
+                  {`${currency.symbol} (${currency.symbol_ar})`}
                 </MenuItem>
               ))}
             </TextField>
+            <TextField
+              fullWidth
+              label={t("dateInv")}
+              name="dateInv"
+              type="date"
+              required
+              value={investment.dateInv}
+              onChange={handleInputChange}
+              margin="normal"
+              InputLabelProps={{
+                shrink: true,
+              }}
+              InputProps={{ style: { borderRadius: '12px' } }}
+            />
+             <TextField
+            fullWidth
+            label="description"
+            name="description"
+            value={investment.description}
+            onChange={handleInputChange}
+            margin="normal"
+            InputProps={{ style: { borderRadius: '12px' } }}
+          />
             <TextField
               fullWidth
               select

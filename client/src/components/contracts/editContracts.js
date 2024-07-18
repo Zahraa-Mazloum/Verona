@@ -147,7 +147,7 @@ const EditContract = () => {
                 }}
                 InputProps={{ style: { borderRadius: '12px' } }}
               />
-              <TextField
+              {/* <TextField
                 fullWidth
                 label="Investment Status"
                 name="investmentStatus"
@@ -155,7 +155,7 @@ const EditContract = () => {
                 onChange={handleInputChange}
                 margin="normal"
                 InputProps={{ style: { borderRadius: '12px' } }}
-              />
+              /> */}
               <Box mt={2} display="flex" justifyContent="flex-end">
                 <Button
                   variant="contained"

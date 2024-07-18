@@ -1,13 +1,7 @@
-import React, { useState, useEffect,Suspense } from 'react';
+import React, { useState, useEffect, Suspense } from 'react';
 import api from '../api/axios';
 import { DataGrid, gridClasses } from '@mui/x-data-grid';
-import {
-  Paper,
-  Toolbar,
-  Typography,
-  Box,
-  TextField
-} from '@mui/material';
+import { Paper, Toolbar, Typography, Box, TextField } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import loader from '../components/loading.gif';
 import { useTranslation } from 'react-i18next';
@@ -34,13 +28,23 @@ const OverallInvestmentTable = () => {
   const fetchInvestmentsPerType = async () => {
     try {
       const { data } = await api.get(`/inv/investmentsPerType/${i18n.language}`);
-      setInvestmentsPerType(data); 
+      setInvestmentsPerType(data.map(flattenData));
     } catch (error) {
       console.error('Error fetching investments per type', error);
     } finally {
       setLoading(false);
     }
   };
+
+  const flattenData = (data) => ({
+    _id: data._id,
+    type: data._id.type,
+    currency: data.currency,
+    currency_ar: data.currency_ar,
+    title: data.title,
+    title_ar: data.title_ar,
+    totalAmount: data.totalAmount,
+  });
 
   const safeLowerCase = (str) => (str ? str.toLowerCase() : '');
 
@@ -52,6 +56,11 @@ const OverallInvestmentTable = () => {
     {
       field: i18n.language === 'ar' ? 'title_ar' : 'title',
       headerName: t('type'),
+      flex: 1,
+    },
+    {
+      field: i18n.language === 'ar' ? 'currency_ar' : 'currency',
+      headerName: t('currency'),
       flex: 1,
     },
     {
@@ -70,8 +79,8 @@ const OverallInvestmentTable = () => {
           </Typography>
           <TextField
             label={t('search')}
-            variant="outlined"
-            size="small"
+            variant="standard"
+              size="small"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             style={{ marginLeft: 'auto' }}
@@ -94,7 +103,7 @@ const OverallInvestmentTable = () => {
               pageSize={10}
               rowsPerPageOptions={[10]}
               autoHeight
-              getRowId={(row) => row._id}
+              getRowId={(row) => row._id.type + row._id.currency} // Unique ID combination
               getRowClassName={(params) =>
                 params.index % 2 === 0 ? 'even' : 'odd'
               }
