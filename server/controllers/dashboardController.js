@@ -17,65 +17,71 @@ export const dashboardStates = async (req, res) => {
         const activeInvestments = await Investment.countDocuments({ investmentStatus: true });
 
         // Total invested per month
-        const totalInvestedPerMonth = await Investment.aggregate([
+        const totalInvestedPerMonth = await Contract.aggregate([
             {
                 $lookup: {
-                    from: 'contracts',
-                    localField: 'contract',
+                    from: 'Currency',
+                    localField: 'currency',
                     foreignField: '_id',
-                    as: 'contract'
+                    as: 'currency'
                 }
             },
-            { $unwind: '$contract' },
+            { $unwind: '$currency' },
             {
                 $group: {
-                    _id: { month: { $month: '$contract.startDate' }, year: { $year: '$contract.startDate' } },
+                    _id: { 
+                        month: { $month: '$startDate' }, 
+                        year: { $year: '$startDate' },
+                        currency: '$currency.symbol' 
+                    },
                     total: { $sum: '$amount' }
                 }
             },
-            { $sort: { '_id.year': 1, '_id.month': 1 } }
+            { $sort: { '_id.year': 1, '_id.month': 1, '_id.currency': 1 } }
         ]);
         
-
+        console.log(totalInvestedPerMonth);
+        
         // Top 3 investors
-        const topInvestors = await Investment.aggregate([
+        const topInvestors = await Contract.aggregate([
             {
-                $lookup: {
-                    from: 'contracts',
-                    localField: 'contract',
-                    foreignField: '_id',
-                    as: 'contract'
-                }
-            },
-            { $unwind: '$contract' },
-            {
-                $group: {
-                    _id: '$contract.investorInfo',
-                    totalAmount: { $sum: '$amount' },
-                    profit: { $sum: '$profit' }
-                }
+              $group: {
+                _id: { investorInfo: '$investorInfo', currency: '$currency' },
+                totalAmount: { $sum: '$amount' },
+                profit: { $sum: '$profit' }
+              }
             },
             { $sort: { totalAmount: -1 } },
             { $limit: 3 },
             {
-                $lookup: {
-                    from: 'Investors',
-                    localField: '_id',
-                    foreignField: '_id',
-                    as: 'investor'
-                }
+              $lookup: {
+                from: 'Investors',
+                localField: '_id.investorInfo',
+                foreignField: '_id',
+                as: 'investor'
+              }
             },
             { $unwind: '$investor' },
             {
-                $project: {
-                    name: '$investor.fullname_en',
-                    namear: '$investor.fullname_ar',
-                    totalAmount: 1,
-                    profit:1
-                }
+              $lookup: {
+                from: 'Currency',
+                localField: '_id.currency',
+                foreignField: '_id',
+                as: 'currency'
+              }
+            },
+            { $unwind: '$currency' },
+            {
+              $project: {
+                name: '$investor.fullname_en',
+                namear: '$investor.fullname_ar',
+                currency: '$currency.symbol',
+                totalAmount: 1,
+                profit: 1
+              }
             }
-        ]);
-
+          ]);
+        
         // Overall investments per type
         const investmentsPerType = await Investment.aggregate([
             {
@@ -95,7 +101,8 @@ export const dashboardStates = async (req, res) => {
             { $unwind: '$type' },
             {
                 $project: {
-                    title: '$type.title',
+                    title: '$type.type_en',
+                    titlear:'$type.type_ar',
                     totalAmount: 1
                 }
             }
