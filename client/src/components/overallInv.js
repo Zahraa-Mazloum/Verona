@@ -69,9 +69,11 @@ const OverallInvestmentTable = () => {
       flex: 1,
     },
   ];
+  const isRTL = i18n.language === 'ar';
 
   return (
-    <Box p={3}>
+      <Box p={3} style={{ direction: isRTL ? 'rtl' : 'ltr', textAlign: isRTL ? 'right' : 'left' }}>
+
       <Paper elevation={8} style={{ padding: '15px', marginBottom: '10px' }}>
         <Toolbar>
           <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>

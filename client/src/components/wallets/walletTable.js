@@ -107,14 +107,7 @@ const WalletsTable = () => {
         </span>
       ),
     },
-    {
-      field: 'currency',
-      headerName: t('Currency'),
-      flex: 1,
-      renderCell: (params) => (
-        <span>{i18n.language === 'ar' ? params.row.currency?.symbol_ar : params.row.currency?.symbol}</span>
-      ),
-    },
+
     {
       field: 'amount',
       headerName: t('Amount'),

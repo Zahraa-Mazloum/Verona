@@ -80,7 +80,7 @@
   "titlear" : "Title Ar",
   "type" : "type",
   "dateInv" : "Date Investment",
-  "Addinvestment" : "Addinvestment",
+  "addinvestment" : "Add Investment",
   "ErrorfetchingInvestment" : "Error fetching Investment",
   "InvestmentupdatedSuccessfully" : "Investment Updated Successfully",
   "EditInvestment" : "Edit Investment",
@@ -116,7 +116,10 @@
   "comingSoon" : "Coming Soon",
   "WalletAddedSuccessfully" : "Wallet Added Successfully",
   "Investor" : "Investor",
-  "AddWallet" : "AddWallet"
+  "AddWallet" : "AddWallet",
+  "UpdateWallet" : "Update Wallet",
+  "investmentsPerType" : "Investment Per Type",
+  "investmentManagement": "Investment Management"
 
 
   
