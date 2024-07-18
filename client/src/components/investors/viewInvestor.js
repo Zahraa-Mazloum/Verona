@@ -8,6 +8,7 @@ import { Buffer } from 'buffer';
 import Loading from '../loading.js';
 import loader from '../loading.gif';
 
+
 const InvestorDetails = () => {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -15,7 +16,7 @@ const InvestorDetails = () => {
   const [contracts, setContracts] = useState([]);
   const [loadingInvestor, setLoadingInvestor] = useState(true);
   const [loadingContracts, setLoadingContracts] = useState(true);
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
 
   useEffect(() => {
     const fetchInvestor = async () => {
@@ -56,11 +57,12 @@ const InvestorDetails = () => {
   if (investor.passportPhoto && investor.passportPhoto.data) {
     passportPhotoSrc = `data:${investor.passportPhoto.contentType};base64,${Buffer.from(investor.passportPhoto.data).toString('base64')}`;
   }
+  const isRTL = i18n.language === 'ar';
 
   return (
     <Suspense fallback={<Loading />}>
-      <Box p={3}>
-        <Paper elevation={8} style={{ padding: '15px' }}>
+      <Box p={3} style={{ direction: isRTL ? 'rtl' : 'ltr', textAlign: isRTL ? 'right' : 'left' }}>
+      <Paper elevation={8} style={{ padding: '15px' }}>
           <IconButton onClick={() => navigate('/investor')} style={{ marginBottom: '10px' }}>
             <ArrowBackIcon />
           </IconButton>
@@ -86,9 +88,6 @@ const InvestorDetails = () => {
               </Typography>
               <Typography variant="body1">
                 {t('passportExpiryDate')}: {new Date(investor.passportExpiryDate).toLocaleDateString()}
-              </Typography>
-              <Typography variant="body1">
-                {t('status')}: {investor.status}
               </Typography>
             </Grid>
             <Grid item xs={12} md={4} container justifyContent="center" alignItems="center">
@@ -119,9 +118,6 @@ const InvestorDetails = () => {
                   </Typography>
                   <Typography variant="body1">
                     {t('startDate')}: {new Date(contract.startDate).toLocaleDateString()}
-                  </Typography>
-                  <Typography variant="body1">
-                    {t('investmentStatus')}: {contract.investmentStatus}
                   </Typography>
                 </Paper>
               ))

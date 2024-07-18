@@ -50,7 +50,7 @@ const InvestmentTable = () => {
       console.log(data.s)
       setInvestments(data);
     } catch (error) {
-      toast.error('Error fetching investments');
+      toast.error(t('ErrorFetchinginvestments'));
     } finally {
       setLoading(false);
     }
@@ -66,7 +66,7 @@ const InvestmentTable = () => {
       setInvestments(investments.filter(c => c._id !== id));
       toast.success(t('investmentDeletedSuccessfully'));
     } catch (error) {
-      toast.error('Error deleting investment');
+      toast.error(t('Errordeletinginvestment'));
     }
   };
 

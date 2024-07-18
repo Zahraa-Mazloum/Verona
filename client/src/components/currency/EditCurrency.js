@@ -7,11 +7,14 @@ import api from '../../api/axios';
 import './Currency.css'
 import { BorderColor } from '@mui/icons-material';
 import Loading from '../loading.js';
+import { useTranslation } from 'react-i18next';
+
 
 const EditCurrency = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const [currency, setCurrency] = useState({ name: '', symbol: '', description: '' });
+  const { t, i18n } = useTranslation();
 
   useEffect(() => {
     const fetchCurrency = async () => {
@@ -19,11 +22,12 @@ const EditCurrency = () => {
         const { data } = await api.get(`/currency/getCurrencyById/${id}`);
         setCurrency(data);
       } catch (error) {
-        toast.error('Error fetching currency');
+        toast.error(t('Errorfetchingcurrency'));
       }
     };
     fetchCurrency();
   }, [id]);
+  
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -34,12 +38,12 @@ const EditCurrency = () => {
     e.preventDefault();
     try {
       await api.put(`/currency/updateCurrency/${id}`, currency);
-      toast.success('Currency updated successfully');
+      toast.success(t('Currencyupdatedsuccessfully'));
       setTimeout(() => {
         navigate('/currencyTable');
       }, 1500);
     } catch (error) {
-      toast.error('Error updating currency');
+      toast.error(t('Errorupdatingcurrency'));
     }
   };
 
@@ -49,7 +53,7 @@ const EditCurrency = () => {
       <ToastContainer />
       <Paper elevation={8} style={{ padding: '15px', marginBottom: '10px', marginLeft: '1%', width: 'calc(100% - 60px)' }}>
         <Typography variant="h6" component="div" sx={{ flexGrow: 1, marginLeft: '1%' }}>
-          Edit Currency
+        {t('EditCurrency')}
         </Typography>
         <div className='formContainer'>
         <form onSubmit={handleUpdateCurrency} style={{ marginTop: '15px' }}>
@@ -73,7 +77,7 @@ const EditCurrency = () => {
           <TextField
             fullWidth
             select
-            label="Symbol"
+            label={t('symbol')}
             name="symbol"
             required
             value={currency.symbol}
@@ -105,7 +109,8 @@ const EditCurrency = () => {
 
 
             >
-              Update Currency
+       {t('UpdateCurrency')}
+
             </Button>
             <Button
               variant="outlined"
@@ -123,8 +128,8 @@ const EditCurrency = () => {
               }}
 
             >
-              Cancel
-            </Button>
+                {t('cancel')}
+                </Button>
           </Box>
         </form>
         </div>

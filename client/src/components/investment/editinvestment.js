@@ -36,7 +36,8 @@ const[t]=useTranslation()
         };
         setInvestment(formattedData);
       } catch (error) {
-        toast.error('Error fetching Investment');
+        toast.error(t('ErrorfetchingInvestment'));
+        ;
       }
     };
     fetchInvestment();
@@ -62,13 +63,12 @@ const[t]=useTranslation()
     e.preventDefault();
     try {
       await api.put(`/inv/updateInvestment/${id}`, Investment);
-      toast.success('Investment updated successfully');
+      toast.success(t('Investmentupdatedsuccessfully'));
       setTimeout(() => {
         navigate('/Investment');
       }, 1500);
     } catch (error) {
-      toast.error('Error updating Investment');
-    }
+      toast.error(t('ErrorfetchingInvestment'));    }
   };
 
   return (
@@ -84,7 +84,7 @@ const[t]=useTranslation()
            
             <TextField
               fullWidth
-              label="Title (EN)"
+              label={t("title")}
               name="titleInv"
               value={Investment.titleInv}
               onChange={handleInputChange}
@@ -93,7 +93,7 @@ const[t]=useTranslation()
               InputProps={{ style: { borderRadius: '12px' } }}
             />          <TextField
               fullWidth
-              label="Title (Ar)"
+              label={t("titlear")}
               name="titleInv_ar"
               value={Investment.titleInv_ar}
               onChange={handleInputChange}
@@ -103,7 +103,7 @@ const[t]=useTranslation()
             />  
             <TextField
               fullWidth
-              label="Type (En)"
+              label={t("type")}
               name="type.type_en"
               value={Investment.type.type_en}
               onChange={handleInputChange}
@@ -113,7 +113,7 @@ const[t]=useTranslation()
             />
             <TextField
               fullWidth
-              label="Type (Ar)"
+              label={t("typear")}
               name="type.type_ar"
               value={Investment.type.type_ar}
               onChange={handleInputChange}
@@ -123,7 +123,7 @@ const[t]=useTranslation()
           
                  <TextField
               fullWidth
-              label="Amount"
+              label={t("amount")}
               name="amount"
               value={Investment.amount}
               onChange={handleInputChange}
@@ -146,7 +146,8 @@ const[t]=useTranslation()
                 type="submit"
                 sx={{ mr: 2 }}
               >
-                Update Investment
+                                {t('UpdateInvestment')}
+
               </Button>
               <Button
                 variant="outlined"
@@ -163,8 +164,8 @@ const[t]=useTranslation()
                   }
                 }}
               >
-                Cancel
-              </Button>
+                {t('cancel')}
+                </Button>
             </Box>
           </form>
         </div>

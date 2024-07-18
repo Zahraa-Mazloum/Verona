@@ -49,7 +49,7 @@ const CurrencyTable = () => {
       // console.log(data);
       setCurrencies(data);
     } catch (error) {
-      toast.error('Error fetching currencies');
+      toast.error(t('Errorfetchingcurrencies'));
     } finally {
       setLoading(false);
     }
@@ -65,7 +65,7 @@ const CurrencyTable = () => {
       setCurrencies(currencies.filter(c => c._id !== id));
       toast.success(t('currencyDeletedSuccessfully'));
     } catch (error) {
-      toast.error('Error deleting currency');
+      toast.error(t('Errordeletingcurrency'));
     }
   };
 
@@ -163,10 +163,11 @@ const CurrencyTable = () => {
       ),
     },
   ];
+  const isRTL = i18n.language === 'ar';
 
   return (
     <Suspense fallback={<Loading />}>
-    <Box p={3}>
+      <Box p={3} style={{ direction: isRTL ? 'rtl' : 'ltr', textAlign: isRTL ? 'right' : 'left' }}>
       <ToastContainer />
       <Paper elevation={8} style={{ padding: '15px', marginBottom: '10px' }}>
         <Toolbar>

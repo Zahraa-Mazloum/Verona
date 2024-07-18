@@ -25,6 +25,7 @@ import NewInvestments from './components/newInv/newInv.js'
 import WalletTable from './components/wallets/walletTable.js'
 import AddWallet from './components/wallets/addWallets.js';
 import UpdateUser from './components/investors/EditInvestorInfo.js';
+import EditWallet from './components/wallets/EditWallet.js';
 import Loading from './components/loading.js';
 
 import './App.css'
@@ -64,6 +65,7 @@ function App() {
         <Route path="/editContracts/:id" element={<EditContracts    />} />
         <Route path="/editinvestmentTypes/:id" element={<EditTypes    />} />
         <Route path="/editinvestment/:id" element={<EditInv />} />
+        <Route path="/editWallet/:id" element={<EditWallet />} />
 
       </Route>
     </Routes>

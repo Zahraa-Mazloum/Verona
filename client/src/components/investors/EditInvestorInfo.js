@@ -12,11 +12,15 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import api from '../../api/axios';
 import Loading from '../loading.js';
+import { useTranslation } from 'react-i18next';
+
 
 const EditInvestor = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const [isEdit, setIsEdit] = useState(false);
+  const { t, i18n } = useTranslation();
+
 
   const [investor, setInvestor] = useState({
     fullname_en: '',
@@ -75,11 +79,11 @@ const EditInvestor = () => {
       if (file.type === 'image/jpeg' || file.type === 'image/png') {
         setInvestor({ ...investor, passportPhoto: file });
       } else {
-        toast.error('Please select a valid image file (JPEG or PNG) smaller than 5 MB.');
+        toast.error(t('photoError'));
         e.target.value = null;
       }
     } else {
-      toast.error('Please select a file smaller than 5 MB');
+      toast.error(('photoSize'));
       e.target.value = null;
     }
   };
@@ -100,14 +104,14 @@ const EditInvestor = () => {
             'Content-Type': 'multipart/form-data',
           },
         });
-        toast.success('Investor updated successfully');
+        toast.success(t('Investor updated successfully'));
       } else {
         await api.post('/admin/registration', formData, {
           headers: {
             'Content-Type': 'multipart/form-data',
           },
         });
-        toast.success('Investor added successfully');
+        toast.success(t('Investoraddedsuccessfully'));
       }
       setTimeout(() => {
         navigate('/investor');
@@ -121,10 +125,12 @@ const EditInvestor = () => {
       }
     }
   };
+  const isRTL = i18n.language === 'ar';
 
   return (
     <Suspense fallback={<Loading />}>
-      <Box p={3}>
+      <Box p={3} style={{ direction: isRTL ? 'rtl' : 'ltr', textAlign: isRTL ? 'right' : 'left' }}>
+
         <ToastContainer />
         <Paper elevation={8} style={{ padding: '15px', marginBottom: '10px', marginLeft: '1%', width: 'calc(100% - 60px)' }}>
           <Typography variant="h6" component="div" sx={{ flexGrow: 1, marginLeft: '1%' }}>
@@ -133,7 +139,7 @@ const EditInvestor = () => {
           <form onSubmit={handleEditInvestor} style={{ marginTop: '15px' }}>
             <TextField
               fullWidth
-              label="Full Name (EN)"
+              label={t('fullname')}
               name="fullname_en"
               value={investor.fullname_en}
               onChange={handleInputChange}
@@ -142,7 +148,7 @@ const EditInvestor = () => {
             />
             <TextField
               fullWidth
-              label="Email"
+              label={t('email')}
               name="email"
               value={investor.email}
               onChange={handleInputChange}
@@ -151,7 +157,7 @@ const EditInvestor = () => {
             />
             <TextField
               fullWidth
-              label="Phone Number"
+              label={t('phoneNumber')}
               name="phoneNumber"
               value={investor.phoneNumber}
               onChange={handleInputChange}
@@ -160,7 +166,7 @@ const EditInvestor = () => {
             />
             <TextField
               fullWidth
-              label="Date of Birth"
+              label={t('dateOfBirth')}
               name="dateOfBirth"
               value={investor.dateOfBirth}
               type="date"
@@ -171,7 +177,7 @@ const EditInvestor = () => {
             />
             <TextField
               fullWidth
-              label="Password"
+              label={t('password')}
               name="password"
               type="password"
               value={investor.password}
@@ -179,7 +185,7 @@ const EditInvestor = () => {
               margin="normal"
               InputProps={{ style: { borderRadius: '12px' } }}
             />
-            <TextField
+            {/* <TextField
               fullWidth
               select
               label="Active"
@@ -191,10 +197,10 @@ const EditInvestor = () => {
             >
               <MenuItem value="active">True</MenuItem>
               <MenuItem value="inactive">False</MenuItem>
-            </TextField>
+            </TextField> */}
             <TextField
               fullWidth
-              label="Passport Number"
+              label={t('passportNumber')}
               name="passportNumber"
               value={investor.passportNumber}
               onChange={handleInputChange}
@@ -203,7 +209,7 @@ const EditInvestor = () => {
             />
             <TextField
               fullWidth
-              label="Passport Expiry Date"
+              label={t('passportExpiryDate')}
               name="passportExpiryDate"
               value={investor.passportExpiryDate}
               type="date"
@@ -223,7 +229,7 @@ const EditInvestor = () => {
             />
             <TextField
               fullWidth
-              label="Full Name (AR)"
+              label={t('fullNamear')}
               name="fullname_ar"
               value={investor_ar.fullname_ar}
               onChange={(event) => {
@@ -261,8 +267,8 @@ const EditInvestor = () => {
                   },
                 }}
               >
-                Cancel
-              </Button>
+                {t('cancel')}
+                </Button>
             </Box>
           </form>
         </Paper>

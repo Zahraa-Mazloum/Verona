@@ -14,6 +14,7 @@ import api from '../../api/axios';
 import { useTranslation } from 'react-i18next';
 import Loading from '../loading.js';
 
+
 const AddWallet = () => {
   const navigate = useNavigate();
   const { t, i18n } = useTranslation();
@@ -80,10 +81,11 @@ const AddWallet = () => {
       }
     }
   };
+  const isRTL = i18n.language === 'ar';
 
   return (
     <Suspense fallback={<Loading />}>
-    <Box p={3}>
+      <Box p={3} style={{ direction: isRTL ? 'rtl' : 'ltr', textAlign: isRTL ? 'right' : 'left' }}>
       <ToastContainer />
       <Paper elevation={8} style={{ padding: '15px', marginBottom: '10px', marginLeft: '1%', width: 'calc(100% - 60px)' }}>
         <Typography variant="h6" component="div" sx={{ flexGrow: 1, marginLeft: '1%' }}>
@@ -109,7 +111,7 @@ const AddWallet = () => {
       
           <TextField
             fullWidth
-            label={t('Amount')}
+            label={t('amount')}
             name="amount"
             value={wallet.amount}
             onChange={handleInputChange}
@@ -140,7 +142,7 @@ const AddWallet = () => {
                 },
               }}
             >
-              {t('Cancel')}
+              {t('cancel')}
             </Button>
           </Box>
         </form>

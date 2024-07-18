@@ -47,7 +47,7 @@ const InvestorsTable = () => {
       const { data } = await api.get(`/admin/allInvestors/${i18n.language}`);
       setInvestors(data);
     } catch (error) {
-      toast.error('Error fetching Investors');
+      toast.error(t('ErrorfetchingInvestors'));
     } finally {
       setLoading(false);
     }
@@ -61,9 +61,9 @@ const InvestorsTable = () => {
     try {
       await api.delete(`/admin/deleteUser/${id}`);
       setInvestors(investors.filter(c => c._id !== id));
-      toast.success(t('Investor Deleted Successfully'));
+      toast.success(t('InvestorDeletedSuccessfully'));
     } catch (error) {
-      toast.error('Error deleting Investor');
+      toast.error(t('ErrordeletingInvestor'));
     }
   };
 
@@ -137,11 +137,6 @@ const InvestorsTable = () => {
           {new Date(params.row.passportExpiryDate).toLocaleDateString()}
         </span>
       ),    
-    },
-    {
-      field: 'status',
-      headerName: t('status'),
-      flex: 1,
     },
     {
       field: 'actions',

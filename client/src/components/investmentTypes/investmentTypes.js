@@ -48,7 +48,7 @@ const Investmenttypes = () => {
       const { data } = await api.get(`/types/getTypesByLanguage/${i18n.language}`);
       settypes(data);
     } catch (error) {
-      toast.error('Error fetching types');
+      toast.error(t('Errorfetchingtypes'));
     } finally {
       setLoading(false);
     }
@@ -64,7 +64,7 @@ const Investmenttypes = () => {
       settypes(types.filter(c => c._id !== id));
       toast.success(t('TypesDeletedSuccessfully'));
     } catch (error) {
-      toast.error('Error deleting Types');
+      toast.error(t('ErrordeletingType'));
     }
   };
 

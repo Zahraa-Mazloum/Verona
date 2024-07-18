@@ -73,7 +73,7 @@ const Addinvestment = () => {
     const fullinvestment = { ...investment, ...investment_ar };
     try {
       await api.post('/inv/createInvestment', fullinvestment);
-      toast.success('Investment added successfully');
+      toast.success(t('Investmentaddedsuccessfully'));
       setTimeout(() => {
         navigate('/investment');
       }, 1500);
@@ -88,7 +88,7 @@ const Addinvestment = () => {
           const errorMessage = preContent.split('\n')[0];
           toast.error(errorMessage);
         } else {
-          toast.error('An error occurred');
+          toast.error(t('Anerroroccurred'));
         }
       } else {
         console.error('Error without a response data');
@@ -109,7 +109,7 @@ const Addinvestment = () => {
           <form onSubmit={handleAddinvestment} style={{ marginTop: '15px' }}>
           <TextField
             fullWidth
-            label="title"
+            label={t('title')}
             name="titleInv"
             value={investment.titleInv}
             onChange={handleInputChange}
@@ -118,7 +118,7 @@ const Addinvestment = () => {
           />     
             <TextField
             fullWidth
-            label="titleInv_ar"
+            label={t('titlear)')}
             name="titleInv_ar"
             value={investment.titleInv_ar}
             onChange={handleInputChangeAr}
@@ -126,7 +126,7 @@ const Addinvestment = () => {
             InputProps={{ style: { borderRadius: '12px' } }}
           />  <TextField
             fullWidth
-            label="amount"
+            label={t('amount)')}
             name="amount"
             value={investment.amount}
             onChange={handleInputChange}
@@ -136,7 +136,7 @@ const Addinvestment = () => {
             <TextField
               fullWidth
               select
-              label="type"
+              label={t('type)')}
               name="type"
               value={investment.type}
               onChange={handleInputChange}
@@ -182,7 +182,7 @@ const Addinvestment = () => {
             />
              <TextField
             fullWidth
-            label="description"
+            label={t("description")}
             name="description"
             value={investment.description}
             onChange={handleInputChange}
@@ -192,7 +192,7 @@ const Addinvestment = () => {
             <TextField
               fullWidth
               select
-              label="Investment Status"
+              label={t("dateInv")}
               name="investmentStatus"
               value={investment.investmentStatus}
               onChange={handleInputChange}
@@ -209,7 +209,8 @@ const Addinvestment = () => {
                 type="submit"
                 sx={{ mr: 2 }}
               >
-                Add investment
+                                {t('Addinvestment')}
+
               </Button>
               <Button
                 variant="outlined"
@@ -226,8 +227,8 @@ const Addinvestment = () => {
                   },
                 }}
               >
-                Cancel
-              </Button>
+                {t('cancel')}
+                </Button>
             </Box>
           </form>
         </Paper>

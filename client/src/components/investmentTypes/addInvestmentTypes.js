@@ -29,12 +29,12 @@ const Addtypes = () => {
     const fulltypes = { ...types, ...types_ar };
     try {
       await api.post('/types/addInvestmentType', fulltypes);
-      toast.success('types added successfully');
+      toast.success(t('typeaddedsuccessfully'));
       setTimeout(() => {
         navigate('/types');
       }, 1500);
     } catch (error) {
-      toast.error('Error adding types');
+      toast.error(t('Erroraddingtypes'));
     }
   };
 
@@ -44,12 +44,12 @@ const Addtypes = () => {
       <ToastContainer />
       <Paper elevation={8} style={{ padding: '15px', marginBottom: '10px', marginLeft: '1%', width: 'calc(100% - 60px)' }}>
         <Typography variant="h6" component="div" sx={{ flexGrow: 1, marginLeft: '1%' }}>
-          {t('Addtypes')}
+          {t('Addtype')}
         </Typography>
         <form onSubmit={handleAddtypes} style={{ marginTop: '15px' }}>
           <TextField
             fullWidth
-            label="Title"
+            label={t("title")}
             name="type_en"
             value={types.type_en}
             onChange={handleInputChange}
@@ -58,7 +58,7 @@ const Addtypes = () => {
           />
           <TextField
             fullWidth
-            label="Description"
+            label={t("desceiption")}
             name="description_en"
             value={types.description_en}
             onChange={handleInputChange}
@@ -67,7 +67,7 @@ const Addtypes = () => {
           />
           <TextField
             fullWidth
-            label="الاسم"
+            label={t("titlear")}
             name="type_ar"
             value={types_ar.type_ar}
             onChange={(event) => {
@@ -83,7 +83,7 @@ const Addtypes = () => {
           />
           <TextField
             fullWidth
-            label="الوصف"
+            label={t("descriptionar")}
             name="description_ar"
             value={types_ar.description_ar}
             onChange={handleInputChangeAr}
@@ -97,8 +97,8 @@ const Addtypes = () => {
               type="submit"
               sx={{ mr: 2 }}
             >
-              Add types
-            </Button>
+                {t('AddType')}
+                </Button>
             <Button
               variant="outlined"
               color="secondary"
@@ -114,8 +114,8 @@ const Addtypes = () => {
                 },
               }}
             >
-              Cancel
-            </Button>
+                {t('cancel')}
+                </Button>
           </Box>
         </form>
       </Paper>

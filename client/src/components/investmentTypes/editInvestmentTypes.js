@@ -21,7 +21,7 @@ const Edittypes = () => {
         const { data } = await api.get(`/types/getTypeById/${id}`);
         settypes(data);
       } catch (error) {
-        toast.error('Error fetching types');
+        toast.error(t('Errorfetchingtypes'));
       }
     };
     fetchtypes();
@@ -36,12 +36,12 @@ const Edittypes = () => {
     e.preventDefault();
     try {
       await api.put(`/types/updateType/${id}`, types);
-      toast.success('types updated successfully');
+      toast.success(t('typeupdatedsuccessfully'));
       setTimeout(() => {
         navigate('/types');
       }, 1500);
     } catch (error) {
-      toast.error('Error updating types');
+      toast.error(t('Errorupdatingtypes'));
     }
   };
 
@@ -74,7 +74,7 @@ const Edittypes = () => {
 />
           <TextField
             fullWidth
-            label="Description"
+            label={t("description")}
             name="description_en"
             value={types.description_en}
             onChange={handleInputChange}
@@ -83,7 +83,7 @@ const Edittypes = () => {
 
           />        <TextField
   fullWidth
-  label="Title"
+  label={t("title")}
   name="type_ar"
   value={types.type_ar}
   onChange={handleInputChange}
@@ -100,7 +100,7 @@ const Edittypes = () => {
 />
           <TextField
             fullWidth
-            label="Description"
+            label={t("descriptionar")}
             name="description_ar"
             value={types.description_ar}
             onChange={handleInputChange}
@@ -118,8 +118,8 @@ const Edittypes = () => {
 
 
             >
-              Update types
-            </Button>
+                {t('UpdateType')}
+                </Button>
             <Button
               variant="outlined"
               color="secondary"
@@ -136,7 +136,7 @@ const Edittypes = () => {
               }}
 
             >
-              Cancel
+                {t('cancel')}
             </Button>
           </Box>
         </form>

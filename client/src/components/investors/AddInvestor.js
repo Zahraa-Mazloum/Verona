@@ -8,6 +8,7 @@ import {
   Box,
   MenuItem
 } from '@mui/material';
+import { useTranslation } from 'react-i18next';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import api from '../../api/axios';
@@ -39,6 +40,7 @@ const AddInvestor = () => {
     const { name, value } = e.target;
     setInvestor_ar({ ...investor_ar, [name]: value });
   };
+  const { t, i18n } = useTranslation();
 
   const handleFileChange = (e) => {
     const file = e.target.files[0];
@@ -47,11 +49,11 @@ const AddInvestor = () => {
       if (file.type === 'image/jpeg' || file.type === 'image/png') {
         setInvestor({ ...investor, passportPhoto: file });
       } else {
-        toast.error('Please select a valid image file (JPEG or PNG) smaller than 5 MB.');
+        toast.error(t('photoError'));
         e.target.value = null;
       }
     } else {
-      toast.error('Please select a file smaller than 5 MB');
+      toast.error(t('photoSize'));
       e.target.value = null;
     }
   };
@@ -84,18 +86,20 @@ const AddInvestor = () => {
       }
     }
   };
+  const isRTL = i18n.language === 'ar';
+
   return (
     <Suspense fallback={<Loading />}>
-    <Box p={3}>
+      <Box p={3} style={{ direction: isRTL ? 'rtl' : 'ltr', textAlign: isRTL ? 'right' : 'left' }}>
       <ToastContainer />
       <Paper elevation={8} style={{ padding: '15px', marginBottom: '10px', marginLeft: '1%', width: 'calc(100% - 60px)' }}>
         <Typography variant="h6" component="div" sx={{ flexGrow: 1, marginLeft: '1%' }}>
-          Add Investor
+          {t('AddInvestor')}
         </Typography>
         <form onSubmit={handleAddInvestor} style={{ marginTop: '15px' }}>
           <TextField
             fullWidth
-            label="Full Name (EN)"
+            label={t('FullName')}
             name="fullname_en"
             value={investor.fullname_en}
             onChange={handleInputChange}
@@ -104,7 +108,7 @@ const AddInvestor = () => {
           />
           <TextField
             fullWidth
-            label="Email"
+            label={t('email')}
             name="email"
             value={investor.email}
             onChange={handleInputChange}
@@ -113,7 +117,7 @@ const AddInvestor = () => {
           />
           <TextField
             fullWidth
-            label="Phone Number"
+            label={t('phoneNumber')}
             name="phoneNumber"
             value={investor.phoneNumber}
             onChange={handleInputChange}
@@ -122,7 +126,7 @@ const AddInvestor = () => {
           />
       <TextField
   fullWidth
-  label="Date of Birth"
+  label={t('dateOfBirth')}
   name="dateOfBirth"
   value={investor.dateOfBirth}
   type="date"
@@ -135,7 +139,7 @@ const AddInvestor = () => {
           
           <TextField
             fullWidth
-            label="Password"
+            label={t('password')}
             name="password"
             type="password"
             value={investor.password}
@@ -143,7 +147,7 @@ const AddInvestor = () => {
             margin="normal"
             InputProps={{ style: { borderRadius: '12px' } }}
           />
-          <TextField
+          {/* <TextField
             fullWidth
             select
             label="Active"
@@ -155,10 +159,10 @@ const AddInvestor = () => {
           >
             <MenuItem value="active">True</MenuItem>
             <MenuItem value="inactive">False</MenuItem>
-          </TextField>
+          </TextField> */}
           <TextField
             fullWidth
-            label="Passport Number"
+            label={t('passportNumber')}
             name="passportNumber"
             value={investor.passportNumber}
             onChange={handleInputChange}
@@ -167,7 +171,7 @@ const AddInvestor = () => {
           />
           <TextField
             fullWidth
-            label="Passport Expiry Date"
+            label={t('passportExpiryDate')}
             name="passportExpiryDate"
             value={investor.passportExpiryDate}
             type="date"
@@ -187,7 +191,7 @@ const AddInvestor = () => {
           />
           <TextField
             fullWidth
-            label="Full Name (AR)"
+            label={t('fullNamear')}
             name="fullname_ar"
             value={investor_ar.fullname_ar}
             onChange={(event) => {
@@ -208,7 +212,9 @@ const AddInvestor = () => {
               type="submit"
               sx={{ mr: 2 }}
             >
-              Add Investor
+                              {t('AddInvestor')}
+
+        
             </Button>
             <Button
               variant="outlined"
@@ -225,8 +231,8 @@ const AddInvestor = () => {
                 },
               }}
             >
-              Cancel
-            </Button>
+                {t('cancel')}
+                </Button>
           </Box>
         </form>
       </Paper>

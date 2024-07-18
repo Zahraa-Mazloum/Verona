@@ -7,47 +7,30 @@ import api from '../../api/axios';
 import { useTranslation } from 'react-i18next';
 import Loading from '../loading.js';
 
-const EditContract = () => {
+const EditWallet = () => {
   const { id } = useParams();
   const navigate = useNavigate();
-  const [contract, setContract] = useState({
-    investorInfo: {
-      fullname_en: '',
-      fullname_ar: ''
-    },
-    currency: {
-      symbol_en: '',
-      symbol_ar: ''
-    },
-    amount: '',
-    contractTime: '',
-    startDate: '',
-    investmentStatus: '',
-  });
-
+  const [wallet, setWallet] = useState({ investorInfo: { fullname_en: '', fullname_ar: '' }, amount: '' });
   const { t, i18n } = useTranslation();
 
   useEffect(() => {
-    const fetchContract = async () => {
+    const fetchWallet = async () => {
       try {
-        const { data } = await api.get(`/contract/investrContract/${id}`);
-        const formattedData = {
-          ...data,
-          startDate: data.startDate ? data.startDate.split('T')[0] : ''
-        };
-        setContract(formattedData);
+        const { data } = await api.get(`/wallet/getWallet/${id}`);
+        setWallet(data);
       } catch (error) {
-        toast.error(t('Errorfetchingcontract'));
+        toast.error(t('ErrorFetchingWallet'));
       }
     };
-    fetchContract();
-  }, [id]);
+
+    fetchWallet();
+  }, [id, i18n.language]);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     const [mainKey, subKey] = name.split('.');
     if (subKey) {
-      setContract(prevState => ({
+      setWallet(prevState => ({
         ...prevState,
         [mainKey]: {
           ...prevState[mainKey],
@@ -55,98 +38,79 @@ const EditContract = () => {
         }
       }));
     } else {
-      setContract({ ...contract, [name]: value });
+      setWallet({ ...wallet, [name]: value });
     }
   };
 
-  const handleUpdateContract = async (e) => {
+  const handleUpdateWallet = async (e) => {
     e.preventDefault();
     try {
-      await api.put(`/contract/editContract/${id}`, contract);
-      toast.success(t('Contractupdatedsuccessfully'));
+      // Validate the payload size before sending it
+      const payloadSize = new Blob([JSON.stringify(wallet)]).size;
+      if (payloadSize > 5000000) { // Example size limit of 5MB
+        toast.error(t('PayloadTooLarge'));
+        return;
+      }
+
+      await api.put(`/wallet/updateWallet/${id}`, wallet);
+      toast.success(t('WalletUpdatedSuccessfully'));
       setTimeout(() => {
-        navigate('/contract');
+        navigate('/wallets');
       }, 1500);
     } catch (error) {
-      toast.error(t('Errorupdatingcontract'));
+      toast.error(t('ErrorUpdatingWallet'));
     }
   };
+
   const isRTL = i18n.language === 'ar';
 
   return (
     <Suspense fallback={<Loading />}>
       <Box p={3} style={{ direction: isRTL ? 'rtl' : 'ltr', textAlign: isRTL ? 'right' : 'left' }}>
-      <ToastContainer />
+        <ToastContainer />
         <Paper elevation={8} style={{ padding: '15px', marginBottom: '10px', marginLeft: '1%', width: 'calc(100% - 60px)' }}>
           <Typography variant="h6" component="div" sx={{ flexGrow: 1, marginLeft: '1%' }}>
-            {t('EditContract')}
+            {t('EditWallet')}
           </Typography>
           <div className='formContainer'>
-            <form onSubmit={handleUpdateContract} style={{ marginTop: '15px' }}>
+            <form onSubmit={handleUpdateWallet} style={{ marginTop: '15px' }}>
               <TextField
                 fullWidth
-                label={t('fullName')}
+                label={t('InvestorFullNameEN')}
                 name="investorInfo.fullname_en"
-                value={contract.investorInfo.fullname_en}
+                value={wallet.investorInfo.fullname_en}
                 onChange={handleInputChange}
                 margin="normal"
                 InputProps={{ style: { borderRadius: '12px' } }}
-                disabled={true} 
+                disabled={true}
               />
               <TextField
                 fullWidth
-                label={t('fullNamear')}
+                label={t('InvestorFullNameAR')}
                 name="investorInfo.fullname_ar"
-                value={contract.investorInfo.fullname_ar}
+                value={wallet.investorInfo.fullname_ar}
                 onChange={handleInputChange}
                 margin="normal"
                 InputProps={{ style: { borderRadius: '12px' } }}
-                disabled={true} 
+                disabled={true}
               />
               <TextField
                 fullWidth
-                label={t("amount")}
+                label={t('amount')}
                 name="amount"
                 type="number"
                 required
-                value={contract.amount}
+                value={wallet.amount}
                 onChange={handleInputChange}
                 margin="normal"
                 InputProps={{ style: { borderRadius: '12px' } }}
-              />
-              <TextField
-                fullWidth
-                label={t('currency')}
-                name="currency.symbol"
-                value={contract.currency.symbol}
-                onChange={handleInputChange}
-                margin="normal"
-                InputProps={{ style: { borderRadius: '12px' } }}
-                disabled={true} 
-              />
-              <TextField
-                fullWidth
-                label={t("contractTime")}
-                name="contractTime"
-                value={contract.contractTime}
-                onChange={handleInputChange}
-                margin="normal"
-                InputProps={{ style: { borderRadius: '12px' } }}
-                required
-              />
-              <TextField
-                fullWidth
-                label={("StartDate")}
-                name="startDate"
-                type="date"
-                value={contract.startDate}
-                onChange={handleInputChange}
-                margin="normal"
-                required
-                InputLabelProps={{
-                  shrink: true,
+                sx={{
+                  '&:hover': {
+                    '& .MuiOutlinedInput-notchedOutline': {
+                      borderColor: '#e65100'
+                    }
+                  }
                 }}
-                InputProps={{ style: { borderRadius: '12px' } }}
               />
               <Box mt={2} display="flex" justifyContent="flex-end">
                 <Button
@@ -155,12 +119,12 @@ const EditContract = () => {
                   type="submit"
                   sx={{ mr: 2 }}
                 >
-                {t('UpdateContract')}
+                  {t('UpdateWallet')}
                 </Button>
                 <Button
                   variant="outlined"
                   color="secondary"
-                  onClick={() => navigate('/contract')}
+                  onClick={() => navigate('/wallets')}
                   sx={{
                     mr: 2,
                     border: '1px solid #ed6c02',
@@ -172,7 +136,7 @@ const EditContract = () => {
                     }
                   }}
                 >
-                {t('cancel')}
+                  {t('cancel')}
                 </Button>
               </Box>
             </form>
@@ -183,4 +147,4 @@ const EditContract = () => {
   );
 };
 
-export default EditContract;
+export default EditWallet;
