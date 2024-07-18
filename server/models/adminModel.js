@@ -31,11 +31,6 @@ const adminSchema = new mongoose.Schema({
     required: true,
     default: 'admin',
   },
-  status: {
-    type: Boolean,
-    required: true,
-    default: true,
-  },
 }, {
   timestamps: true,
   

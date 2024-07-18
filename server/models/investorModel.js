@@ -27,10 +27,6 @@ const investorSchema = new mongoose.Schema({
     required: true,
     default: 'investor',
   },
-  status: {
-    type: String,
-    required: true,
-  },
   passportNumber: {
     type: String,
     required: [true, 'Please add the passport number'],

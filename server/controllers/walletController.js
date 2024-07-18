@@ -3,7 +3,7 @@ import Wallet from '../models/walletSchema.js';
 import Investor from "../models/investorModel.js";
 
 export const createWallet = asyncHandler(async (req, res) => {
-    const { investorInfo: investorId,currency: currencyId, amount } = req.body;
+    const { investorInfo: investorId, amount } = req.body;
 
     try {
         const investor = await Investor.findById(investorId);

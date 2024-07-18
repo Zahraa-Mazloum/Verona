@@ -31,11 +31,6 @@ const employeeSchema = new mongoose.Schema({
     required: true,
     default: 'employee',
   },
-  status: {
-    type: Boolean,
-    required: true,
-    default: true,
-  },
   onboarding: {
     type: Date,
   },

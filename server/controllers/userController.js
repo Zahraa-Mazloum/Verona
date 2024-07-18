@@ -20,9 +20,9 @@ export const loginUser = asyncHandler(async (req, res) => {
     const user = await Admin.findOne({ email }) || await Investor.findOne({ email });
 
     if (user && (await bcrypt.compare(password, user.password))) {
-        if (!user.status) {
+        if (!user) {
             res.status(403);
-            throw new Error('User account is inactive. Please contact support.');
+            throw new Error('User account is unavailable.');
         }
         res.json({
             _id: user.id,
@@ -32,7 +32,6 @@ export const loginUser = asyncHandler(async (req, res) => {
             phoneNumber: user.phoneNumber,
             dateOfBirth: user.dateOfBirth,
             role: user.role,
-            status: user.status,
             token: generateToken(user._id),
         });
     } else {
