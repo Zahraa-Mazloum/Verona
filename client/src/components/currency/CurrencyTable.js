@@ -100,17 +100,23 @@ const CurrencyTable = () => {
     {
       field: i18n.language === 'ar' ? 'name_ar' : 'name',
       headerName: t('name'),
-      flex: 1
+      flex: 1,
+      align: i18n.language === 'ar' ? 'right' : 'left'
+
     },
     {
       field: i18n.language === 'ar' ? 'symbol_ar' : 'symbol',
       headerName: t('symbol'),
-      flex: 1
+      flex: 1,
+      align: i18n.language === 'ar' ? 'right' : 'left'
+
     },
     {
       field: i18n.language === 'ar' ? 'description_ar' : 'description',
       headerName: t('description'),
-      flex: 2
+      flex: 2,
+      align: i18n.language === 'ar' ? 'right' : 'left'
+
     },
     {
       field: 'actions',

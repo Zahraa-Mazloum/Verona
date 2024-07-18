@@ -102,21 +102,28 @@ const InvestorsTable = () => {
       field: i18n.language === 'ar' ? 'fullname_ar' : 'fullname_en',
       headerName: t('fullname'),
       flex: 1,
+      align: i18n.language === 'ar' ? 'right' : 'left'
+
     },
     {
       field: 'email',
       headerName: t('email'),
       flex: 1,
+      align: i18n.language === 'ar' ? 'right' : 'left'
+
     },
     {
       field: 'phoneNumber',
       headerName: t('phoneNumber'),
       flex: 1,
+      align: i18n.language === 'ar' ? 'right' : 'left'
+
     },
     {
       field: 'dateOfBirth',
       headerName: t('dateOfBirth'),
       flex: 1,
+      align: i18n.language === 'ar' ? 'right' : 'left',
       renderCell: (params) => (
         <span>
           {new Date(params.row.dateOfBirth).toLocaleDateString()}
@@ -127,6 +134,8 @@ const InvestorsTable = () => {
       field: 'passportNumber',
       headerName: t('passportNumber'),
       flex: 1,
+      align: i18n.language === 'ar' ? 'right' : 'left'
+
     },
     {
       field: 'passportExpiryDate',
@@ -137,6 +146,8 @@ const InvestorsTable = () => {
           {new Date(params.row.passportExpiryDate).toLocaleDateString()}
         </span>
       ),    
+      align: i18n.language === 'ar' ? 'right' : 'left'
+
     },
     {
       field: 'actions',

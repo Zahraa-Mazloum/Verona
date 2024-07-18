@@ -98,12 +98,16 @@ const Investmenttypes = () => {
     {
       field: i18n.language === 'ar' ? 'type_ar' : 'type_en',
       headerName: t('name'),
-      flex: 1
+      flex: 1,
+      align: i18n.language === 'ar' ? 'right' : 'left'
+
     },
     {
       field: i18n.language === 'ar' ? 'description_ar' : 'description_en',
       headerName: t('description'),
-      flex: 2
+      flex: 2,
+      align: i18n.language === 'ar' ? 'right' : 'left'
+
     },
     {
       field: 'actions',
