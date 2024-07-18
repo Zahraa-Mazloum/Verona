@@ -6,7 +6,7 @@ const router = express.Router();
 
 router.post('/createWallet', createWallet);
 router.get('/getWallets/:lang',  getWallets);
-router.get('/getWalletById/:id',getWalletById);
+router.get('/getWallet/:id',getWalletById);
 router.put('/updateWallet/:id', updateWallet);
 router.delete('/deleteWallet/:id',deleteWallet);
 

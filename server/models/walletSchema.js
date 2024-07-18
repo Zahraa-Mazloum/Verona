@@ -5,6 +5,11 @@ const walletSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Investor',
   },
+  currency: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Currency',
+    required: true
+},
   amount: {
     type: Number,
   },
