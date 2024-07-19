@@ -28,23 +28,18 @@ import UpdateUser from './components/investors/EditInvestorInfo.js';
 import EditWallet from './components/wallets/EditWallet.js';
 import Loading from './components/loading.js';
 import RegisterInvestor from './components/RegisterInvestor.js';
+import InvDashboard from './pages/InvDashboard/InvDashboard.js'
 
 
 import './App.css'
 
 function App() {
   useDocumentTitle();
+  const userRole = localStorage.getItem('role');
 
-  return (
-    <Suspense fallback={<Loading />}>
-
-    <Routes>
-      {/* public routes */}
-      <Route path="/login" element={<Login />} />
-      <Route path="/register" element={<RegisterInvestor />} />
-
-      
-      {/* protected routes */}
+  let routes;
+  if (userRole === 'admin') {
+    routes = (
       <Route path="/" element={<RequireAuth />}>
         <Route path="/" element={<Navigate to="/dashboard" />} />
         <Route path="Profile" element={<Profile />} />
@@ -70,9 +65,27 @@ function App() {
         <Route path="/editinvestmentTypes/:id" element={<EditTypes    />} />
         <Route path="/editinvestment/:id" element={<EditInv />} />
         <Route path="/editWallet/:id" element={<EditWallet />} />
-
       </Route>
-    </Routes>
+    );
+  } else if (userRole === 'investor') {
+    routes = (
+      <Route path="/" element={<RequireAuth />}>
+      <Route path="Profile" element={<Profile />} />
+      <Route path="Dashboard" element={<InvDashboard />} />
+      </Route>
+    );
+  }
+
+  return (
+    <Suspense fallback={<Loading />}>
+      <Routes>
+        {/* public routes */}
+        <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<RegisterInvestor />} />
+        
+        {/* protected routes */}
+        {routes}
+      </Routes>
     </Suspense>
   );
 }
