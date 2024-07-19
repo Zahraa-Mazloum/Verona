@@ -1,7 +1,6 @@
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcrypt';
 import asyncHandler from 'express-async-handler';
-import validator from 'validator';
 import Admin from '../models/adminModel.js';
 import Employee from '../models/employeeModel.js';
 import Investor from '../models/investorModel.js';
@@ -17,6 +16,12 @@ export const isStrongPassword = (password) => {
   return regex.test(password);
 };
 
+// Email validation function
+// export const isValidEmail = (email) => {
+//   const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+//   return regex.test(email);
+// };
+
 // @desc Register new user (Admin only)
 // @route POST /api/admin/registration
 // @access Private (Admin only)
@@ -29,7 +34,6 @@ export const registerUser = asyncHandler(async (req, res) => {
     dateOfBirth,
     password,
     role,
-    status,
     passportNumber,
     passportExpiryDate
   } = req.body;
@@ -40,18 +44,16 @@ export const registerUser = asyncHandler(async (req, res) => {
     !email ||
     !phoneNumber ||
     !dateOfBirth ||
-    !password ||
-    !passportNumber ||
-    !passportExpiryDate
+    !password 
   ) {
     res.status(400);
-    throw new Error('Please add all fields');
+    throw new Error('Please add all fieldsss');
   }
 
-  if (!validator.isEmail(email)) {
-    res.status(400);
-    throw new Error('Invalid email format');
-  }
+  // if (!isValidEmail(email)) {
+  //   res.status(400);
+  //   throw new Error('Invalid email format');
+  // }
 
   if (!isStrongPassword(password)) {
     res.status(400);
@@ -81,7 +83,6 @@ export const registerUser = asyncHandler(async (req, res) => {
       dateOfBirth,
       password: hashedPassword,
       role,
-      status,
     });
   } else if (role === 'employee') {
     newUser = await Employee.create({
@@ -92,7 +93,6 @@ export const registerUser = asyncHandler(async (req, res) => {
       dateOfBirth,
       password: hashedPassword,
       role,
-      status,
       onboarding: req.body.onboarding,
       offboarding: req.body.offboarding,
       salary: req.body.salary,
@@ -114,7 +114,6 @@ export const registerUser = asyncHandler(async (req, res) => {
       dateOfBirth,
       password: hashedPassword,
       role,
-      status,
       passportNumber,
       passportExpiryDate,
       passportPhoto,
@@ -133,7 +132,6 @@ export const registerUser = asyncHandler(async (req, res) => {
       phoneNumber: newUser.phoneNumber,
       dateOfBirth: newUser.dateOfBirth,
       role: newUser.role,
-      status: newUser.status,
       token: generateToken(newUser._id),
     });
   } else {
@@ -149,27 +147,21 @@ export const getAllAdmins = asyncHandler(async (req, res) => {
   const admins = await Admin.find({});
   res.json(admins);
 });
-// export const getAllInvestors = asyncHandler(async (req, res) => {
-//   const investors = await Investor.find({});
-//   res.json(investors);
-// });
+
 export const getInvestorByLanguage = asyncHandler(async (req, res) => {
   const { lang } = req.params;
   let investors;
 
   if (lang === 'en') {
-    investors = await Investor.find({}, 'fullname_en fullname_ar email phoneNumber dateOfBirth role status passportNumber passportExpiryDate passportPhoto');
+    investors = await Investor.find({}, 'fullname_en fullname_ar email phoneNumber dateOfBirth role  passportNumber passportExpiryDate passportPhoto');
   } else if (lang === 'ar') {
-    investors = await Investor.find({}, 'fullname_ar fullname_en email phoneNumber dateOfBirth role status passportNumber passportExpiryDate passportPhoto');
+    investors = await Investor.find({}, 'fullname_ar fullname_en email phoneNumber dateOfBirth role  passportNumber passportExpiryDate passportPhoto');
   } else {
-      return res.status(400).json({ message: 'Invalid language parameter' });
+    return res.status(400).json({ message: 'Invalid language parameter' });
   }
   console.log(investors); 
   res.status(200).json(investors);
 });
-
-
-
 
 export const getAllEmployees = asyncHandler(async (req, res) => {
   const employees = await Employee.find({});
@@ -192,9 +184,6 @@ export const getUserById = asyncHandler(async (req, res) => {
   res.json(user);
 });
 
-
-// ...
-
 // @desc Update user
 // @route PATCH /api/admin/users/:id
 // @access Private (Admin only)
@@ -208,7 +197,6 @@ export const updateUser = asyncHandler(async (req, res) => {
     dateOfBirth,
     password,
     role,
-    status,
   } = req.body;
 
   let user;
@@ -221,7 +209,6 @@ export const updateUser = asyncHandler(async (req, res) => {
       dateOfBirth,
       password: password ? await bcrypt.hash(password, 10) : undefined,
       role,
-      status,
     }, { new: true });
   } else if (role === 'employee') {
     user = await Employee.findByIdAndUpdate(id, {
@@ -232,7 +219,6 @@ export const updateUser = asyncHandler(async (req, res) => {
       dateOfBirth,
       password: password ? await bcrypt.hash(password, 10) : undefined,
       role,
-      status,
       onboarding: req.body.onboarding,
       offboarding: req.body.offboarding,
       salary: req.body.salary,
@@ -254,7 +240,6 @@ export const updateUser = asyncHandler(async (req, res) => {
       dateOfBirth,
       password: password ? await bcrypt.hash(password, 10) : undefined,
       role,
-      status,
       passportNumber: req.body.passportNumber,
       passportExpiryDate: req.body.passportExpiryDate,
       passportPhoto,
@@ -273,18 +258,16 @@ export const updateUser = asyncHandler(async (req, res) => {
 });
 
 // @desc Delete user
-// @route DELETE /api/admin/users/:id
+// @route DELETE /api/admin/users/:idac
 // @access Private (Admin only)
 export const deleteUser = asyncHandler(async (req, res) => {
-  const user = await Admin.findById(req.params.id) ||await Investor.findById(req.params.id) || await Employee.findById(req.params.id) ;  
+  const user = await Admin.findById(req.params.id) || await Investor.findById(req.params.id) || await Employee.findById(req.params.id);  
 
   if (user) {
     await user.deleteOne();
     res.status(200).json({ message: 'User removed' });
-
   } else {
     res.status(404).json({ message: 'Currency not found' });
-
   }
   if (!user) {
     res.status(404);
