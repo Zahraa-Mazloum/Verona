@@ -29,6 +29,7 @@ import EditWallet from './components/wallets/EditWallet.js';
 import Loading from './components/loading.js';
 import RegisterInvestor from './components/RegisterInvestor.js';
 import InvDashboard from './pages/InvDashboard/InvDashboard.js'
+import InvContracts from './components/InvContracts/invContractTable.js';
 
 
 import './App.css'
@@ -72,6 +73,7 @@ function App() {
       <Route path="/" element={<RequireAuth />}>
       <Route path="Profile" element={<Profile />} />
       <Route path="Dashboard" element={<InvDashboard />} />
+      <Route path="/investorContracts/:id" element={<InvContracts />} />
       </Route>
     );
   }
