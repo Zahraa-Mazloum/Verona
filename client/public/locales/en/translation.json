@@ -74,8 +74,6 @@
   "Errorupdatingcurrency" :"Error updating currency",
   "EditCurrency" : "Edit Currency",
   "UpdateCurrency" : "Update Currency",
-
-
   "InvestmentaddedSuccessfully" : "Investment added Successfully",
   "titlear" : "Title Ar",
   "type" : "type",
@@ -119,9 +117,13 @@
   "AddWallet" : "AddWallet",
   "UpdateWallet" : "Update Wallet",
   "investmentsPerType" : "Investment Per Type",
-  "investmentManagement": "Investment Management"
+  "investmentManagement": "Investment Management",
 
 
+  "Registrationsuccessful" : "Registration successful!",
+    "Registrationfailed" : "Registration failed. Please try again.",
+    "RegisterasInvestor" : "Register as Investor",
+    "UploadPassportPhoto" : "Upload Passport Photo"
   
  
  }

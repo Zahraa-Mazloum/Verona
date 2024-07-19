@@ -1,10 +1,10 @@
-import React, { useState, useEffect,Suspense } from 'react';
+import React, { useState, useEffect } from 'react';
 import api from '../../api/axios';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useNavigate, useLocation, Link } from 'react-router-dom';
 import { Container, Box, Typography, TextField, InputAdornment, IconButton, Button, Grid, Card, CardContent, CardMedia } from '@mui/material';
-import { Visibility, VisibilityOff } from '@mui/icons-material';
+import { Visibility, VisibilityOff, X } from '@mui/icons-material';
 import loginImage from '../../images/login.png';
 import logoImage from '../../images/logo.png';
 
@@ -52,7 +52,7 @@ const Login = () => {
   return (
     <Container maxWidth="lg" sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: '100vh' }}>
       <Card sx={{ display: 'flex', width: '100%', maxWidth: '900px', minHeight: '500px', borderRadius: '16px', boxShadow: '0 4px 8px rgba(241, 108, 29, 0.2), 0 6px 20px rgba(241, 108, 29, 0.19)' }}>
-      <Grid container>
+        <Grid container>
           <Grid item xs={12} md={6}>
             <CardMedia
               component="img"
@@ -76,7 +76,7 @@ const Login = () => {
           <Grid item xs={12} md={6} sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
             <CardContent sx={{ width: '100%', p: 4 }}>
               <Box sx={{ display: 'flex', justifyContent: 'center', mb: 3 }}>
-                <img src={logoImage} alt="Logo" style={{width: '160px',  maxWidth: '500px' }} />
+                <img src={logoImage} alt="Logo" style={{ width: '160px', maxWidth: '500px' }} />
               </Box>
               {error && (
                 <Typography variant="body1" color="error" align="center" sx={{ mb: 2 }}>
@@ -132,6 +132,9 @@ const Login = () => {
                   {loading ? 'Checking...' : 'Login'}
                 </Button>
               </form>
+              <Typography variant="body2" align="center" sx={{ mt: 1 }}>
+                Don't have an account? <Link to="/register">Register as Investor</Link>
+              </Typography>
             </CardContent>
           </Grid>
         </Grid>

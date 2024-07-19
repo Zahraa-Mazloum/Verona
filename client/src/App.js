@@ -27,6 +27,8 @@ import AddWallet from './components/wallets/addWallets.js';
 import UpdateUser from './components/investors/EditInvestorInfo.js';
 import EditWallet from './components/wallets/EditWallet.js';
 import Loading from './components/loading.js';
+import RegisterInvestor from './components/RegisterInvestor.js';
+
 
 import './App.css'
 
@@ -39,6 +41,8 @@ function App() {
     <Routes>
       {/* public routes */}
       <Route path="/login" element={<Login />} />
+      <Route path="/register" element={<RegisterInvestor />} />
+
       
       {/* protected routes */}
       <Route path="/" element={<RequireAuth />}>
