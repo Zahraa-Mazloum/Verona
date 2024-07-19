@@ -3,10 +3,10 @@ import api from '../../api/axios';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useNavigate, useLocation, Link } from 'react-router-dom';
-import { Container, Box, Typography, TextField, InputAdornment, IconButton, Button, Grid, Card, CardContent, CardMedia } from '@mui/material';
-import { Visibility, VisibilityOff, X } from '@mui/icons-material';
-import loginImage from '../../images/login.png';
+import { Container, Box, Typography, TextField, InputAdornment, IconButton, Button, Grid, Card, CardContent } from '@mui/material';
+import { Visibility, VisibilityOff } from '@mui/icons-material';
 import logoImage from '../../images/logo.png';
+import backgroundImage from '../../images/login.png';
 
 const Login = () => {
   const [formData, setFormData] = useState({
@@ -50,30 +50,34 @@ const Login = () => {
   };
 
   return (
-    <Container maxWidth="lg" sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: '100vh' }}>
-      <Card sx={{ display: 'flex', width: '100%', maxWidth: '900px', minHeight: '500px', borderRadius: '16px', boxShadow: '0 4px 8px rgba(241, 108, 29, 0.2), 0 6px 20px rgba(241, 108, 29, 0.19)' }}>
+    <Container 
+    maxWidth="100vw" 
+    maxHeight="100vh" 
+    sx={{ 
+      display: 'flex', 
+      alignItems: 'center', 
+      justifyContent: 'center', 
+      minHeight: '100vh', 
+      backgroundImage: `url(${backgroundImage})`,
+      backgroundSize: 'cover',
+      backgroundPosition: 'center',
+      backgroundRepeat: 'no-repeat',
+    }}
+  >
+      <Card 
+        sx={{ 
+          display: 'flex', 
+          width: '100%', 
+          maxWidth: '500px', 
+          borderRadius: '16px', 
+          background: 'rgba(255, 255, 255, 0.1)', 
+          backdropFilter: 'blur(10px)', 
+          border: '1px solid rgba(255, 255, 255, 0.2)', 
+          boxShadow: 'none',
+        }}
+      >
         <Grid container>
-          <Grid item xs={12} md={6}>
-            <CardMedia
-              component="img"
-              image={loginImage}
-              alt="Login Image"
-              sx={{
-                height: '100%',
-                objectFit: 'cover',
-                animation: 'upDown 3s ease-in-out infinite',
-                '@keyframes upDown': {
-                  '0%, 100%': {
-                    transform: 'translateY(0)',
-                  },
-                  '50%': {
-                    transform: 'translateY(-20px)',
-                  },
-                },
-              }}
-            />
-          </Grid>
-          <Grid item xs={12} md={6} sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+          <Grid item xs={12} md={12} sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
             <CardContent sx={{ width: '100%', p: 4 }}>
               <Box sx={{ display: 'flex', justifyContent: 'center', mb: 3 }}>
                 <img src={logoImage} alt="Logo" style={{ width: '160px', maxWidth: '500px' }} />
@@ -92,7 +96,30 @@ const Login = () => {
                   value={formData.email}
                   onChange={handleChange}
                   required
-                  sx={{ mb: 2 }}
+                  sx={{
+                    mb: 2,
+                    '& label': { color: '#e8fdfe' }, 
+                    "& .MuiOutlinedInput-root": {
+                      color: "#e8fdfe",
+                      "& .MuiOutlinedInput-notchedOutline": {
+                        borderColor: "#e8fdfe",
+                        borderWidth: "2px",
+                      },
+                      "&.Mui-focused": {
+                        "& .MuiOutlinedInput-notchedOutline": {
+                          borderColor: "#e8fdfe",
+                          borderWidth: "3px",
+                        },
+                      },
+                      "& .MuiInputLabel-outlined": {
+                        color: "#e8fdfe",
+                      
+                        "&.Mui-focused": {
+                          color: "#e8fdfe",
+                        },
+                      },
+                    },
+                  }}
                 />
                 <TextField
                   fullWidth
@@ -115,8 +142,29 @@ const Login = () => {
                       </InputAdornment>
                     ),
                   }}
-                  sx={{ mb: 2 }}
-                />
+                  sx={{ mb: 2 ,
+                    '& label': { color: '#e8fdfe' }, 
+                    "& .MuiOutlinedInput-root": {
+                    color: "#e8fdfe",
+                    "& .MuiOutlinedInput-notchedOutline": {
+                      borderColor: "#e8fdfe",
+                      borderWidth: "2px",
+                    },
+                    "&.Mui-focused": {
+                      "& .MuiOutlinedInput-notchedOutline": {
+                        borderColor: "#e8fdfe",
+                        borderWidth: "3px",
+                      },
+                    },
+                    "& .MuiInputLabel-outlined": {
+                      color: "#e8fdfe",
+                      "&.Mui-focused": {
+                        color: "#e8fdfe",
+                      },
+                    },
+                  },
+                }}
+              />
                 <Button
                   type="submit"
                   variant="contained"
@@ -132,9 +180,9 @@ const Login = () => {
                   {loading ? 'Checking...' : 'Login'}
                 </Button>
               </form>
-              <Typography variant="body2" align="center" sx={{ mt: 1 }}>
-                Don't have an account? <Link to="/register">Register as Investor</Link>
-              </Typography>
+              <Typography variant="body2" align="center" sx={{ mt: 1 , color:"#e8fdfe" }}>
+  Don't have an account? <Link to="/register" style={{ color: '#e8fdfe' }}>Register as Investor</Link>
+</Typography>
             </CardContent>
           </Grid>
         </Grid>
