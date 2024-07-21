@@ -30,7 +30,7 @@ import Loading from './components/loading.js';
 import RegisterInvestor from './components/RegisterInvestor.js';
 import InvDashboard from './pages/InvDashboard/InvDashboard.js'
 import InvContracts from './components/InvContracts/invContractTable.js';
-import InvestorInv from './components/investorsInv/investorInv.js'
+import InvestorInv from './components/investorsINv/investorInv.js'
 
 
 import './App.css'
