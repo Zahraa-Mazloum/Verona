@@ -1,0 +1,30 @@
+.navItem.active {
+  background-color: #fef7ee;
+  border-radius: 0 25px 25px 0;
+  color: #b05d2e;
+  width: 26vh;
+  margin-top: 5%;
+  border-radius: 14%;
+}
+.css-cveggr-MuiListItemIcon-root{
+  min-width: 25px !important;
+}
+.navItem.active .MuiListItemIcon-root, .navItem.active .MuiListItemText-root {
+  color: #b05d2e;
+}
+
+[dir="rtl"] .navItem.active {
+  border-radius: 25px 0 0 25px;
+}
+
+[dir="rtl"] {
+  left: auto;
+  right: 0;
+  direction: rtl;
+}
+
+.rtl {
+  text-align: right !important;
+}
+
+
