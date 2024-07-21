@@ -123,7 +123,13 @@
   "Registrationsuccessful" : "Registration successful!",
     "Registrationfailed" : "Registration failed. Please try again.",
     "RegisterasInvestor" : "Register as Investor",
-    "UploadPassportPhoto" : "Upload Passport Photo"
+    "UploadPassportPhoto" : "Upload Passport Photo",
+    "MyContracts" : "My Contracts",
+    "myInvestment" : "My Investment",
+    "ROI" : "ROI",
+    "profit" : "Profit",
+    "MyInv":"My Investments"
+
   
  
  }

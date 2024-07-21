@@ -63,7 +63,6 @@ const InvContractsTable = () => {
   const filteredContract = contract.filter((Contracts) =>
     safeLowerCase(i18n.language === 'ar' ? Contracts.investorInfo.fullname_ar : Contracts.investorInfo.fullname_en).includes(safeLowerCase(search)) ||
     safeLowerCase(Contracts.currency).includes(safeLowerCase(search)) ||
-    safeLowerCase(Contracts.contractTime).includes(safeLowerCase(search)) ||
     safeLowerCase(Contracts.startDate).includes(safeLowerCase(search)) ||
     safeLowerCase(Contracts.endDate).includes(safeLowerCase(search)) ||
     safeLowerCase(Contracts.contractPercentage).includes(safeLowerCase(search)) ||
@@ -83,7 +82,6 @@ const InvContractsTable = () => {
 
   const columns = [
     {
-
       field: 'amount',
       headerName: t('amount'),
       flex: 1,
@@ -100,44 +98,10 @@ const InvContractsTable = () => {
       ),
       align: i18n.language === 'ar' ? 'right' : 'left'
     },
-    {
-      field: 'contractTime',
-      headerName: t('contractTime'),
-      flex: 1,
-      align: i18n.language === 'ar' ? 'right' : 'left',
-      renderCell: (params) => (
-        <span>
-          {i18n.language === 'ar' ? params.row.contractTime_ar : params.row.contractTime}
-        </span>
-      )
-    },
-    {
-      field: 'startDate',
-      headerName: t('startDate'),
-      flex: 1,
-      renderCell: (params) => (
-        <span>
-          {new Date(params.row.startDate).toLocaleDateString()}
-        </span>
-      ),
-      align: i18n.language === 'ar' ? 'right' : 'left'
-    },
-    {
-      field: 'endDate',
-      headerName: t('endDate'),
-      flex: 1,
-      renderCell: (params) => (
-        <span>
-          {new Date(params.row.endDate).toLocaleDateString()}
-        </span>
-      ),
-      editable: false,
-      readonly: true,
-      align: i18n.language === 'ar' ? 'right' : 'left'
-    },
+
     {
       field: 'contractPercentage',
-      headerName: t('contractPercentage'),
+      headerName: t('ROI'),
       flex: 1,
       editable: false,
       readonly: true,
@@ -148,28 +112,15 @@ const InvContractsTable = () => {
         </span>
       ),
     },
-    // {
-    //   field: 'payment',
-    //   headerName: t('payment'),
-    //   flex: 1,
-    //   editable: false,
-    //   readonly: true,
-    //   align: i18n.language === 'ar' ? 'right' : 'left'
-    // },
+
     {
-      field: 'investmentStatus',
-      headerName: t('investmentStatus'),
-      flex: 1,
-      renderCell: (params) => (
-        <Switch
-          checked={params.row.investmentStatus}
-          onChange={() => handleToggleStatus(params.row._id, params.row.investmentStatus)}
-          color="warning"
-          disabled={true} 
-        />
-      ),
-      align: i18n.language === 'ar' ? 'right' : 'left'
-    },
+        field: 'profit',
+        headerName: t('profit'),
+        flex: 1,
+        editable: false,
+        readonly: true,
+        align: i18n.language === 'ar' ? 'right' : 'left',
+      },
   ];
 
   return (
@@ -179,8 +130,7 @@ const InvContractsTable = () => {
         <Paper elevation={8} style={{ padding: '15px', marginBottom: '10px' }}>
           <Toolbar>
             <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-
-              {t('MyContracts')}
+              {t('MyInv')}
             </Typography>
             <TextField
               variant="standard"

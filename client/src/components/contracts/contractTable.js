@@ -181,7 +181,12 @@ const ContractsTable = () => {
       flex: 1,
       editable: false,
       readonly: true,
-      align: i18n.language === 'ar' ? 'right' : 'left'
+      align: i18n.language === 'ar' ? 'right' : 'left',
+      renderCell: (params) => (
+        <span>
+         {params.value} %
+        </span>
+      ),
     },
     {
       field: 'payment',
@@ -199,7 +204,7 @@ const ContractsTable = () => {
         <Switch
           checked={params.row.investmentStatus}
           onChange={() => handleToggleStatus(params.row._id, params.row.investmentStatus)}
-          color="primary"
+          color="warning"
         />
       ),
       align: i18n.language === 'ar' ? 'right' : 'left'

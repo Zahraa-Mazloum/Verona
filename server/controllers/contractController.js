@@ -67,13 +67,15 @@ export const updateInvestmentStatus = asyncHandler(async (req, res) => {
 });
 // Fetch contracts by investor ID
 export const getInvestorContracts = asyncHandler(async (req, res) => {
-  const contracts = await Contract.find({ 'investorInfo._id': req.params.id }).populate('currency');
+  const contracts = await Contract.find({ investorInfo: req.params.id }).populate('currency');
   if (contracts) {
     res.status(200).json(contracts);
   } else {
     res.status(404).json({ message: 'Contracts not found' });
   }
 });
+
+
 
 // Delete Contract
 export const deleteContract = asyncHandler(async (req, res) => {

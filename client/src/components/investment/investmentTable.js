@@ -1,4 +1,4 @@
-import React, { useState, useEffect,Suspense } from 'react';
+import React, { useState, useEffect, Suspense } from 'react';
 import api from '../../api/axios';
 import { DataGrid, gridClasses } from '@mui/x-data-grid';
 import {
@@ -24,14 +24,13 @@ import { useNavigate } from 'react-router-dom';
 import Loading from '../loading.js';
 import loader from '../loading.gif'
 import { useTranslation } from 'react-i18next';
-
-
 const InvestmentTable = () => {
   const { t, i18n } = useTranslation();
   const [investments, setInvestments] = useState([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
-  const [investmentToDelete, setinvestmentToDelete] = useState(null); 
+
+  const [investmentToDelete, setInvestmentToDelete] = useState(null); 
   const navigate = useNavigate();
 
   const StripedDataGrid = styled(DataGrid)(({ theme }) => ({
@@ -43,44 +42,44 @@ const InvestmentTable = () => {
     },
   }));
 
-  const fetchinvestments = async () => {
+  const fetchInvestments = async () => {
     try {
       const { data } = await api.get(`/inv/getInvestments/${i18n.language}`);
-      console.log(data)
-      console.log(data.s)
       setInvestments(data);
     } catch (error) {
-      toast.error(t('ErrorFetchinginvestments'));
+      toast.error(t('ErrorFetchingInvestments'));
     } finally {
       setLoading(false);
     }
   };
 
   useEffect(() => {
-    fetchinvestments();
+
+    fetchInvestments();
   }, [i18n.language]);
 
-  const handleDeleteinvestment = async (id) => {
+  const handleDeleteInvestment = async (id) => {
     try {
       await api.delete(`/inv/deleteInvestment/${id}`);
       setInvestments(investments.filter(c => c._id !== id));
-      toast.success(t('investmentDeletedSuccessfully'));
+      toast.success(t('InvestmentDeletedSuccessfully'));
     } catch (error) {
-      toast.error(t('Errordeletinginvestment'));
+      toast.error(t('ErrorDeletingInvestment'));
     }
   };
 
   const handleOpenConfirmDelete = (event, investment) => {
-    setinvestmentToDelete(investment);
+    setInvestmentToDelete(investment);
   };
 
   const handleCloseConfirmDelete = () => {
-    setinvestmentToDelete(null);
+    setInvestmentToDelete(null);
   };
 
   const handleConfirmDelete = () => {
     if (investmentToDelete) {
-      handleDeleteinvestment(investmentToDelete._id);
+
+      handleDeleteInvestment(investmentToDelete._id);
       handleCloseConfirmDelete();
     }
   };
@@ -89,16 +88,21 @@ const InvestmentTable = () => {
     setSearch(event.target.value);
   };
 
+
+  const userRole = localStorage.getItem('role');
+
   const safeLowerCase = (str) => (str ? str.toLowerCase() : '');
 
-  const filteredinvestments = investments.filter(investment =>
+  const filteredInvestments = investments.filter(investment =>
     safeLowerCase(i18n.language === 'en' ? investment.titleInv : investment.titleInv_ar).includes(safeLowerCase(search)) ||
     safeLowerCase(i18n.language === 'en' ? investment.amount : investment.amount).includes(safeLowerCase(search)) ||
     safeLowerCase(i18n.language === 'en' ? investment.type.type_en : investment.type.type_ar).includes(safeLowerCase(search)) || 
     safeLowerCase(i18n.language === 'en' ? investment.currency.symbol : investment.currency.symbol).includes(safeLowerCase(search)) ||
     safeLowerCase(i18n.language === 'en' ? investment.investmentStatus : investment.investmentStatus).includes(safeLowerCase(search)) ||
-    safeLowerCase(i18n.language === 'en' ? investment.date : investment.date).includes(safeLowerCase(search)) 
+
+    safeLowerCase(i18n.language === 'en' ? investment.date : investment.date).includes(safeLowerCase(search))
   );
+
   const handleToggleStatus = async (id, currentStatus) => {
     try {
       const newStatus = !currentStatus; 
@@ -111,12 +115,11 @@ const InvestmentTable = () => {
   };
 
   const columns = [
-     {
+    {
       field: i18n.language === 'ar' ? 'titleInv_ar' : 'titleInv',
       headerName: t('title'),
       flex: 1,
       align: i18n.language === 'ar' ? 'right' : 'left'
-
     },
     {
       field: i18n.language === 'ar' ? 'amount' : 'amount',
@@ -142,11 +145,11 @@ const InvestmentTable = () => {
       renderCell: (params) => (
         <span>
           {params.row.type ? (i18n.language === 'ar' ? params.row.type.type_ar : params.row.type.type_en) : ''}
-        </span> 
-),
-      align: i18n.language === 'ar' ? 'right' : 'left'
 
-    }, 
+        </span>
+      ),
+      align: i18n.language === 'ar' ? 'right' : 'left'
+    },
     {
       field: 'dateInv',
       headerName: t('dateInv'),
@@ -156,7 +159,8 @@ const InvestmentTable = () => {
           {new Date(params.row.dateInv).toLocaleDateString()}
         </span>
       ),
-            align: i18n.language === 'ar' ? 'right' : 'left'
+
+      align: i18n.language === 'ar' ? 'right' : 'left'
     },
     {
       field: i18n.language === 'ar' ? 'description' : 'description',
@@ -164,8 +168,8 @@ const InvestmentTable = () => {
       flex: 1,
       align: i18n.language === 'ar' ? 'right' : 'left'
 
-    },
  
+    },
     {
       field: 'investmentStatus',
       headerName: t('investmentStatus'),
@@ -174,12 +178,16 @@ const InvestmentTable = () => {
         <Switch
           checked={params.row.investmentStatus}
           onChange={() => handleToggleStatus(params.row._id, params.row.investmentStatus)}
-          color="primary"
+          color="warning"
+          disabled={userRole === 'investor'}
         />
       ),
       align: i18n.language === 'ar' ? 'right' : 'left'
-    },
-    {
+    }
+  ];
+
+  if (userRole !== 'investor') {
+    columns.push({
       field: 'actions',
       headerName: t('actions'),
       sortable: false,
@@ -228,73 +236,75 @@ const InvestmentTable = () => {
           </Tooltip>
         </Box>
       ),
-    },
-  ];
+    });
+  }
 
   return (
     <Suspense fallback={<Loading />}>
-    <Box p={3}>
-      <ToastContainer />
-      <Paper elevation={8} style={{ padding: '15px', marginBottom: '10px' }}>
-        <Toolbar>
-          <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-            {t('investmentManagement')}
-          </Typography>
-          <TextField
-            variant="standard"
-            placeholder={t('search')}
-            value={search}
-            onChange={handleSearchChange}
-            InputProps={{
-              startAdornment: (
-                <InputAdornment position="start">
-                  <SearchOutlinedIcon />
-                </InputAdornment>
-              ),
-            }}
-          />
-          <Button
-            variant="contained"
-            sx={{
-              ml: 2,
-              bgcolor: 'darkorange',
-              '&:hover': {
-                bgcolor: 'orange',
-              },
-            }}
-            startIcon={<AddIcon />}
-            onClick={() => navigate('/addinvestment')}
-          >
-            {t('addinvestment')}
-          </Button>
-        </Toolbar>
-        <div style={{ width: '100%', height: '100%' }}>
-          {loading ? (
-            <Box
-              display="flex"
-              justifyContent="center"
-              alignItems="center"
-              minHeight="100%"
-            >
-              <img src={loader} alt="Loading..." />
-            </Box>
-          ) : (
-            <StripedDataGrid
-              rows={filteredinvestments}
-              columns={columns}
-              pageSize={10}
-              rowsPerPageOptions={[10]}
-              autoHeight
-              getRowId={(row) => row._id}
-              getRowClassName={(params) =>
-                params.indexRelativeToCurrentPage % 2 === 0 ? 'even' : 'odd'
-              }
-              direction={i18n.language === 'ar'? 'rtl' : 'ltr'} 
-                          />
-          )}
-        </div>
-      </Paper>
-    </Box>
+      <Box p={3}>
+        <ToastContainer />
+        <Paper elevation={8} style={{ padding: '15px', marginBottom: '10px' }}>
+          <Toolbar>
+            <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
+              {t('investmentManagement')}
+            </Typography>
+            <TextField
+              variant="standard"
+              placeholder={t('search')}
+              value={search}
+              onChange={handleSearchChange}
+              InputProps={{
+                startAdornment: (
+                  <InputAdornment position="start">
+                    <SearchOutlinedIcon />
+                  </InputAdornment>
+                ),
+              }}
+            />
+        {userRole === 'investor'? null : (
+  <Button
+    variant="contained"
+    sx={{
+      ml: 2,
+      bgcolor: 'darkorange',
+      '&:hover': {
+        bgcolor: 'orange',
+      },
+    }}
+    startIcon={<AddIcon />}
+    onClick={() => navigate('/addinvestment')}
+  >
+    {t('addInvestment')}
+  </Button>
+)}
+          </Toolbar>
+          <div style={{ width: '100%', height: '100%' }}>
+            {loading ? (
+              <Box
+                display="flex"
+                justifyContent="center"
+                alignItems="center"
+                minHeight="100%"add
+              >
+                <img src={loader} alt="Loading..." />
+              </Box>
+            ) : (
+              <StripedDataGrid
+                rows={filteredInvestments}
+                columns={columns}add
+                pageSize={10}
+                rowsPerPageOptions={[10]}
+                autoHeight
+                getRowId={(row) => row._id}
+                getRowClassName={(params) =>
+                  params.indexRelativeToCurrentPage % 2 === 0 ? 'even' : 'odd'
+                }
+                direction={i18n.language === 'ar' ? 'rtl' : 'ltr'}
+              />
+            )}
+          </div>
+        </Paper>
+      </Box>
     </Suspense>
   );
 };

@@ -13,7 +13,8 @@ import Icon from '@mdi/react';
 import { useTranslation } from 'react-i18next';
 import {
   mdiViewDashboard, mdiFileSign, mdiAccountTie, mdiBankCircleOutline,
-  mdiCashMultiple, mdiBankOutline, mdiCurrencyUsdOff, mdiCurrencyBtc,
+
+  mdiCashMultiple, mdiBankOutline, mdiCurrencyUsdOff, mdiCurrencyBtc,mdiCash100,
   mdiWalletBifold
 } from '@mdi/js';
 import './sidebar.css';
@@ -46,20 +47,30 @@ const Sidebar = ({ open, setOpen }) => {
   const handleNavigation = (path) => {
     if (path === '/InvContract' && investorId) {
       navigate(`/investorContracts/${investorId}`);
-    } else {
+    } 
+    else if (path=== '/myInvestments' && investorId){
+      navigate(`/myInvestments/${investorId}`);
+
+    }
+    else {
       navigate(path);
     }
   };
+
+
+
 
   const menuItems = [
     { text: t('DashBoard'), icon: <Icon path={mdiViewDashboard} size={1} />, path: '/dashboard' },
     { text: t('Contracts'), icon: <Icon path={mdiFileSign} size={1} />, path: role === 'admin' ? '/contract' : '/InvContract' },
     role === 'admin' && { text: t('Investors'), icon: <Icon path={mdiAccountTie} size={1} />, path: '/investor' },
+
+    role === 'investor' && { text: t('myInvestment'), icon: <Icon path={mdiCash100} size={1} />, path: '/myInvestments' },
     { text: t('VeronaInvestments'), icon: <Icon path={mdiBankCircleOutline} size={1} />, path: '/investment' },
-    { text: t('InvestmentTypes'), icon: <Icon path={mdiCashMultiple} size={1} />, path: '/types' },
+    role === 'admin' && { text: t('InvestmentTypes'), icon: <Icon path={mdiCashMultiple} size={1} />, path: '/types' },
     { text: t('OverallVeronaInvestments'), icon: <Icon path={mdiBankOutline} size={1} />, path: '/overallInv' },
-    { text: t('NewInvestments'), icon: <Icon path={mdiCurrencyUsdOff} size={1} />, path: '/NewInvestments' },
-    { text: t('Currencies'), icon: <Icon path={mdiCurrencyBtc} size={1} />, path: '/CurrencyTable' },
+    role === 'admin' && { text: t('NewInvestments'), icon: <Icon path={mdiCurrencyUsdOff} size={1} />, path: '/NewInvestments' },
+    // { text: t('Currencies'), icon: <Icon path={mdiCurrencyBtc} size={1} />, path: '/CurrencyTable' },
     { text: t('Wallets'), icon: <Icon path={mdiWalletBifold} size={1} />, path: '/wallets' },
   ].filter(Boolean);
 
