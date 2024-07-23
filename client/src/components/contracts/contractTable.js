@@ -189,14 +189,6 @@ const ContractsTable = () => {
       ),
     },
     {
-      field: 'payment',
-      headerName: t('payment'),
-      flex: 1,
-      editable: false,
-      readonly: true,
-      align: i18n.language === 'ar' ? 'right' : 'left'
-    },
-    {
       field: 'investmentStatus',
       headerName: t('investmentStatus'),
       flex: 1,
