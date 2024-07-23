@@ -9,18 +9,16 @@ import {
   InputAdornment,
   Toolbar,
   Typography,
-  Box,
-  Switch
+  Box
 } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import AddIcon from '@mui/icons-material/Add';
 import SearchOutlinedIcon from '@mui/icons-material/SearchOutlined';
-import { useNavigate } from 'react-router-dom';
 import Loading from '../loading.js';
 import loader from '../loading.gif';
 import { useTranslation } from 'react-i18next';
+import CashoutPopup from './CashoutPopup'; // Import the CashoutPopup component
 
 const InvContractsTable = () => {
   const { id } = useParams();
@@ -28,7 +26,10 @@ const InvContractsTable = () => {
   const [contract, setContract] = useState([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
-  const navigate = useNavigate();
+  const [openPopup, setOpenPopup] = useState(false);
+  const [selectedRow, setSelectedRow] = useState(null); // State to track the selected row for cashout
+  const [bankDetails, setBankDetails] = useState({ accountNumber: '', bankName: '', amount: '' });
+  const [cashoutOption, setCashoutOption] = useState('payment');
 
   const StripedDataGrid = styled(DataGrid)(({ theme }) => ({
     [`& .${gridClasses.row}.even`]: {
@@ -58,6 +59,35 @@ const InvContractsTable = () => {
     setSearch(event.target.value);
   };
 
+  const handleCashoutClick = (row) => {
+    setSelectedRow(row);
+    setOpenPopup(true);
+  };
+  const handleTransferClick = (row) => {
+    setSelectedRow(row);
+    setOpenPopup(true);
+  };
+
+  const handlePopupClose = () => {
+    setOpenPopup(false);
+    setBankDetails({ accountNumber: '', bankName: '', amount: '' });
+    setCashoutOption('payment');
+    setSelectedRow(null); 
+  };
+
+  const handlePopupSubmit = async () => {
+    if (selectedRow) {
+      try {
+        await api.post(`/contract/cashout/${selectedRow._id}`, { ...bankDetails, cashoutOption });
+        toast.success(t('CashoutRequestSent'));
+      } catch (error) {
+        toast.error(t('ErrorSendingCashoutRequest'));
+      } finally {
+        handlePopupClose();
+      }
+    }
+  };
+
   const safeLowerCase = (str) => (typeof str === 'string' ? str.toLowerCase() : '');
 
   const filteredContract = contract.filter((Contracts) =>
@@ -68,17 +98,6 @@ const InvContractsTable = () => {
     safeLowerCase(Contracts.contractPercentage).includes(safeLowerCase(search)) ||
     safeLowerCase(Contracts.investmentStatus).includes(safeLowerCase(search))
   );
-
-  const handleToggleStatus = async (id, currentStatus) => {
-    try {
-      const newStatus = !currentStatus;
-      await api.put(`/contract/updateStatus/${id}`, { investmentStatus: newStatus });
-      setContract(contract.map((c) => (c._id === id ? { ...c, investmentStatus: newStatus } : c)));
-      toast.success(t('StatusUpdatedSuccessfully'));
-    } catch (error) {
-      toast.error(t('ErrorUpdatingStatus'));
-    }
-  };
 
   const columns = [
     {
@@ -98,7 +117,6 @@ const InvContractsTable = () => {
       ),
       align: i18n.language === 'ar' ? 'right' : 'left'
     },
-
     {
       field: 'contractPercentage',
       headerName: t('ROI'),
@@ -112,15 +130,46 @@ const InvContractsTable = () => {
         </span>
       ),
     },
-
     {
-        field: 'profit',
-        headerName: t('profit'),
-        flex: 1,
-        editable: false,
-        readonly: true,
-        align: i18n.language === 'ar' ? 'right' : 'left',
-      },
+      field: 'profit',
+      headerName: t('profit'),
+      flex: 1,
+      editable: false,
+      readonly: true,
+      align: i18n.language === 'ar' ? 'right' : 'left',
+    },
+    {
+      field: 'cashout',
+      headerName: t('cashout'),
+      flex: 1,
+      align: i18n.language === 'ar' ? 'right' : 'left',
+      renderCell: (params) => (
+        <Button
+          onClick={() => handleCashoutClick(params.row)}
+          variant="outlined"
+          color="warning"
+          disabled={!params.row.isMatured}
+        >
+          {t('cashout')}
+        </Button>
+      ),
+    },
+    {
+      field: 'transfer',
+      headerName: t('transfer'),
+      flex: 1,
+      align: i18n.language === 'ar' ? 'right' : 'left',
+      renderCell: (params) => (
+        <Button
+          onClick={() => handleTransferClick(params.row)}
+          variant="outlined"
+          color="warning"
+          disabled={!params.row.isMatured}
+        >
+          {t('transfer')}
+        </Button>
+      ),
+    },
   ];
 
   return (
@@ -167,12 +216,24 @@ const InvContractsTable = () => {
                 getRowClassName={(params) =>
                   params.indexRelativeToCurrentPage % 2 === 0 ? 'even' : 'odd'
                 }
-                direction={i18n.language === 'ar' ? 'rtl' : 'ltr'}
               />
             )}
           </div>
         </Paper>
-      </Box>
+        {selectedRow && (
+        <CashoutPopup
+          open={openPopup}
+          onClose={handlePopupClose}
+          onSubmit={handlePopupSubmit}
+          bankDetails={bankDetails}
+          setBankDetails={setBankDetails}
+          cashoutOption={cashoutOption}
+          setCashoutOption={setCashoutOption}
+          paymentAmount={selectedRow.payment}
+          profitAmount={selectedRow.profit}
+        />
+      )}
+    </Box>
     </Suspense>
   );
 };

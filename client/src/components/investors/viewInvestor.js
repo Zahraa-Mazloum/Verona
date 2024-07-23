@@ -108,9 +108,6 @@ const InvestorDetails = () => {
               contracts.map((contract) => (
                 <Paper key={contract._id} elevation={2} style={{ padding: '10px', marginBottom: '10px' }}>
                   <Typography variant="body1">
-                    {t('title')}: {contract.title}
-                  </Typography>
-                  <Typography variant="body1">
                     {t('currency')}: {contract.currency.name}
                   </Typography>
                   <Typography variant="body1">

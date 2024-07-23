@@ -1,53 +1,47 @@
-import mongoose from "mongoose";
+import mongoose from 'mongoose';
 
 const contractSchema = new mongoose.Schema({
-    investorInfo: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Investor',
-        required: true
-    },
-    amount:{
-          type: Number,
-          required : true
-    },
-    currency: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Currency',
-        required: true
-    },
-    contractTime: {
+  investorInfo: 
+  { type: mongoose.Schema.Types.ObjectId, 
+    ref: 'Investor', 
+    required: true },
+  amount: 
+  { type: Number, 
+    required: true },
+  currency:
+   { type: mongoose.Schema.Types.ObjectId,
+     ref: 'Currency', 
+     required: true },
+     contractTime: {
         type: String,
-        enum: ['month', 'year'],
+        enum: ['month', 'year' , 'day'],
         required: [true, "Please enter the duration"]
     }, 
       contractTime_ar: {
         type: String,
-        enum: ['شهر' , 'سنة'],
+        enum: ['شهر' , 'سنة' , 'يوم'],
         required: [true, "Please enter the duration"]
     },
-    startDate: {
-        type: Date,
-        required: [true, "Please enter the start date"]
+  startDate:
+   { type: Date, 
+    required: true },
+  endDate:
+   { type: Date,
+     },
+  contractPercentage: 
+  { type: Number,
     },
-    endDate: {
-        type: Date,
-    },
-    contractPercentage: {
-        type: Number,
-    },
-    profit:{
-type:Number,
-    },
-  payment:{
-    type: Number,
-  },
-    investmentStatus: {
-        type: Boolean,
-        default: true
-    }
-}, {
-    timestamps: true,
-});
+  profit: 
+  { type: Number,
+     },
+  payment: { type: Number },
+  investmentStatus: {
+    type: Boolean,
+    default: true
+}}, 
+
+{ timestamps: true });
+
 
 contractSchema.pre('save', function(next) {
     if (this.isModified('startDate') || this.isNew) {
@@ -61,7 +55,10 @@ contractSchema.pre('save', function(next) {
             endDate.setFullYear(startDate.getFullYear() + 1);
             this.contractPercentage = 36; 
         }
-
+        else if (this.contractTime === 'day' || this.contractTime ==='يوم') {
+            endDate.setDate(startDate.getDate() + 1);
+                         this.contractPercentage = 2; 
+        }
         this.endDate = endDate;
     }
 
@@ -72,6 +69,13 @@ contractSchema.pre('save', function(next) {
 
     next();
 });
+
+contractSchema.virtual('isMatured').get(function() {
+  return new Date() >= this.endDate;
+});
+
+contractSchema.set('toJSON', { virtuals: true });
+contractSchema.set('toObject', { virtuals: true });
 
 const Contract = mongoose.model('Contract', contractSchema);
 

@@ -1,11 +1,15 @@
 import asyncHandler from 'express-async-handler';
 import Contract from '../models/contractModel.js';
+import mailgun from 'mailgun-js';
+import AdminNotification from '../models/adminNotificationModel.js';
+import Investor from '../models/investorModel.js';
+import 'dotenv/config'; 
 
 // Create Contract
 export const createContract = asyncHandler(async (req, res) => {
-  const {investorInfo: investorId, amount, currency: currencyId, contractTime,contractTime_ar, startDate } = req.body;
-  
-  const contract = new Contract({investorInfo: investorId,amount, currency: currencyId, contractTime, contractTime_ar,startDate });
+  const { investorInfo: investorId, amount, currency: currencyId, contractTime, contractTime_ar, startDate } = req.body;
+
+  const contract = new Contract({ investorInfo: investorId, amount, currency: currencyId, contractTime, contractTime_ar, startDate });
 
   try {
     await contract.save();
@@ -33,7 +37,7 @@ export const getContractById = asyncHandler(async (req, res) => {
 
 // Update Contract
 export const updateContract = asyncHandler(async (req, res) => {
-  const { investorInfo,amount, currency, contractTime,contractTime_ar, startDate } = req.body;
+  const { investorInfo, amount, currency, contractTime, contractTime_ar, startDate } = req.body;
   const contract = await Contract.findById(req.params.id);
 
   if (contract) {
@@ -53,18 +57,19 @@ export const updateContract = asyncHandler(async (req, res) => {
 
 // Update Investment Status
 export const updateInvestmentStatus = asyncHandler(async (req, res) => {
-    const { investmentStatus } = req.body;
-    const contract = await Contract.findById(req.params.id);
+  const { investmentStatus } = req.body;
+  const contract = await Contract.findById(req.params.id);
 
-    if (contract) {
-        contract.investmentStatus = investmentStatus;
+  if (contract) {
+    contract.investmentStatus = investmentStatus;
 
-        const updatedContract = await contract.save();
-        res.status(200).json(updatedContract);
-    } else {
-        res.status(404).json({ message: 'Contract not found' });
-    }
+    const updatedContract = await contract.save();
+    res.status(200).json(updatedContract);
+  } else {
+    res.status(404).json({ message: 'Contract not found' });
+  }
 });
+
 // Fetch contracts by investor ID
 export const getInvestorContracts = asyncHandler(async (req, res) => {
   const contracts = await Contract.find({ investorInfo: req.params.id }).populate('currency');
@@ -74,8 +79,6 @@ export const getInvestorContracts = asyncHandler(async (req, res) => {
     res.status(404).json({ message: 'Contracts not found' });
   }
 });
-
-
 
 // Delete Contract
 export const deleteContract = asyncHandler(async (req, res) => {
@@ -88,9 +91,101 @@ export const deleteContract = asyncHandler(async (req, res) => {
   }
 });
 
+// Configure Mailgun
+const mg = mailgun({ apiKey: process.env.MAILGUN_API_KEY, domain: process.env.MAILGUN_DOMAIN });
 
+// Send Email
+const sendEmail = (from, to, subject, text) => {
+  const data = {
+    from,
+    to,
+    subject,
+    text,
+  };
 
+  mg.messages().send(data, (error, body) => {
+    if (error) {
+      console.error('Error sending email:', error);
+    } else {
+      console.log('Email sent:', body);
+    }
+  });
+};
 
-const contractController = { createContract, getContracts, getContractById, updateContract, updateInvestmentStatus, deleteContract ,getInvestorContracts };
+// Handle Cashout Request
+export const handleCashout = asyncHandler(async (req, res) => {
+  const { id } = req.params;
+  const contract = await Contract.findById(id).populate('investorInfo');
+
+  if (contract) {
+    const investorEmail = contract.investorInfo.email;
+
+    const notification = new AdminNotification({
+      contract: contract._id,
+      type: 'cashout',
+      message: `Investor requested cashout for contract ${contract._id}`,
+    });
+    await notification.save();
+
+    // Send email to investor
+    // sendEmail(
+    //   `Your Company <${process.env.EMAIL_USER}>`, // Sender email (your email)
+    //   investorEmail,          // Recipient email (investor's email)
+    //   'Cashout Request',
+    //   `Your cashout request for contract ${contract._id} has been received.`
+    // );
+
+    // Send email to admin
+    sendEmail(
+      investorEmail,         // Sender email (investor's email)
+      process.env.EMAIL_USER, // Recipient email (admin's email)
+      'Cashout Request',
+      `Investor requested cashout for contract ${contract._id}`
+    );
+
+    res.status(200).json({ message: 'Cashout request sent to admin and investor' });
+  } else {
+    res.status(404).json({ message: 'Contract not found' });
+  }
+});
+
+// Handle Transfer Request
+export const handleTransfer = asyncHandler(async (req, res) => {
+  const { id } = req.params;
+  const contract = await Contract.findById(id).populate('investorInfo');
+
+  if (contract) {
+    const investorEmail = contract.investorInfo.email;
+
+    const notification = new AdminNotification({
+      contract: contract._id,
+      type: 'transfer',
+      message: `Investor requested transfer for contract ${contract._id}`,
+    });
+    await notification.save();
+
+    // Send email to investor
+    sendEmail(
+      `Your Company <${process.env.EMAIL_USER}>`, // Sender email (your email)
+      investorEmail,          // Recipient email (investor's email)
+      'Transfer Request',
+      `Your transfer request for contract ${contract._id} has been received.`
+    );
+
+    // Send email to admin
+    sendEmail(
+      investorEmail,         // Sender email (investor's email)
+      process.env.EMAIL_USER, // Recipient email (admin's email)
+      'Transfer Request',
+      `Investor requested transfer for contract ${contract._id}`
+    );
+
+    res.status(200).json({ message: 'Transfer request sent to admin and investor' });
+  } else {
+    res.status(404).json({ message: 'Contract not found' });
+  }
+});
+
+const contractController = { createContract, getContracts, getContractById, updateContract, updateInvestmentStatus, deleteContract, getInvestorContracts, handleCashout, handleTransfer };
 
 export default contractController;

@@ -15,19 +15,23 @@ import dashboardRoutes from './routes/dashboardRoutes.js';
 import investmentTypesRoutes from './routes/investmentTypesRoutes.js';
 import investmentRoutes from './routes/investmentRoutes.js';
 import walletRoutes from './routes/walletRoutes.js';
+import http from 'http';
+import { Server } from 'socket.io';
 
 // Configuration
 config();
 connectDB();
 
 const app = express();
+const server = http.createServer(app);
+const io = new Server(server);
 
 app.use(express.json());
 app.use(helmet());
-app.use(helmet.crossOriginResourcePolicy({ policy: "cross-origin" }));
-app.use(morgan("common"));
+app.use(helmet.crossOriginResourcePolicy({ policy: 'cross-origin' }));
+app.use(morgan('common'));
 app.use(bodyParser.json({ limit: '50mb' }));
-app.use(bodyParser.urlencoded({ extended: true, limit: '50mb' , parameterLimit: 10000 }));
+app.use(bodyParser.urlencoded({ extended: true, limit: '50mb', parameterLimit: 10000 }));
 app.use(cors());
 
 // Routes
@@ -40,9 +44,18 @@ app.use('/api/types', investmentTypesRoutes);
 app.use('/api/inv', investmentRoutes);
 app.use('/api/wallet', walletRoutes);
 
+// Socket.IO connection
+io.on('connection', (socket) => {
+  console.log('New client connected');
+  socket.on('disconnect', () => {
+    console.log('Client disconnected');
+  });
+});
+
+export { io };
 
 const PORT = process.env.PORT || 9000;
 
-app.listen(PORT, () => {
-    console.log(`Server is listening on port ${PORT}`);
+server.listen(PORT, () => {
+  console.log(`Server is listening on port ${PORT}`);
 });

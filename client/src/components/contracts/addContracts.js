@@ -54,7 +54,7 @@ const Addcontract = () => {
     setContract({ ...contract, [name]: value });
 
     if (name === 'contractTime') {
-      const contractTime_ar = value === 'year' ? 'سنة' : 'شهر';
+      const contractTime_ar = value === 'year' ? 'سنة' : value === 'month' ? 'شهر' : 'يوم';
       setContractAr({ ...contract_ar, contractTime_ar });
     }
   };
@@ -176,6 +176,8 @@ const Addcontract = () => {
             >
               <MenuItem value="year">Year</MenuItem>
               <MenuItem value="month">Month</MenuItem>
+              <MenuItem value="day">day</MenuItem>
+
             </TextField>
             <TextField
               fullWidth
