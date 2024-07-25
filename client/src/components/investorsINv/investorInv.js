@@ -18,7 +18,8 @@ import SearchOutlinedIcon from '@mui/icons-material/SearchOutlined';
 import Loading from '../loading.js';
 import loader from '../loading.gif';
 import { useTranslation } from 'react-i18next';
-import CashoutPopup from './CashoutPopup'; // Import the CashoutPopup component
+import CashoutPopup from './CashoutPopup';
+import io from 'socket.io-client'; // Import socket.io-client
 
 const InvContractsTable = () => {
   const { id } = useParams();
@@ -27,7 +28,7 @@ const InvContractsTable = () => {
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
   const [openPopup, setOpenPopup] = useState(false);
-  const [selectedRow, setSelectedRow] = useState(null); // State to track the selected row for cashout
+  const [selectedRow, setSelectedRow] = useState(null);
   const [bankDetails, setBankDetails] = useState({ accountNumber: '', bankName: '', amount: '' });
   const [cashoutOption, setCashoutOption] = useState('payment');
 
@@ -63,10 +64,6 @@ const InvContractsTable = () => {
     setSelectedRow(row);
     setOpenPopup(true);
   };
-  const handleTransferClick = (row) => {
-    setSelectedRow(row);
-    setOpenPopup(true);
-  };
 
   const handlePopupClose = () => {
     setOpenPopup(false);
@@ -75,11 +72,18 @@ const InvContractsTable = () => {
     setSelectedRow(null); 
   };
 
-  const handlePopupSubmit = async () => {
+  const handlePopupSubmit = async (details) => {
     if (selectedRow) {
       try {
-        await api.post(`/contract/cashout/${selectedRow._id}`, { ...bankDetails, cashoutOption });
+        await api.post(`/contract/cashout/${selectedRow._id}`, details);
         toast.success(t('CashoutRequestSent'));
+        
+        // Initialize and use Socket.IO here
+        const socket = io('http://localhost:5001');
+        socket.emit('newNotification', {
+          message: `New cashout request for contract ${selectedRow._id}`
+        });
+        socket.disconnect(); // Close the socket connection
       } catch (error) {
         toast.error(t('ErrorSendingCashoutRequest'));
       } finally {
@@ -161,7 +165,7 @@ const InvContractsTable = () => {
       align: i18n.language === 'ar' ? 'right' : 'left',
       renderCell: (params) => (
         <Button
-          onClick={() => handleTransferClick(params.row)}
+          onClick={() => handleCashoutClick(params.row)}
           variant="outlined"
           color="warning"
           disabled={!params.row.isMatured}

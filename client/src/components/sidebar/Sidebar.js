@@ -51,6 +51,9 @@ const Sidebar = ({ open, setOpen }) => {
     else if (path=== '/myInvestments' && investorId){
       navigate(`/myInvestments/${investorId}`);
 
+    }else if (path=== '/myWallet' && investorId){
+      navigate(`/myWallet/${investorId}`);
+
     }
     else {
       navigate(path);
@@ -71,7 +74,8 @@ const Sidebar = ({ open, setOpen }) => {
     { text: t('OverallVeronaInvestments'), icon: <Icon path={mdiBankOutline} size={1} />, path: '/overallInv' },
     role === 'admin' && { text: t('NewInvestments'), icon: <Icon path={mdiCurrencyUsdOff} size={1} />, path: '/NewInvestments' },
     // { text: t('Currencies'), icon: <Icon path={mdiCurrencyBtc} size={1} />, path: '/CurrencyTable' },
-    { text: t('Wallets'), icon: <Icon path={mdiWalletBifold} size={1} />, path: '/wallets' },
+    { text: t('Wallets'), icon: <Icon path={mdiWalletBifold} size={1} />, path: role === 'admin' ? '/wallets' : '/myWallet' },
+
   ].filter(Boolean);
 
   return (

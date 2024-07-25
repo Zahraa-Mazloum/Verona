@@ -47,7 +47,7 @@ const Dashboard = () => {
     const colors = [
       '#d25716', '#ed7622', '#f19446', '#fad7ae', 
       '#76c7c0', '#4caf50', '#ff9800', '#9c27b0',
-    ]; // Add more colors if needed
+    ]; 
 
     stats.totalInvestedPerMonth.forEach(data => {
       if (!currencyMap[data._id.currency]) {
