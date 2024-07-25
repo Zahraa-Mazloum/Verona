@@ -75,3 +75,11 @@ export const deleteWallet = asyncHandler(async (req, res) => {
         res.status(404).json({ message: 'Wallet not found' });
     }
 });
+export const getInvestorWallet = asyncHandler(async (req, res) => {
+  const wallets = await Wallet.find({ investorInfo: req.params.id });
+  if (wallets) {
+    res.status(200).json(wallets);
+  } else {
+    res.status(404).json({ message: 'Wallet not found' });
+  }
+});

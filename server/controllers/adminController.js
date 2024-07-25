@@ -4,6 +4,7 @@ import asyncHandler from 'express-async-handler';
 import Admin from '../models/adminModel.js';
 import Employee from '../models/employeeModel.js';
 import Investor from '../models/investorModel.js';
+import AdminNotification from '../models/adminNotificationModel.js';
 
 // Generate JWT
 export const generateToken = (id) => {
@@ -185,7 +186,7 @@ export const getUserById = asyncHandler(async (req, res) => {
 });
 
 // @desc Update user
-// @route PATCH /api/admin/users/:id
+// @route Put /api/admin/users/:id
 // @access Private (Admin only)
 export const updateUser = asyncHandler(async (req, res) => {
   const { id } = req.params;
@@ -276,6 +277,25 @@ export const deleteUser = asyncHandler(async (req, res) => {
 
   res.json({ message: 'User deleted successfully' });
 });
+export const getNotifications = asyncHandler(async (req, res) => {
+  const notifications = await AdminNotification.find({ isRead: false }).populate('contract').sort({ createdAt: -1 });
+  res.json(notifications);
+});
+
+export const readNotification = asyncHandler(async (req, res) => {
+  const { id } = req.params;
+  const notification = await AdminNotification.findByIdAndUpdate(id, { isRead: true }, { new: true });
+
+  if (!notification) {
+    res.status(404);
+    throw new Error('Notification not found');
+  }
+
+  res.json(notification);
+});
+
+
+
 
 const adminController = {
   registerUser,
@@ -285,6 +305,8 @@ const adminController = {
   getAllEmployees,
   updateUser,
   deleteUser,
+  getNotifications,
+  readNotification
 };
 
 export default adminController;
