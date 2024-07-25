@@ -17,6 +17,7 @@ import investmentRoutes from './routes/investmentRoutes.js';
 import walletRoutes from './routes/walletRoutes.js';
 import http from 'http';
 import { Server } from 'socket.io';
+import InvestorDashboard from './routes/invDashboardRoutes.js';
 
 // Configuration
 config();
@@ -50,6 +51,8 @@ app.use('/api/dash', dashboardRoutes);
 app.use('/api/types', investmentTypesRoutes);
 app.use('/api/inv', investmentRoutes);
 app.use('/api/wallet', walletRoutes);
+app.use('/api/invDash', InvestorDashboard);
+
 
 // Socket.IO connection
 io.on('connection', (socket) => {
