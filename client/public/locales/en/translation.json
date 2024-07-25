@@ -131,7 +131,13 @@
     "MyInv":"My Investments",
     "MarkasRead" : "Mark as Read",
     "WalletsManagement" : "Wallets Management",
-    "MyWallet": "My Wallet"
+    "MyWallet": "My Wallet",
+    "TotalInvest" : "Total Invest",
+    "MaturedInvestments": "Matured  Investments",
+    "RecentContracts" : "Recent Contracts",
+    "ViewAllInvestments" : "View All Investments",
+    "ViewAllContracts" : "View All Contracts" 
+
 
   
  

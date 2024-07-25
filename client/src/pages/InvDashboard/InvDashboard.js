@@ -1,108 +1,126 @@
 import React, { useState, useEffect, Suspense } from 'react';
+import { useParams, useNavigate } from 'react-router-dom';
 import api from '../../api/axios';
-import { Grid, Paper, Typography, Box, Card, CardContent, Skeleton, Avatar } from '@mui/material';
-import PeopleIcon from '@mui/icons-material/People';
-import AttachMoneyIcon from '@mui/icons-material/AttachMoney';
-import TrendingUpIcon from '@mui/icons-material/TrendingUp';
-import { Line, Doughnut } from 'react-chartjs-2';
-import { Chart, CategoryScale, LinearScale, BarController, BarElement, LineController, LineElement, PointElement, Tooltip, Legend, Title, ArcElement } from 'chart.js';
-import i18n from 'i18next';
+import { Grid, Paper, Typography, Box, Card, CardContent, Button } from '@mui/material';
+import { Line } from 'react-chartjs-2';
+import { Chart, registerables } from 'chart.js';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import loader from '../../components/loading.js';
 import { useTranslation } from 'react-i18next';
 
-Chart.register(CategoryScale, LinearScale, BarController, BarElement, LineController, LineElement, PointElement, Tooltip, Legend, Title, ArcElement);
+Chart.register(...registerables);
 
-const Dashboard = () => {
+const InvestorDashboard = () => {
+  const { id } = useParams();
+  const { t, i18n } = useTranslation();
+  const [stats, setStats] = useState([]);
+  const [maturedContracts, setMaturedContracts] = useState([]);
+  const [recentContracts, setRecentContracts] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [stats, setStats] = useState(null);
-  const { t } = useTranslation();
+  const navigate = useNavigate();
+  const invId = localStorage.getItem('id')
 
-  useEffect(() => {
-    const fetchStats = async () => {
-      try {
-        const response = await api.get('/dash/dashboard');
-        console.log('API Response:', response.data);  
-        setStats(response.data);
-        setLoading(false);
-      } catch (error) {
-        console.error('Error fetching investment stats:', error);
-      }
-    };
-
-    fetchStats();
-  }, []);
-  
-
-  useEffect(() => {
-    if (stats) {
-      console.log('Stats updated:', stats); 
+  const fetchStats = async () => {
+    try {
+      const { data } = await api.get(`/invDash/contractStats/${invId}`);
+      setStats(data);
+    } catch (error) {
+      toast.error(t('ErrorFetchingStats'));
     }
-  }, [stats]);
-
-  const getTotalInvestedChartData = () => {
-    if (!stats) return { labels: [], datasets: [] };
-
-    const months = Array.from(new Set(stats.totalInvestedPerMonth.map(data => `${data._id.month}/${data._id.year}`)));
-    const currencyMap = {};
-
-    const colors = [
-      '#d25716', '#ed7622', '#f19446', '#fad7ae', 
-      '#76c7c0', '#4caf50', '#ff9800', '#9c27b0',
-    ]; 
-
-    stats.totalInvestedPerMonth.forEach(data => {
-      if (!currencyMap[data._id.currency]) {
-        currencyMap[data._id.currency] = new Array(months.length).fill(0);
-      }
-      const index = months.indexOf(`${data._id.month}/${data._id.year}`);
-      currencyMap[data._id.currency][index] = data.total;
-    });
-
-    return {
-      labels: months,
-      datasets: Object.keys(currencyMap).map((currency, index) => ({
-        label: `${t('totalInvested')} (${currency})`,
-        data: currencyMap[currency],
-        borderColor: colors[index % colors.length],
-        backgroundColor: colors[index % colors.length] + '33',
-        fill: true,
-        tension: 0.4,
-      }))
-    };
   };
 
-  const investmentTypesChartData = {
-    labels: stats ? stats.investmentsPerType.map(type => t(type.title)) : [],
+  const fetchMaturedContracts = async () => {
+    try {
+      const { data } = await api.get(`/invDash/maturedContracts/${invId}`);
+      setMaturedContracts(data);
+    } catch (error) {
+      toast.error(t('ErrorFetchingMaturedContracts'));
+    }
+  };
+
+  const fetchRecentContracts = async () => {
+    try {
+      const { data } = await api.get(`/contract/investorContracts/${invId}?limit=3`);
+      setRecentContracts(data);
+    } catch (error) {
+      toast.error(t('ErrorFetchingRecentContracts'));
+    }
+  };
+
+  useEffect(() => {
+    fetchStats();
+    fetchMaturedContracts();
+    fetchRecentContracts();
+    setLoading(false);
+  }, [i18n.language]);
+
+  const data = {
+    labels: stats.map(stat => `Month ${stat._id}`),
     datasets: [
       {
-        data: stats ? stats.investmentsPerType.map(type => type.totalAmount) : [],
-        backgroundColor: ['#d25716', '#ed7622', '#f19446', '#fad7ae', '#76c7c0', '#4caf50', '#ff9800', '#9c27b0'],
-        hoverBackgroundColor: ['#c44c13', '#db6720', '#e38541', '#eac39a', '#69b1a9', '#3e8b3d', '#e68900', '#83219f'],
+        label: t('TotalInvest'),
+        data: stats.map(stat => stat.totalAmount),
+        fill: false,
+        backgroundColor: '#f19446',
+        borderColor: '#f19446',
       },
     ],
   };
 
-  const topInvestors = stats?.topInvestors?.map(investor => ({
-    name: investor.name,
-    namear: investor.namear,
-    currency: investor.currency,
-    amount: investor.totalAmount.toFixed(2),
-    profit: investor.profit.toFixed(2),
-  })) || [];
-  console.log(topInvestors);
-
-  const totalInvestedChartData = getTotalInvestedChartData();
-
   return (
-    <Suspense fallback={<Skeleton variant="rectangular" height="100vh" />}>
-      <Box sx={{ p: 3 }} dir={i18n.language === 'ar' ? 'rtl' : 'ltr'}>
+    <Suspense fallback={<img src={loader} alt="Loading..." />}>
+      <Box p={3}>
+        <ToastContainer />
         <Grid container spacing={3}>
-        
-         <Typography>Inv DashBoard</Typography>
-       
+          <Grid item xs={12} md={6}>
+            <Card>
+              <CardContent>
+                <Typography variant="h6">{t('RecentContracts')}</Typography>
+                {recentContracts.slice(0, 3).map(contract => (
+                  <Paper key={contract._id} style={{ padding: '10px', marginBottom: '10px' }}>
+                    <Typography>{`${t('Amount')}: ${contract.amount}`}</Typography>
+                    <Typography>{`${t('Currency')}: ${contract.currency.symbol}`}</Typography>
+                    <Typography>{`${t('StartDate')}: ${new Date(contract.startDate).toLocaleDateString()}`}</Typography>
+                  </Paper>
+                ))}
+                <Button variant="contained" color="warning" onClick={() => navigate(`/investorContracts/${invId}`)}>
+                  {t('ViewAllContracts')}
+                </Button>
+              </CardContent>
+            </Card>
+          </Grid>
+          <Grid item xs={12} md={6}>
+            <Card>
+              <CardContent>
+                <Typography variant="h6">{t('MaturedInvestments')}</Typography>
+                {maturedContracts.slice(0, 3).map(contract => (
+                  <Paper key={contract._id} style={{ padding: '10px', marginBottom: '10px' }}>
+                    <Typography>{`${t('Amount')}: ${contract.amount}`}</Typography>
+                    <Typography>{`${t('Currency')}: ${contract.currency.symbol}`}</Typography>
+                    <Typography>{`${t('EndDate')}: ${new Date(contract.endDate).toLocaleDateString()}`}</Typography>
+                  </Paper>
+                ))}
+                <Button variant="contained" color="warning" onClick={() => navigate(`/myInvestments/${invId}`)}>
+                  {t('ViewAllInvestments')}
+                </Button>
+              </CardContent>
+            </Card>
+          </Grid>
+          <Grid item xs={12}>
+            <Card>
+              <CardContent>
+                <Typography variant="h6">{t('InvestorStats')}</Typography>
+                <Box sx={{ width: '100%', height: '400px' }}>
+                  <Line data={data} options={{ maintainAspectRatio: false }} />
+                </Box>
+              </CardContent>
+            </Card>
+          </Grid>
         </Grid>
       </Box>
     </Suspense>
   );
 };
 
-export default Dashboard;
+export default InvestorDashboard;
