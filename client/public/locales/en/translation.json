@@ -136,7 +136,8 @@
     "MaturedInvestments": "Matured  Investments",
     "RecentContracts" : "Recent Contracts",
     "ViewAllInvestments" : "View All Investments",
-    "ViewAllContracts" : "View All Contracts" 
+    "ViewAllContracts" : "View All Contracts" ,
+    "CashoutRequestSent" : "Cashout Request Sent"
 
 
   

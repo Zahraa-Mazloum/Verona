@@ -19,7 +19,7 @@ import Loading from '../loading.js';
 import loader from '../loading.gif';
 import { useTranslation } from 'react-i18next';
 import CashoutPopup from './CashoutPopup';
-import io from 'socket.io-client'; // Import socket.io-client
+import io from 'socket.io-client';
 
 const InvContractsTable = () => {
   const { id } = useParams();
@@ -31,7 +31,7 @@ const InvContractsTable = () => {
   const [selectedRow, setSelectedRow] = useState(null);
   const [bankDetails, setBankDetails] = useState({ accountNumber: '', bankName: '', amount: '' });
   const [cashoutOption, setCashoutOption] = useState('payment');
-
+  const socket = io(); 
   const StripedDataGrid = styled(DataGrid)(({ theme }) => ({
     [`& .${gridClasses.row}.even`]: {
       backgroundColor: 'rgba(255, 242, 215, 0.5)',
@@ -51,6 +51,12 @@ const InvContractsTable = () => {
       setLoading(false);
     }
   };
+  useEffect(() => {
+    socket.on('newNotification', () => {
+      const audio = new Audio('../../../public/notificatio.mp3');
+      audio.play();
+    });
+  }, [socket]);
 
   useEffect(() => {
     fetchContract();
@@ -78,12 +84,12 @@ const InvContractsTable = () => {
         await api.post(`/contract/cashout/${selectedRow._id}`, details);
         toast.success(t('CashoutRequestSent'));
         
-        // Initialize and use Socket.IO here
-        const socket = io('http://localhost:5001');
+        const socketUrl = process.env.REACT_APP_SOCKET_URL;
+        const socket = io(socketUrl);
         socket.emit('newNotification', {
           message: `New cashout request for contract ${selectedRow._id}`
         });
-        socket.disconnect(); // Close the socket connection
+        socket.disconnect();
       } catch (error) {
         toast.error(t('ErrorSendingCashoutRequest'));
       } finally {
