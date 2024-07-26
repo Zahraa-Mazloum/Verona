@@ -114,23 +114,40 @@ const sendEmail = (from, to, subject, text) => {
 };
 
 // Handle Cashout Request
+// export const handleCashout = asyncHandler(async (req, res) => {
+//   const { id } = req.params;
+//   const contract = await Contract.findById(id).populate('investorInfo');
+//   const startDate = new Date(contract.startDate);
+//   const dateOnly = startDate.toLocaleDateString();
+//   if (contract) {
+//     const investorEmail = contract.investorInfo.email;
+//     const notification = new AdminNotification({
+//       contract: contract._id,
+//       type: 'cashout',
+//       message: `${contract.investorInfo.fullname_en} requested cashout for contract with date ${dateOnly}`,
+//     });
+//     await notification.save();
+//     io.emit('newNotification', notification);
+
+//     // Update unreadCount state
+//     const unreadCount = await AdminNotification.countDocuments({ isRead: false });
+//     res.status(200).json({ message: 'Cashout request sent to admin and investor', unreadCount });
+//   } else {
+//     res.status(404).json({ message: 'Contract not found' });
+//   }
+// });
 export const handleCashout = asyncHandler(async (req, res) => {
   const { id } = req.params;
   const contract = await Contract.findById(id).populate('investorInfo');
-  const startDate = new Date(contract.startDate);
-  const dateOnly = startDate.toLocaleDateString();
   if (contract) {
-    const investorEmail = contract.investorInfo.email;
     const notification = new AdminNotification({
       contract: contract._id,
       type: 'cashout',
-      message: `${contract.investorInfo.fullname_en} requested cashout for contract with date ${dateOnly}`,
+      message: `${contract.investorInfo.fullname_en} requested cashout for contract with date ${contract.startDate.toLocaleDateString()}`,
     });
     await notification.save();
     io.emit('newNotification', notification);
-    // Update unreadCount state
-    const unreadCount = await AdminNotification.countDocuments({ isRead: false });
-    res.status(200).json({ message: 'Cashout request sent to admin and investor', unreadCount });
+    res.status(200).json({ message: 'Cashout request sent to admin and investor' });
   } else {
     res.status(404).json({ message: 'Contract not found' });
   }

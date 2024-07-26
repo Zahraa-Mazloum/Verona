@@ -53,7 +53,6 @@ app.use('/api/inv', investmentRoutes);
 app.use('/api/wallet', walletRoutes);
 app.use('/api/invDash', InvestorDashboard);
 
-
 // Socket.IO connection
 io.on('connection', (socket) => {
   console.log('New client connected');
@@ -64,7 +63,7 @@ io.on('connection', (socket) => {
 
 export { io };
 
-const PORT = process.env.PORT || 9000;
+const PORT = process.env.PORT;
 
 server.listen(PORT, () => {
   console.log(`Server is listening on port ${PORT}`);
