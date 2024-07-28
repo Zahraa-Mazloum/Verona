@@ -53,7 +53,7 @@ const InvContractsTable = () => {
   };
   useEffect(() => {
     socket.on('newNotification', () => {
-      const audio = new Audio('../../../public/notificatio.mp3');
+      const audio = new Audio('/notificatio.mp3');
       audio.play();
     });
   }, [socket]);
@@ -84,8 +84,7 @@ const InvContractsTable = () => {
         await api.post(`/contract/cashout/${selectedRow._id}`, details);
         toast.success(t('CashoutRequestSent'));
         
-        const socketUrl = process.env.REACT_APP_SOCKET_URL;
-        const socket = io(socketUrl);
+        const socket = io('http://localhost:5001');
         socket.emit('newNotification', {
           message: `New cashout request for contract ${selectedRow._id}`
         });
