@@ -37,5 +37,8 @@
     "socket.io": "^4.7.5",
     "socket.io-client": "^4.7.5",
     "validator": "^13.12.0"
+  },
+  "devDependencies": {
+    "@types/mailgun-js": "^0.22.18"
   }
 }

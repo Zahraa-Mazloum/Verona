@@ -4,7 +4,10 @@ import mailgun from 'mailgun-js';
 import AdminNotification from '../models/adminNotificationModel.js';
 import Investor from '../models/investorModel.js';
 import 'dotenv/config'; 
-import {io} from '../index.js'
+import { io } from '../index.js';
+
+// Mailgun Configuration
+const mg = mailgun({ apiKey: process.env.MAILGUN_API_KEY, domain: process.env.MAILGUN_DOMAIN });
 
 // Create Contract
 export const createContract = asyncHandler(async (req, res) => {
@@ -92,16 +95,13 @@ export const deleteContract = asyncHandler(async (req, res) => {
   }
 });
 
-// Configure Mailgun
-const mg = mailgun({ apiKey: process.env.MAILGUN_API_KEY, domain: process.env.MAILGUN_DOMAIN });
-
 // Send Email
-const sendEmail = (from, to, subject, text) => {
+const sendEmail = (from, to, subject, html) => {
   const data = {
     from,
     to,
     subject,
-    text,
+    html,
   };
 
   mg.messages().send(data, (error, body) => {
@@ -114,40 +114,51 @@ const sendEmail = (from, to, subject, text) => {
 };
 
 // Handle Cashout Request
-// export const handleCashout = asyncHandler(async (req, res) => {
-//   const { id } = req.params;
-//   const contract = await Contract.findById(id).populate('investorInfo');
-//   const startDate = new Date(contract.startDate);
-//   const dateOnly = startDate.toLocaleDateString();
-//   if (contract) {
-//     const investorEmail = contract.investorInfo.email;
-//     const notification = new AdminNotification({
-//       contract: contract._id,
-//       type: 'cashout',
-//       message: `${contract.investorInfo.fullname_en} requested cashout for contract with date ${dateOnly}`,
-//     });
-//     await notification.save();
-//     io.emit('newNotification', notification);
-
-//     // Update unreadCount state
-//     const unreadCount = await AdminNotification.countDocuments({ isRead: false });
-//     res.status(200).json({ message: 'Cashout request sent to admin and investor', unreadCount });
-//   } else {
-//     res.status(404).json({ message: 'Contract not found' });
-//   }
-// });
 export const handleCashout = asyncHandler(async (req, res) => {
   const { id } = req.params;
   const contract = await Contract.findById(id).populate('investorInfo');
+  
   if (contract) {
+    const investorEmail = contract.investorInfo.email;
+    const investorName = contract.investorInfo.fullname_en;
+    const contractStartDate = new Date(contract.startDate).toLocaleDateString();
+    const { accountNumber, bankName, cashoutOption, cashoutAmount } = req.body; 
+
     const notification = new AdminNotification({
       contract: contract._id,
       type: 'cashout',
-      message: `${contract.investorInfo.fullname_en} requested cashout for contract with date ${contract.startDate.toLocaleDateString()}`,
+      message: `${investorName} requested cashout for contract with date ${contractStartDate}`,
     });
     await notification.save();
     io.emit('newNotification', notification);
-    res.status(200).json({ message: 'Cashout request sent to admin and investor' });
+
+    // Send email to admin
+    const emailData = {
+      from: investorEmail,
+      to: 'zahraamazloum2001@gmail.com',
+      subject: 'Cashout Request',
+      html: `
+        <div>
+          ${investorName} requested cashout for contract with date ${contractStartDate}.
+          <br>
+          Cashout Details:
+          <br>
+          Account Number: ${accountNumber}
+          <br>
+          Bank Name: ${bankName}
+          <br>
+          Cashout Option: ${cashoutOption}
+          <br>
+          Cashout Amount: ${cashoutAmount}
+        </div>
+      `,
+    };
+
+    sendEmail(emailData.from, emailData.to, emailData.subject, emailData.html);
+
+    // Update unreadCount state
+    const unreadCount = await AdminNotification.countDocuments({ isRead: false });
+    res.status(200).json({ message: 'Cashout request sent to admin and investor', unreadCount });
   } else {
     res.status(404).json({ message: 'Contract not found' });
   }
@@ -159,12 +170,27 @@ export const handleTransfer = asyncHandler(async (req, res) => {
   const contract = await Contract.findById(id).populate('investorInfo');
   if (contract) {
     const investorEmail = contract.investorInfo.email;
+    const investorName = contract.investorInfo.fullname_en;
+    const contractStartDate = new Date(contract.startDate).toLocaleDateString();
+
     const notification = new AdminNotification({
       contract: contract._id,
       type: 'transfer',
-      message: `Investor requested transfer for contract ${contract._id}`,
+      message: `${investorName} requested transfer for contract with date ${contractStartDate}`,
     });
     await notification.save();
+    io.emit('newNotification', notification);
+
+    // Send email to admin
+    const emailData = {
+      from: 'your-email@example.com',
+      to: 'zahraamazloum2001@gmail.com',
+      subject: 'Transfer Request',
+      html: `<div>${investorName} requested transfer for contract with date ${contractStartDate}</div>`,
+    };
+
+    sendEmail(emailData.from, emailData.to, emailData.subject, emailData.html);
+
     // Update unreadCount state
     const unreadCount = await AdminNotification.countDocuments({ isRead: false });
     res.status(200).json({ message: 'Transfer request sent to admin and investor', unreadCount });
