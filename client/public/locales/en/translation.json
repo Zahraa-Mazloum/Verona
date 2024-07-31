@@ -137,7 +137,16 @@
     "RecentContracts" : "Recent Contracts",
     "ViewAllInvestments" : "View All Investments",
     "ViewAllContracts" : "View All Contracts" ,
-    "CashoutRequestSent" : "Cashout Request Sent"
+    "CashoutRequestSent" : "Cashout Request Sent",
+    "TransferRequestSent" : "Transfer Request Sent",
+    "ErrorSendingTransferRequest" : "Error Sending Transfer Request",
+    "TransferDetails" : "Transfer Details",
+    "SpecifyAmount" : "Specify Amount",
+    "Other" : "Other",
+    "AmountToCashout" : "Amount To Cashout",
+    "AmountToTransfer" : "Amount To Transfer",
+    "TransferAmount" : "Transfer Amount",
+    "contact" : "Contact"
 
 
   

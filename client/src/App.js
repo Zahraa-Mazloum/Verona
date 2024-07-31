@@ -31,10 +31,9 @@ import RegisterInvestor from './components/RegisterInvestor.js';
 import InvDashboard from './pages/InvDashboard/InvDashboard.js'
 import InvContracts from './components/InvContracts/invContractTable.js';
 import InvestorInv from './components/investorsINv/investorInv.js';
-import InvWallet from './components/invWallet/invWalletTable.js'
-
-
-import './App.css'
+import InvWallet from './components/invWallet/invWalletTable.js';
+import Contact from './pages/SendMessageForm.js';
+import './App.css';
 
 function App() {
   useDocumentTitle();
@@ -81,6 +80,7 @@ function App() {
       <Route path="/myInvestments/:id" element={<InvestorInv />} />
       <Route path="overallInv" element={<OverallInv />} />
       <Route path="/myWallet/:id" element={<InvWallet />} />
+      <Route path="/message" element={<Contact/>} />
 
 
       </Route>

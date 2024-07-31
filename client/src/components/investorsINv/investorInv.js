@@ -19,6 +19,7 @@ import Loading from '../loading.js';
 import loader from '../loading.gif';
 import { useTranslation } from 'react-i18next';
 import CashoutPopup from './CashoutPopup';
+import TransferPopup from './TransferPopup.js'
 import io from 'socket.io-client';
 
 const InvContractsTable = () => {
@@ -27,10 +28,13 @@ const InvContractsTable = () => {
   const [contract, setContract] = useState([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
-  const [openPopup, setOpenPopup] = useState(false);
+  const [openCashoutPopup, setopenCashoutPopup] = useState(false);
+  const [openTransferPopup, setopenTransferPopup] = useState(false);
   const [selectedRow, setSelectedRow] = useState(null);
+  const [selectedTransferRow, setselectedTransferRow] = useState(null);
   const [bankDetails, setBankDetails] = useState({ accountNumber: '', bankName: '', amount: '' });
   const [cashoutOption, setCashoutOption] = useState('payment');
+  const [transferOption, setTransferOption] = useState('payment');
   const socket = io(); 
   const StripedDataGrid = styled(DataGrid)(({ theme }) => ({
     [`& .${gridClasses.row}.even`]: {
@@ -68,23 +72,33 @@ const InvContractsTable = () => {
 
   const handleCashoutClick = (row) => {
     setSelectedRow(row);
-    setOpenPopup(true);
+    setopenCashoutPopup(true);
+  };
+  const handleTransferClick = (row) => {
+    setselectedTransferRow(row);
+    setopenTransferPopup(true);
   };
 
   const handlePopupClose = () => {
-    setOpenPopup(false);
+    setopenCashoutPopup(false);
     setBankDetails({ accountNumber: '', bankName: '', amount: '' });
     setCashoutOption('payment');
     setSelectedRow(null); 
   };
+  const handleTransferPopupClose = () => {
+    setopenTransferPopup(false);
+    setCashoutOption('payment');
+    setselectedTransferRow(null); 
+  };
+
 
   const handlePopupSubmit = async (details) => {
     if (selectedRow) {
       try {
         await api.post(`/contract/cashout/${selectedRow._id}`, details);
         toast.success(t('CashoutRequestSent'));
-        
-        const socket = io('http://localhost:5001');
+        const socket = io('https://verona-cfiw.onrender.com/');
+        // const socket = io('http://localhost:5001');
         socket.emit('newNotification', {
           message: `New cashout request for contract ${selectedRow._id}`
         });
@@ -93,6 +107,25 @@ const InvContractsTable = () => {
         toast.error(t('ErrorSendingCashoutRequest'));
       } finally {
         handlePopupClose();
+      }
+    }
+  };
+
+  const handleTransferPopupSubmit = async (details) => {
+    if (selectedTransferRow) {
+      try {
+        await api.post(`/contract/transfer/${selectedTransferRow._id}`, details);
+        toast.success(t('TransferRequestSent'));
+        
+        const socket = io('http://localhost:5001');
+        socket.emit('newNotification', {
+          message: `New transfer request for contract ${selectedTransferRow._id}`
+        });
+        socket.disconnect();
+      } catch (error) {
+        toast.error(t('ErrorSendingTransferRequest'));
+      } finally {
+        handleTransferPopupClose();
       }
     }
   };
@@ -170,7 +203,7 @@ const InvContractsTable = () => {
       align: i18n.language === 'ar' ? 'right' : 'left',
       renderCell: (params) => (
         <Button
-          onClick={() => handleCashoutClick(params.row)}
+          onClick={() => handleTransferClick(params.row)}
           variant="outlined"
           color="warning"
           disabled={!params.row.isMatured}
@@ -231,7 +264,7 @@ const InvContractsTable = () => {
         </Paper>
         {selectedRow && (
         <CashoutPopup
-          open={openPopup}
+          open={openCashoutPopup}
           onClose={handlePopupClose}
           onSubmit={handlePopupSubmit}
           bankDetails={bankDetails}
@@ -240,6 +273,17 @@ const InvContractsTable = () => {
           setCashoutOption={setCashoutOption}
           paymentAmount={selectedRow.payment}
           profitAmount={selectedRow.profit}
+        />
+      )}
+      {selectedTransferRow && (
+        <TransferPopup
+          open={openTransferPopup}
+          onClose={handleTransferPopupClose}
+          onSubmit={handleTransferPopupSubmit}
+          transferOption={transferOption}
+          setTransferOption={setTransferOption}
+          paymentAmount={selectedTransferRow.payment}
+          profitAmount={selectedTransferRow.profit}
         />
       )}
     </Box>

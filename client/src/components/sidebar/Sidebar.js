@@ -15,7 +15,7 @@ import {
   mdiViewDashboard, mdiFileSign, mdiAccountTie, mdiBankCircleOutline,
 
   mdiCashMultiple, mdiBankOutline, mdiCurrencyUsdOff, mdiCurrencyBtc,mdiCash100,
-  mdiWalletBifold
+  mdiWalletBifold,mdiCardAccountMailOutline
 } from '@mdi/js';
 import './sidebar.css';
 import Loading from '../loading.js';
@@ -75,6 +75,8 @@ const Sidebar = ({ open, setOpen }) => {
     role === 'admin' && { text: t('NewInvestments'), icon: <Icon path={mdiCurrencyUsdOff} size={1} />, path: '/NewInvestments' },
     // { text: t('Currencies'), icon: <Icon path={mdiCurrencyBtc} size={1} />, path: '/CurrencyTable' },
     { text: t('Wallets'), icon: <Icon path={mdiWalletBifold} size={1} />, path: role === 'admin' ? '/wallets' : '/myWallet' },
+    role === 'investor' && { text: t('contact'), icon: <Icon path={mdiCardAccountMailOutline} size={1} />, path: '/message' },
+
 
   ].filter(Boolean);
 

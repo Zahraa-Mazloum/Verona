@@ -1,5 +1,5 @@
 import React, { useEffect, useState,Suspense } from 'react';
-import api from '../../api/axios';
+import api from '../../api/axios.js';
 import { Typography, Container, Box } from '@mui/material';
 import Loading from '../../components/loading.js';
 
