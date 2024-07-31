@@ -116,8 +116,9 @@ const InvContractsTable = () => {
       try {
         await api.post(`/contract/transfer/${selectedTransferRow._id}`, details);
         toast.success(t('TransferRequestSent'));
-        
-        const socket = io('http://localhost:5001');
+        const socket = io('https://verona-cfiw.onrender.com');
+
+        // const socket = io('http://localhost:5001');
         socket.emit('newNotification', {
           message: `New transfer request for contract ${selectedTransferRow._id}`
         });
