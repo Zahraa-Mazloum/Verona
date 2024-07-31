@@ -5,7 +5,6 @@ const adminNotificationSchema = new mongoose.Schema(
     contract: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'Contract',
-      required: true,
     },
     type: {
       type: String,
@@ -20,6 +19,10 @@ const adminNotificationSchema = new mongoose.Schema(
       type: Boolean,
       default: false,
     },
+    paymentScreenshot: {
+      data: Buffer,
+      contentType: String,
+    }
   },
   {
     timestamps: true,

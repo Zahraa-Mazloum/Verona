@@ -7,7 +7,8 @@ const walletSchema = new mongoose.Schema({
   },
   amount: {
     type: Number,
-  },
+  },  
+
 });
 
 const Wallet = mongoose.model('Wallet', walletSchema, 'Wallet');

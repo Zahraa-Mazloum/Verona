@@ -172,6 +172,7 @@ export const handleTransfer = asyncHandler(async (req, res) => {
     const investorEmail = contract.investorInfo.email;
     const investorName = contract.investorInfo.fullname_en;
     const contractStartDate = new Date(contract.startDate).toLocaleDateString();
+    const {cashoutOption, cashoutAmount } = req.body; 
 
     const notification = new AdminNotification({
       contract: contract._id,
@@ -183,12 +184,20 @@ export const handleTransfer = asyncHandler(async (req, res) => {
 
     // Send email to admin
     const emailData = {
-      from: 'your-email@example.com',
+      from: investorEmail,
       to: 'zahraamazloum2001@gmail.com',
-      subject: 'Transfer Request',
-      html: `<div>${investorName} requested transfer for contract with date ${contractStartDate}</div>`,
-    };
+      subject: 'Cashout Request',
+      html: `
+        <div>
+          ${investorName} requested cashout for contract with date ${contractStartDate}.
+          <br>
+          Transfer Details:
+          <br>
 
+          Cashout Amount: ${cashoutAmount}
+        </div>
+      `,
+    };
     sendEmail(emailData.from, emailData.to, emailData.subject, emailData.html);
 
     // Update unreadCount state
@@ -198,6 +207,7 @@ export const handleTransfer = asyncHandler(async (req, res) => {
     res.status(404).json({ message: 'Contract not found' });
   }
 });
+
 
 const contractController = { createContract, getContracts, getContractById, updateContract, updateInvestmentStatus, deleteContract, getInvestorContracts, handleCashout, handleTransfer };
 
