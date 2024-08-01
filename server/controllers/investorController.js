@@ -17,7 +17,7 @@ export const sendMessage = asyncHandler(async (req, res) => {
 
   const emailData = {
     from: investorEmail,
-    to: 'zahraamazloum2001@gmail.com',
+    to: ['zahraamazloum2001@gmail.com', 'azizmatta@gmail.com'],
     subject: subject,
     html: `
       <div>
