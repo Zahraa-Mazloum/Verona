@@ -120,7 +120,7 @@
   "investmentManagement": "Investment Management",
 
 
-  "Registrationsuccessful" : "Registration successful!",
+    "Registrationsuccessful" : "Registration successful!",
     "Registrationfailed" : "Registration failed. Please try again.",
     "RegisterasInvestor" : "Register as Investor",
     "UploadPassportPhoto" : "Upload Passport Photo",
@@ -146,7 +146,11 @@
     "AmountToCashout" : "Amount To Cashout",
     "AmountToTransfer" : "Amount To Transfer",
     "TransferAmount" : "Transfer Amount",
-    "contact" : "Contact"
+    "contact" : "Contact",
+    "BankTransferInstructions" : "Bank Transfer Instructions",
+    "BankTransfer" : "Bank Transfer",
+    "AccountHolderName" : "Account Holder Name",
+    "DateOfTransfer" : "Date Of Transfer"
 
 
   
