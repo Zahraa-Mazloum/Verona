@@ -15,10 +15,9 @@ import dashboardRoutes from './routes/dashboardRoutes.js';
 import investmentTypesRoutes from './routes/investmentTypesRoutes.js';
 import investmentRoutes from './routes/investmentRoutes.js';
 import walletRoutes from './routes/walletRoutes.js';
-import investoeRoutes from './routes/investorRoutes.js'
+import InvestorDashboard from './routes/invDashboardRoutes.js';
 import http from 'http';
 import { Server } from 'socket.io';
-import InvestorDashboard from './routes/invDashboardRoutes.js';
 
 // Configuration
 config();
@@ -28,13 +27,10 @@ const app = express();
 const server = http.createServer(app);
 const io = new Server(server, {
   cors: {
-    // origin: 'http://localhost:3000',
-      origin: 'https://verona-mgmt.vercel.app',
-    // origin:'*',
+    origin: 'https://verona-mgmt.vercel.app',
     methods: ['GET', 'POST'],
     allowedHeaders: ['Content-Type'],
     credentials: true
-    
   }
 });
 
@@ -58,7 +54,6 @@ app.use('/api/wallet', walletRoutes);
 app.use('/api/invDash', InvestorDashboard);
 app.use('/api/investors', investorRoutes);
 
-
 // Socket.IO connection
 io.on('connection', (socket) => {
   console.log('New client connected');
@@ -67,10 +62,11 @@ io.on('connection', (socket) => {
   });
 });
 
-export { io };
-
-const PORT = process.env.PORT;
+const PORT = process.env.PORT || 3001; 
 
 server.listen(PORT, () => {
   console.log(`Server is listening on port ${PORT}`);
+}).on('error', (err) => {
+  console.error('Error starting server:', err);
+  process.exit(1);
 });
