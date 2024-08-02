@@ -27,7 +27,7 @@ const app = express();
 const server = http.createServer(app);
 const io = new Server(server, {
   cors: {
-    origin: 'https://verona-mgmt.vercel.app',
+    origin: 'http://localhost:3000',
     methods: ['GET', 'POST'],
     allowedHeaders: ['Content-Type'],
     credentials: true
@@ -54,6 +54,7 @@ app.use('/api/wallet', walletRoutes);
 app.use('/api/invDash', InvestorDashboard);
 app.use('/api/investors', investorRoutes);
 
+
 // Socket.IO connection
 io.on('connection', (socket) => {
   console.log('New client connected');
@@ -62,11 +63,10 @@ io.on('connection', (socket) => {
   });
 });
 
-const PORT = process.env.PORT || 3001; 
+export { io };
+
+const PORT = process.env.PORT || 9000;
 
 server.listen(PORT, () => {
   console.log(`Server is listening on port ${PORT}`);
-}).on('error', (err) => {
-  console.error('Error starting server:', err);
-  process.exit(1);
 });
