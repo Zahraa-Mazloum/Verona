@@ -4,6 +4,6 @@ import { investorDashboardStates } from '../controllers/investorDashboardControl
 const router = express.Router();
 
 // GET Investor Dashboard Stats
-router.get('/investordashboard', investorDashboardStates);
+router.get('/investordashboard/:id', investorDashboardStates);
 
 export default router;

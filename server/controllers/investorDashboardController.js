@@ -4,7 +4,7 @@ import Investor from '../models/investorModel.js';
 
 export const investorDashboardStates = async (req, res) => {
     try {
-        const investorId = req.user._id; 
+        const investorId =  req.params; 
 
         // Total amount invested by this investor
         const totalAmount = await Investment.aggregate([
