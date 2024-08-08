@@ -8,6 +8,9 @@ const walletSchema = new mongoose.Schema({
   amount: {
     type: Number,
   },  
+  // walletWithdraw:{
+  //   type:Number,
+  // }
 
 });
 

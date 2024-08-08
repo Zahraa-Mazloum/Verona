@@ -41,13 +41,14 @@ export const getContractById = asyncHandler(async (req, res) => {
 
 // Update Contract
 export const updateContract = asyncHandler(async (req, res) => {
-  const { investorInfo, amount, currency, contractTime, contractTime_ar, startDate } = req.body;
+  const { investorInfo, amount, currency, withdraw,contractTime, contractTime_ar, startDate } = req.body;
   const contract = await Contract.findById(req.params.id);
 
   if (contract) {
     contract.investorInfo = investorInfo || contract.investorInfo;
     contract.amount = amount || contract.amount;
     contract.currency = currency || contract.currency;
+    contract.currency = withdraw || contract.withdraw;
     contract.contractTime = contractTime || contract.contractTime;
     contract.contractTime_ar = contractTime_ar || contract.contractTime_ar;
     contract.startDate = startDate || contract.startDate;
@@ -117,12 +118,21 @@ const sendEmail = (from, to, subject, html) => {
 export const handleCashout = asyncHandler(async (req, res) => {
   const { id } = req.params;
   const contract = await Contract.findById(id).populate('investorInfo');
-  
+
   if (contract) {
     const investorEmail = contract.investorInfo.email;
     const investorName = contract.investorInfo.fullname_en;
     const contractStartDate = new Date(contract.startDate).toLocaleDateString();
-    const { accountNumber, bankName, cashoutOption, cashoutAmount } = req.body; 
+    let { accountNumber, bankName, cashoutOption, cashoutAmount } = req.body; 
+
+    // Validate and sanitize cashoutAmount
+    if (typeof cashoutAmount === 'string') {
+      cashoutAmount = cashoutAmount.trim();
+    }
+    cashoutAmount = Number(cashoutAmount);
+    if (isNaN(cashoutAmount)) {
+      return res.status(400).json({ message: 'Invalid cashout amount' });
+    }
 
     const notification = new AdminNotification({
       contract: contract._id,
@@ -156,6 +166,10 @@ export const handleCashout = asyncHandler(async (req, res) => {
 
     sendEmail(emailData.from, emailData.to, emailData.subject, emailData.html);
 
+    // Update the withdraw field
+    contract.withdraw -= cashoutAmount;
+    await contract.save();
+
     // Update unreadCount state
     const unreadCount = await AdminNotification.countDocuments({ isRead: false });
     res.status(200).json({ message: 'Cashout request sent to admin and investor', unreadCount });
@@ -168,11 +182,21 @@ export const handleCashout = asyncHandler(async (req, res) => {
 export const handleTransfer = asyncHandler(async (req, res) => {
   const { id } = req.params;
   const contract = await Contract.findById(id).populate('investorInfo');
+
   if (contract) {
     const investorEmail = contract.investorInfo.email;
     const investorName = contract.investorInfo.fullname_en;
     const contractStartDate = new Date(contract.startDate).toLocaleDateString();
-    const {cashoutOption, cashoutAmount } = req.body; 
+    let { cashoutOption, cashoutAmount } = req.body; 
+
+    // Validate and sanitize cashoutAmount
+    if (typeof cashoutAmount === 'string') {
+      cashoutAmount = cashoutAmount.trim();
+    }
+    cashoutAmount = Number(cashoutAmount);
+    if (isNaN(cashoutAmount)) {
+      return res.status(400).json({ message: 'Invalid cashout amount' });
+    }
 
     const notification = new AdminNotification({
       contract: contract._id,
@@ -186,19 +210,25 @@ export const handleTransfer = asyncHandler(async (req, res) => {
     const emailData = {
       from: investorEmail,
       to: ['zahraamazloum2001@gmail.com', 'azizmatta@gmail.com'],
-      subject: 'Cashout Request',
+      subject: 'Transfer Request',
       html: `
         <div>
-          ${investorName} requested cashout for contract with date ${contractStartDate}.
+          ${investorName} requested transfer for contract with date ${contractStartDate}.
           <br>
           Transfer Details:
           <br>
-
+          Cashout Option: ${cashoutOption}
+          <br>
           Cashout Amount: ${cashoutAmount}
         </div>
       `,
     };
+
     sendEmail(emailData.from, emailData.to, emailData.subject, emailData.html);
+
+    // Update the withdraw field
+    contract.withdraw -= cashoutAmount;
+    await contract.save();
 
     // Update unreadCount state
     const unreadCount = await AdminNotification.countDocuments({ isRead: false });
@@ -207,7 +237,6 @@ export const handleTransfer = asyncHandler(async (req, res) => {
     res.status(404).json({ message: 'Contract not found' });
   }
 });
-
 
 const contractController = { createContract, getContracts, getContractById, updateContract, updateInvestmentStatus, deleteContract, getInvestorContracts, handleCashout, handleTransfer };
 

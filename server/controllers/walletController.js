@@ -94,7 +94,7 @@
     }
   });
 
-
+  
   export const handleBankTransfer = asyncHandler(async (req, res) => {
     const { id } = req.params;
     const investor = await Investor.findById(id);
@@ -127,6 +127,7 @@
       const emailData = {
         from: investorEmail,
         to: ['zahraamazloum2001@gmail.com', 'azizmatta@gmail.com'],
+
         subject: 'Transfer Request',
         html: `
           <div>
@@ -159,6 +160,69 @@
       });
     } catch (error) {
       console.error('Error handling bank transfer:', error);
+      res.status(500).json({ message: error.message });
+    }
+  });
+
+
+
+  export const handleWalletTransfer = asyncHandler(async (req, res) => {
+    const { id } = req.params;
+    const wallet = await Wallet.findOne({ investorInfo: req.params.id });
+    const { accountNumber, bankName, cashoutOption, cashoutAmount } = req.body; 
+    
+    try {
+      const investor = await Investor.findById(id);
+      if (!investor) {
+        return res.status(404).json({ message: 'Investor not found' });
+      }
+      const investorEmail = investor.email;
+  
+      const notification = new AdminNotification({
+        contract: null,
+        type: 'transfer',
+        message: `New Cashout request ${investorEmail} for ${cashoutAmount}.`,
+      });
+  
+      await notification.save();
+      io.emit('newNotification', notification);
+  
+      const emailData = {
+        from: investorEmail,
+        to: ['zahraamazloum2001@gmail.com', 'azizmatta@gmail.com'],
+        subject: 'Transfer Request',
+        html: `
+        <div>
+          ${investorEmail} requested cashout for ${cashoutAmount}.
+          <br>
+          Cashout Details:
+          <br>
+          Account Number: ${accountNumber}
+          <br>
+          Bank Name: ${bankName}
+          <br>
+          Cashout Option: ${cashoutOption}
+          <br>
+          Cashout Amount: ${cashoutAmount}
+        </div>
+      `,
+      };
+  
+      mg.messages().send(emailData, async (error, body) => {
+        if (error) {
+          console.error('Error sending email:', error);
+          return res.status(500).json({ message: error.message });
+        }
+  
+        // Update the wallet amount
+        wallet.amount -= cashoutAmount;
+        await wallet.save();
+  
+        console.log('Email sent successfully!');
+        res.status(201).json({ message: 'Cashout details submitted successfully', notification });
+      });
+    } catch (error) {
+      console.error('Error handling bank cashout:', error);
       res.status(500).json({ message: error.message });
     }
   });
