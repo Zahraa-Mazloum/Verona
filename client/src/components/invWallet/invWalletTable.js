@@ -1,6 +1,4 @@
 import React, { useState, useEffect, Suspense } from 'react';
-import api from '../../api/axios';
-import { DataGrid, gridClasses } from '@mui/x-data-grid';
 import {
   Button,
   Paper,
@@ -18,16 +16,18 @@ import {
   DialogContentText,
   DialogTitle,
 } from '@mui/material';
+import { DataGrid, gridClasses } from '@mui/x-data-grid';
 import { styled } from '@mui/material/styles';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import MoreVertIcon from '@mui/icons-material/MoreVert';
 import SearchOutlinedIcon from '@mui/icons-material/SearchOutlined';
 import { useNavigate, useParams } from 'react-router-dom';
 import Loading from '../loading.js';
 import loader from '../loading.gif';
 import { useTranslation } from 'react-i18next';
 import io from 'socket.io-client';
+import api from '../../api/axios';
+import CashoutPopup from './walletCashoutPopup';
 
 const WalletsTable = () => {
   const { id } = useParams();
@@ -37,16 +37,19 @@ const WalletsTable = () => {
   const [search, setSearch] = useState('');
   const [anchorEl, setAnchorEl] = useState(null);
   const [openDialog, setOpenDialog] = useState(false);
+  const [selectedRow, setSelectedRow] = useState(null);
+  const [cashoutOption, setCashoutOption] = useState('payment');
+  const [openCashoutPopup, setOpenCashoutPopup] = useState(false);
+  const [bankDetails, setBankDetails] = useState({ accountNumber: '', bankName: '', amount: '' });
   const [transferDetails, setTransferDetails] = useState({
     amount: '',
     accountHolderName: '',
     dateOfTransfer: '',
     paymentScreenshot: null,
   });
-  const socket = io(); 
+  const socket = io();
   const navigate = useNavigate();
   const investorId = localStorage.getItem('id');
-
 
   const StripedDataGrid = styled(DataGrid)(({ theme }) => ({
     [`& .${gridClasses.row}.even`]: {
@@ -70,7 +73,7 @@ const WalletsTable = () => {
 
   useEffect(() => {
     socket.on('newNotification', () => {
-      const audio = new Audio('/notificatio.mp3');
+      const audio = new Audio('/notification.mp3');
       audio.play();
     });
   }, [socket]);
@@ -78,6 +81,30 @@ const WalletsTable = () => {
   useEffect(() => {
     fetchWallets();
   }, [i18n.language]);
+
+  const handleCashoutClick = (row) => {
+    setSelectedRow(row);
+    setOpenCashoutPopup(true);
+  };
+  
+
+  const handlePopupClose = () => {
+    setOpenCashoutPopup(false);
+    setBankDetails({ accountNumber: '', bankName: '', amount: '' });
+    setCashoutOption('payment');
+    setSelectedRow(null);
+  };
+
+  const handleCashoutSubmit = async (details) => {
+    try {
+      await api.post(`/wallet/cashout/${id}`, details);
+      toast.success(t('CashoutSuccessful'));
+      fetchWallets();
+      handlePopupClose();
+    } catch (error) {
+      toast.error(t('ErrorCashout'));
+    }
+  };
 
   const handleSearchChange = (event) => {
     setSearch(event.target.value);
@@ -104,7 +131,7 @@ const WalletsTable = () => {
 
   const handleDialogOpen = () => {
     setOpenDialog(true);
-    setAnchorEl(null);
+    handleMenuClose();
   };
 
   const handleDialogClose = () => {
@@ -121,7 +148,7 @@ const WalletsTable = () => {
 
   const handleFileChange = (e) => {
     const file = e.target.files[0];
-  
+
     if (file && file.size <= 5 * 1024 * 1024) {
       if (file.type === 'image/jpeg' || file.type === 'image/png') {
         setTransferDetails({ ...transferDetails, paymentScreenshot: file });
@@ -147,10 +174,10 @@ const WalletsTable = () => {
 
       const response = await api.post(`/wallet/bankTransfer/${investorId}`, formData, {
         headers: {
-          'Content-Type': 'multipart/form-data'
-        }
+          'Content-Type': 'multipart/form-data',
+        },
       });
-      
+
       if (response.status === 201) {
         toast.success(t('TransferDetailsSubmitted'));
         fetchWallets();
@@ -173,14 +200,19 @@ const WalletsTable = () => {
       flex: 1,
     },
     {
-      field: 'actions',
-      headerName: t('Actions'),
+      field: 'topup',
+      headerName: t('Topup'),
       flex: 1,
+      align: i18n.language === 'ar' ? 'right' : 'left',
       renderCell: (params) => (
         <>
-          <IconButton onClick={handleMenuClick}>
-            <MoreVertIcon />
-          </IconButton>
+          <Button
+            variant="outlined"
+            color="warning"
+            onClick={handleMenuClick}
+          >
+            {t('Topup')}
+          </Button>
           <Menu
             anchorEl={anchorEl}
             open={Boolean(anchorEl)}
@@ -192,6 +224,21 @@ const WalletsTable = () => {
             <MenuItem disabled>{t('PayByCrypto')} ({t('ComingSoon')})</MenuItem>
           </Menu>
         </>
+      ),
+    },
+    {
+      field: 'cashout',
+      headerName: t('Cashout'),
+      flex: 1,
+      align: i18n.language === 'ar' ? 'right' : 'left',
+      renderCell: (params) => (
+        <Button
+          onClick={() => handleCashoutClick(params.row)}
+          variant="outlined"
+          color="warning"
+        >
+          {t('Cashout')}
+        </Button>
       ),
     },
   ];
@@ -219,84 +266,95 @@ const WalletsTable = () => {
               }}
             />
           </Toolbar>
-          <div style={{ width: '100%', height: '100%' }}>
-            {loading ? (
-              <Box
-                display="flex"
-                justifyContent="center"
-                alignItems="center"
-                minHeight="100%"
-              >
-                <img src={loader} alt="Loading..." />
-              </Box>
-            ) : (
-              <StripedDataGrid
-                rows={filteredWallets}
-                columns={columns}
-                pageSize={10}
-                rowsPerPageOptions={[10]}
-                autoHeight
-                getRowId={(row) => row._id}
-                getRowClassName={(params) =>
-                  params.indexRelativeToCurrentPage % 2 === 0 ? 'even' : 'odd'
-                }
-                direction={i18n.language === 'ar' ? 'rtl' : 'ltr'}
-              />
-            )}
+          <div style={{ width: '100%', height: '430px' }}>
+            <StripedDataGrid
+              components={{ NoRowsOverlay: Loading }}
+              rows={filteredWallets}
+              columns={columns}
+              pageSize={10}
+              getRowId={(row) => row._id}
+              getRowClassName={(params) =>
+                params.indexRelativeToCurrentPage % 2 === 0 ? 'even' : 'odd'
+              }
+              sx={{
+                '& .MuiDataGrid-columnHeader': {
+                  backgroundColor: '#f5f5f5',
+                },
+              }}
+              initialState={{
+                pagination: {
+                  paginationModel: { pageSize: 10 },
+                },
+              }}
+            />
           </div>
         </Paper>
 
+    <CashoutPopup
+  open={openCashoutPopup}
+  onClose={handlePopupClose}
+  onSubmit={handleCashoutSubmit}
+  bankDetails={bankDetails}
+  setBankDetails={setBankDetails}
+  cashoutOption={cashoutOption}
+  setCashoutOption={setCashoutOption}
+  amount={selectedRow ? selectedRow.amount : ''}
+/>
+
         <Dialog open={openDialog} onClose={handleDialogClose}>
-          <DialogTitle>{t('BankTransfer')}</DialogTitle>
+          <DialogTitle>{t('BankTransferDetails')}</DialogTitle>
           <DialogContent>
             <DialogContentText>
-              {t('BankTransferInstructions')}
+              {t('EnterTransferDetails')}
             </DialogContentText>
-            <TextField
-              autoFocus
-              margin="dense"
-              name="amount"
-              label={t('Amount')}
-              type="number"
-              fullWidth
-              variant="outlined"
-              value={transferDetails.amount}
-              onChange={handleInputChange}
-            />
-            <TextField
-              margin="dense"
-              name="accountHolderName"
-              label={t('AccountHolderName')}
-              type="text"
-              fullWidth
-              variant="outlined"
-              value={transferDetails.accountHolderName}
-              onChange={handleInputChange}
-            />
-            <TextField
-              margin="dense"
-              name="dateOfTransfer"
-              label={t('DateOfTransfer')}
-              type="date"
-              fullWidth
-              variant="outlined"
-              InputLabelProps={{ shrink: true }}
-              value={transferDetails.dateOfTransfer}
-              onChange={handleInputChange}
-            />
-            <TextField
-              fullWidth
-              type="file"
-              name="paymentScreenshot"
-              onChange={handleFileChange}
-              margin="normal"
-              inputProps={{ accept: "image/jpeg, image/png" }}
-            />
+            <form onSubmit={handleFormSubmit} encType="multipart/form-data">
+              <TextField
+                margin="dense"
+                label={t('Amount')}
+                name="amount"
+                fullWidth
+                value={transferDetails.amount}
+                onChange={handleInputChange}
+                required
+              />
+              <TextField
+                margin="dense"
+                label={t('AccountHolderName')}
+                name="accountHolderName"
+                fullWidth
+                value={transferDetails.accountHolderName}
+                onChange={handleInputChange}
+                required
+              />
+              <TextField
+                margin="dense"
+                label={t('DateOfTransfer')}
+                name="dateOfTransfer"
+                fullWidth
+                value={transferDetails.dateOfTransfer}
+                onChange={handleInputChange}
+                required
+                InputLabelProps={{
+                  shrink: true,
+                }}
+                type="date"
+              />
+              <input
+                type="file"
+                accept="image/jpeg, image/png"
+                onChange={handleFileChange}
+                required
+              />
+              <DialogActions>
+                <Button onClick={handleDialogClose} color="primary">
+                  {t('Cancel')}
+                </Button>
+                <Button type="submit" color="primary">
+                  {t('Submit')}
+                </Button>
+              </DialogActions>
+            </form>
           </DialogContent>
-          <DialogActions>
-            <Button onClick={handleDialogClose}>{t('Cancel')}</Button>
-            <Button onClick={handleFormSubmit}>{t('Submit')}</Button>
-          </DialogActions>
         </Dialog>
       </Box>
     </Suspense>

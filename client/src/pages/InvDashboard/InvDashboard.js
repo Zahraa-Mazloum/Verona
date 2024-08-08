@@ -21,56 +21,62 @@ const InvestorDashboard = () => {
   const navigate = useNavigate();
   const invId = localStorage.getItem('id')
 
-  const fetchStats = async () => {
-    try {
-      const { data } = await api.get(`/invDash/contractStats/${invId}`);
-      setStats(data);
-    } catch (error) {
-      toast.error(t('ErrorFetchingStats'));
-    }
-  };
+  // const fetchStats = async () => {
+  //   try {
+  //     const { data } = await api.get(`/contract/contactState/${invId}`, {
+  //       timeout: 10000, 
+  //     });
+ 
+  //     setStats(data);
+  //   } catch (error) {
+  //     toast.error(t('ErrorFetchingStats'));
+  //   }
+  // };
 
-  const fetchMaturedContracts = async () => {
-    try {
-      const { data } = await api.get(`/invDash/maturedContracts/${invId}`);
-      setMaturedContracts(data);
-    } catch (error) {
-      toast.error(t('ErrorFetchingMaturedContracts'));
-    }
-  };
+  // const fetchMaturedContracts = async () => {
+  //   try {
+  //     const { data } = await api.get(`/contract/maturedContract/${invId}`, {
+  //       timeout: 10000, 
+  //     });
+ 
+  //     setMaturedContracts(data);
+  //   } catch (error) {
+  //     toast.error(t('ErrorFetchingMaturedContracts'));
+  //   }
+  // };
 
-  const fetchRecentContracts = async () => {
-    try {
-      const { data } = await api.get(`/contract/investorContracts/${invId}?limit=3`);
-      setRecentContracts(data);
-    } catch (error) {
-      toast.error(t('ErrorFetchingRecentContracts'));
-    }
-  };
+  // const fetchRecentContracts = async () => {
+  //   try {
+  //     const { data } = await api.get(`/contract/investorContracts/${invId}?limit=3`);
+  //     setRecentContracts(data);
+  //   } catch (error) {
+  //     toast.error(t('ErrorFetchingRecentContracts'));
+  //   }
+  // };
 
-  useEffect(() => {
-    fetchStats();
-    fetchMaturedContracts();
-    fetchRecentContracts();
-    setLoading(false);
-  }, [i18n.language]);
+  // useEffect(() => {
+  //   fetchStats();
+  //   fetchMaturedContracts();
+  //   fetchRecentContracts();
+  //   setLoading(false);
+  // }, [i18n.language]);
 
-  const data = {
-    labels: stats.map(stat => `Month ${stat._id}`),
-    datasets: [
-      {
-        label: t('TotalInvest'),
-        data: stats.map(stat => stat.totalAmount),
-        fill: false,
-        backgroundColor: '#f19446',
-        borderColor: '#f19446',
-      },
-    ],
-  };
+  // const data = {
+  //   labels: stats.map(stat => `Month ${stat._id}`),
+  //   datasets: [
+  //     {
+  //       label: t('TotalInvest'),
+  //       data: stats.map(stat => stat.totalAmount),
+  //       fill: false,
+  //       backgroundColor: '#f19446',
+  //       borderColor: '#f19446',
+  //     },
+  //   ],
+  // };
 
   return (
     <Suspense fallback={<img src={loader} alt="Loading..." />}>
-      <Box p={3}>
+      {/* <Box p={3}>
         <ToastContainer />
         <Grid container spacing={3}>
           <Grid item xs={12} md={6}>
@@ -118,7 +124,10 @@ const InvestorDashboard = () => {
             </Card>
           </Grid>
         </Grid>
-      </Box>
+      </Box> */}
+      <h1>
+        INV DASH
+      </h1>
     </Suspense>
   );
 };

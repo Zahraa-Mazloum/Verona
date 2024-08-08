@@ -20,6 +20,7 @@ const EditContract = () => {
       symbol_ar: ''
     },
     amount: '',
+    withdraw:'',
     contractTime: '',
     startDate: '',
     investmentStatus: '',
@@ -110,6 +111,17 @@ const EditContract = () => {
                 type="number"
                 required
                 value={contract.amount}
+                onChange={handleInputChange}
+                margin="normal"
+                InputProps={{ style: { borderRadius: '12px' } }}
+              />
+                     <TextField
+                fullWidth
+                label={t("withdraw")}
+                name="withdraw"
+                type="number"
+                required
+                value={contract.withdraw}
                 onChange={handleInputChange}
                 margin="normal"
                 InputProps={{ style: { borderRadius: '12px' } }}

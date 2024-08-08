@@ -117,7 +117,6 @@ const InvContractsTable = () => {
         await api.post(`/contract/transfer/${selectedTransferRow._id}`, details);
         toast.success(t('TransferRequestSent'));
         const socket = io('https://verona-cfiw.onrender.com');
-
         // const socket = io('http://localhost:5001');
         socket.emit('newNotification', {
           message: `New transfer request for contract ${selectedTransferRow._id}`
@@ -145,7 +144,7 @@ const InvContractsTable = () => {
   const columns = [
     {
       field: 'amount',
-      headerName: t('amount'),
+      headerName: t('amountinv'),
       flex: 1,
       align: i18n.language === 'ar' ? 'right' : 'left'
     },
@@ -161,6 +160,41 @@ const InvContractsTable = () => {
       align: i18n.language === 'ar' ? 'right' : 'left'
     },
     {
+      field: 'contractTime',
+      headerName: t('contractTime'),
+      flex: 1,
+      align: i18n.language === 'ar' ? 'right' : 'left',
+      renderCell: (params) => (
+        <span>
+          {i18n.language === 'ar' ? params.row.contractTime_ar : params.row.contractTime}
+        </span>
+      )
+    },
+    {
+      field: 'startDate',
+      headerName: t('startDate'),
+      flex: 1,
+      renderCell: (params) => (
+        <span>
+          {new Date(params.row.startDate).toLocaleDateString()}
+        </span>
+      ),
+      align: i18n.language === 'ar' ? 'right' : 'left'
+    },
+    {
+      field: 'endDate',
+      headerName: t('endDate'),
+      flex: 1,
+      renderCell: (params) => (
+        <span>
+          {new Date(params.row.endDate).toLocaleDateString()}
+        </span>
+      ),
+      editable: false,
+      readonly: true,
+      align: i18n.language === 'ar' ? 'right' : 'left'
+    },
+    {
       field: 'contractPercentage',
       headerName: t('ROI'),
       flex: 1,
@@ -173,13 +207,39 @@ const InvContractsTable = () => {
         </span>
       ),
     },
+    // {
+    //   field: 'profit',
+    //   headerName: t('profit'),
+    //   flex: 1,
+    //   editable: false,
+    //   readonly: true,
+    //   align: i18n.language === 'ar' ? 'right' : 'left',
+    // },
     {
-      field: 'profit',
-      headerName: t('profit'),
+      field: 'currentProfit',
+      headerName: t('profitTillDate'),
       flex: 1,
       editable: false,
       readonly: true,
       align: i18n.language === 'ar' ? 'right' : 'left',
+      renderCell: (params) => (
+        <span>
+          {Number(params.value).toFixed(2)}
+        </span>
+      ),
+    },  
+        {
+      field: 'withdraw',
+      headerName: t('withdraw'),
+      flex: 1,
+      editable: false,
+      readonly: true,
+      align: i18n.language === 'ar' ? 'right' : 'left',
+      renderCell: (params) => (
+        <span>
+          {Number(params.value).toFixed(2)}
+        </span>
+      ),
     },
     {
       field: 'cashout',

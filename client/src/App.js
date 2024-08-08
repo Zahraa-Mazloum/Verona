@@ -29,7 +29,7 @@ import EditWallet from './components/wallets/EditWallet.js';
 import Loading from './components/loading.js';
 import RegisterInvestor from './components/RegisterInvestor.js';
 import InvDashboard from './pages/InvDashboard/InvDashboard.js'
-import InvContracts from './components/InvContracts/invContractTable.js';
+// import InvContracts from './components/InvContracts/invContractTable.js';
 import InvestorInv from './components/investorsINv/investorInv.js';
 import InvWallet from './components/invWallet/invWalletTable.js';
 import Contact from './pages/SendMessageForm.js';
@@ -75,12 +75,14 @@ function App() {
       <Route path="/" element={<Navigate to="/dashboard" />} />
       <Route path="Profile" element={<Profile />} />
       <Route path="Dashboard" element={<InvDashboard />} />
-      <Route path="/investorContracts/:id" element={<InvContracts />} />
+      {/* <Route path="/investorContracts/:id" element={<InvContracts />} /> */}
       <Route path="/investment" element={<Investment />} />
       <Route path="/myInvestments/:id" element={<InvestorInv />} />
       <Route path="overallInv" element={<OverallInv />} />
       <Route path="/myWallet/:id" element={<InvWallet />} />
       <Route path="/message" element={<Contact/>} />
+      <Route path="NewInvestments" element={<NewInvestments />} />
+
 
 
       </Route>

@@ -8,7 +8,9 @@ const Notification = () => {
 
   const fetchNotifications = async () => {
     try {
-      const { data } = await api.get('/admin/notifications');
+      const { data } = await api.get('/admin/notifications', {
+        timeout: 10000, 
+      });
       setNotifications(data);
     } catch (error) {
       console.error('Error fetching notifications:', error);

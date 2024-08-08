@@ -189,6 +189,19 @@ const ContractsTable = () => {
       ),
     },
     {
+      field: 'withdraw',
+      headerName: t('withdraw'),
+      flex: 1,
+      editable: false,
+      readonly: true,
+      align: i18n.language === 'ar' ? 'right' : 'left',
+      renderCell: (params) => (
+        <span>
+          {Number(params.value).toFixed(2)}
+        </span>
+      ),
+    },
+    {
       field: 'investmentStatus',
       headerName: t('investmentStatus'),
       flex: 1,

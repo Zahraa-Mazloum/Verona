@@ -65,17 +65,19 @@ const Sidebar = ({ open, setOpen }) => {
 
   const menuItems = [
     { text: t('DashBoard'), icon: <Icon path={mdiViewDashboard} size={1} />, path: '/dashboard' },
-    { text: t('Contracts'), icon: <Icon path={mdiFileSign} size={1} />, path: role === 'admin' ? '/contract' : '/InvContract' },
+    // { text: t('Contracts'), icon: <Icon path={mdiFileSign} size={1} />, path: role === 'admin' ? '/contract'},
+    role === 'admin' && { text: t('Contracts'), icon: <Icon path={mdiFileSign} size={1} />, path: '/contract' },
+
     role === 'admin' && { text: t('Investors'), icon: <Icon path={mdiAccountTie} size={1} />, path: '/investor' },
 
-    role === 'investor' && { text: t('myInvestment'), icon: <Icon path={mdiCash100} size={1} />, path: '/myInvestments' },
+    role === 'investor' && { text: t('myInvestments'), icon: <Icon path={mdiCash100} size={1} />, path: '/myInvestments' },
     { text: t('VeronaInvestments'), icon: <Icon path={mdiBankCircleOutline} size={1} />, path: '/investment' },
     role === 'admin' && { text: t('InvestmentTypes'), icon: <Icon path={mdiCashMultiple} size={1} />, path: '/types' },
     { text: t('OverallVeronaInvestments'), icon: <Icon path={mdiBankOutline} size={1} />, path: '/overallInv' },
-    role === 'admin' && { text: t('NewInvestments'), icon: <Icon path={mdiCurrencyUsdOff} size={1} />, path: '/NewInvestments' },
+   { text: t('NewInvestments'), icon: <Icon path={mdiCurrencyUsdOff} size={1} />, path: '/NewInvestments' },
     // { text: t('Currencies'), icon: <Icon path={mdiCurrencyBtc} size={1} />, path: '/CurrencyTable' },
-    { text: t('Wallets'), icon: <Icon path={mdiWalletBifold} size={1} />, path: role === 'admin' ? '/wallets' : '/myWallet' },
-    role === 'investor' && { text: t('contact'), icon: <Icon path={mdiCardAccountMailOutline} size={1} />, path: '/message' },
+    { text: t('Wallet'), icon: <Icon path={mdiWalletBifold} size={1} />, path: role === 'admin' ? '/wallets' : '/myWallet' },
+    role === 'investor' && { text: t('Inquiry'), icon: <Icon path={mdiCardAccountMailOutline} size={1} />, path: '/message' },
 
 
   ].filter(Boolean);

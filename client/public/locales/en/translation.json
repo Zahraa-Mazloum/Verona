@@ -34,7 +34,7 @@
   "OverallVeronaInvestments": "Overall Verona Investments",
   "NewInvestments": "New Investments",
   "Currencies": "Currencies",
-  "Wallets": "Wallets",
+  "Wallet": "Wallet",
   "Logout": "Logout",
   "Profit" : "Profit:",
   "title": "Title",
@@ -50,7 +50,7 @@
   "ErrorFetchingContracts": "Error Fetching Contracts",
   "ContractDeletedSuccessfully": "Contract Deleted Successfully",
   "ErrorDeletingContract" : "Error Deleting Contract",
-  "ContractaddedSuccessfully" : "Contract added Successfully",
+  "Contractaddedsuccessfully" : "Contract added Successfully",
   "Anerroroccurred" : "An error occurred",
   "FullName" : "Full Name",
   "amount" : "Amount",
@@ -125,7 +125,7 @@
     "RegisterasInvestor" : "Register as Investor",
     "UploadPassportPhoto" : "Upload Passport Photo",
     "MyContracts" : "My Contracts",
-    "myInvestment" : "My Investment",
+    "myInvestments" : "My Investments",
     "ROI" : "ROI",
     "profit" : "Profit",
     "MyInv":"My Investments",
@@ -150,9 +150,14 @@
     "BankTransferInstructions" : "Bank Transfer Instructions",
     "BankTransfer" : "Bank Transfer",
     "AccountHolderName" : "Account Holder Name",
-    "DateOfTransfer" : "Date Of Transfer"
+    "DateOfTransfer" : "Date Of Transfer",
+    "Inquiry" : "Inquiry",
+    "amountinv" : "Amount Invested",
+    "profitTillDate" : "Profit Till Today",
+    "withdraw" : " Amount left to withdraw",
+    "topup" : "Top up"
 
 
-  
+
  
  }
