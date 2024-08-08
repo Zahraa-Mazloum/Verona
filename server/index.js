@@ -53,7 +53,7 @@ app.use('/api/dash', dashboardRoutes);
 app.use('/api/types', investmentTypesRoutes);
 app.use('/api/inv', investmentRoutes);
 app.use('/api/wallet', walletRoutes);
-app.use('/api/invDash', InvestorDashboard);
+app.use('/api/dash', InvestorDashboard);
 app.use('/api/investors', investorRoutes);
 
 
