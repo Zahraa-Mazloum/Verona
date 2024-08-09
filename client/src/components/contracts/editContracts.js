@@ -15,10 +15,6 @@ const EditContract = () => {
       fullname_en: '',
       fullname_ar: ''
     },
-    currency: {
-      symbol_en: '',
-      symbol_ar: ''
-    },
     amount: '',
     withdraw:'',
     contractTime: '',
@@ -126,7 +122,7 @@ const EditContract = () => {
                 margin="normal"
                 InputProps={{ style: { borderRadius: '12px' } }}
               />
-              <TextField
+              {/* <TextField
                 fullWidth
                 label={t('currency')}
                 name="currency.symbol"
@@ -135,7 +131,7 @@ const EditContract = () => {
                 margin="normal"
                 InputProps={{ style: { borderRadius: '12px' } }}
                 disabled={true} 
-              />
+              /> */}
               <TextField
                 fullWidth
                 label={t("contractTime")}

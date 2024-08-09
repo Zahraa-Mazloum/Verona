@@ -13,7 +13,6 @@ const Addcontract = () => {
   const [contract, setContract] = useState({
     investorInfo: '',
     amount: '',
-    currency: '',
     contractTime: '',
     startDate: '',
     investmentStatus: ''
@@ -24,7 +23,6 @@ const Addcontract = () => {
   });
   const { t, i18n } = useTranslation();
   const [investors, setInvestors] = useState([]);
-  const [currencies, setCurrencies] = useState([]);
 
   useEffect(() => {
     const fetchInvestors = async () => {
@@ -36,17 +34,7 @@ const Addcontract = () => {
       }
     };
 
-    const fetchCurrencies = async () => {
-      try {
-        const response = await api.get(`/currency/getCurrencies/${i18n.language}`);
-        setCurrencies(response.data);
-      } catch (error) {
-        console.error({ message: t('Errorfetchingcurrencies:'), error });
-      }
-    };
-
     fetchInvestors();
-    fetchCurrencies();
   }, [i18n.language]);
 
   const handleInputChange = (e) => {
@@ -132,23 +120,7 @@ const Addcontract = () => {
               margin="normal"
               InputProps={{ style: { borderRadius: '12px' } }}
             />
-               <TextField
-              fullWidth
-              select
-              required
-              label={t("currency")}
-              name="currency"
-              value={contract.currency}
-              onChange={handleInputChange}
-              margin="normal"
-              InputProps={{ style: { borderRadius: '12px' } }}
-            >
-              {currencies.map((currency) => (
-                <MenuItem key={currency._id} value={currency._id}>
-                  {`${currency.symbol} (${currency.symbol_ar})`}
-                </MenuItem>
-              ))}
-            </TextField>
+       
             <TextField
               fullWidth
               label={t("StartDate")}
