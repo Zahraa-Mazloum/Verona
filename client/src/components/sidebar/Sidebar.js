@@ -54,7 +54,11 @@ const Sidebar = ({ open, setOpen }) => {
     }else if (path=== '/myWallet' && investorId){
       navigate(`/myWallet/${investorId}`);
 
+    }else if (path=== '/invdashboard' && investorId){
+      navigate(`/invdashboard/${investorId}`);
+
     }
+    
     else {
       navigate(path);
     }
@@ -64,7 +68,7 @@ const Sidebar = ({ open, setOpen }) => {
 
 
   const menuItems = [
-    { text: t('DashBoard'), icon: <Icon path={mdiViewDashboard} size={1} />, path: '/dashboard' },
+    { text: t('DashBoard'), icon: <Icon path={mdiViewDashboard} size={1} />,  path: role === 'admin' ? '/dashboard' : '/invdashboard'  },
     // { text: t('Contracts'), icon: <Icon path={mdiFileSign} size={1} />, path: role === 'admin' ? '/contract'},
     role === 'admin' && { text: t('Contracts'), icon: <Icon path={mdiFileSign} size={1} />, path: '/contract' },
 

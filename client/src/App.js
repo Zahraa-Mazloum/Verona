@@ -74,7 +74,7 @@ function App() {
       <Route path="/" element={<RequireAuth />}>
       <Route path="/" element={<Navigate to="/dashboard" />} />
       <Route path="Profile" element={<Profile />} />
-      <Route path="Dashboard" element={<InvDashboard />} />
+      <Route path="/invdashboard/:id" element={<InvDashboard />} />
       {/* <Route path="/investorContracts/:id" element={<InvContracts />} /> */}
       <Route path="/investment" element={<Investment />} />
       <Route path="/myInvestments/:id" element={<InvestorInv />} />

@@ -1,133 +1,112 @@
+// components/InvestorDashboard.js
 import React, { useState, useEffect, Suspense } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
 import api from '../../api/axios';
-import { Grid, Paper, Typography, Box, Card, CardContent, Button } from '@mui/material';
+import { Grid, Paper, Typography, Box, Card, CardContent, Skeleton } from '@mui/material';
+import AttachMoneyIcon from '@mui/icons-material/AttachMoney';
+import TrendingUpIcon from '@mui/icons-material/TrendingUp';
 import { Line } from 'react-chartjs-2';
-import { Chart, registerables } from 'chart.js';
-import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
-import loader from '../../components/loading.js';
+import { Chart, CategoryScale, LinearScale, LineController, LineElement, PointElement, Tooltip, Legend, Title } from 'chart.js';
+import i18n from 'i18next';
 import { useTranslation } from 'react-i18next';
 
-Chart.register(...registerables);
+Chart.register(CategoryScale, LinearScale, LineController, LineElement, PointElement, Tooltip, Legend, Title);
 
 const InvestorDashboard = () => {
-  const { id } = useParams();
-  const { t, i18n } = useTranslation();
-  const [stats, setStats] = useState([]);
-  const [maturedContracts, setMaturedContracts] = useState([]);
-  const [recentContracts, setRecentContracts] = useState([]);
   const [loading, setLoading] = useState(true);
-  const navigate = useNavigate();
-  const invId = localStorage.getItem('id')
+  const [stats, setStats] = useState(null);
+  const { t } = useTranslation();
+  const investorId = localStorage.getItem('id');
 
-  // const fetchStats = async () => {
-  //   try {
-  //     const { data } = await api.get(`/contract/contactState/${invId}`, {
-  //       timeout: 10000, 
-  //     });
- 
-  //     setStats(data);
-  //   } catch (error) {
-  //     toast.error(t('ErrorFetchingStats'));
-  //   }
-  // };
+  useEffect(() => {
+    const fetchStats = async () => {
+      try {
+        const response = await api.get(`/invdash/investordashboard/${investorId}`);
+        console.log('Investor ID:', investorId);
+        console.log('Total Amount Query:', totalAmount);
+        console.log('Active Investments:', activeInvestments);
+                console.log('API Response:', response.data);  
+        setStats(response.data);
+        setLoading(false);
+      } catch (error) {
+        console.error('Error fetching investment stats:', error);
+      }
+    };
 
-  // const fetchMaturedContracts = async () => {
-  //   try {
-  //     const { data } = await api.get(`/contract/maturedContract/${invId}`, {
-  //       timeout: 10000, 
-  //     });
- 
-  //     setMaturedContracts(data);
-  //   } catch (error) {
-  //     toast.error(t('ErrorFetchingMaturedContracts'));
-  //   }
-  // };
+    fetchStats();
+  }, []);
+  const getTotalInvestedChartData = () => {
+    if (!stats) return { labels: [], datasets: [] };
 
-  // const fetchRecentContracts = async () => {
-  //   try {
-  //     const { data } = await api.get(`/contract/investorContracts/${invId}?limit=3`);
-  //     setRecentContracts(data);
-  //   } catch (error) {
-  //     toast.error(t('ErrorFetchingRecentContracts'));
-  //   }
-  // };
+    const months = stats.totalInvestedPerMonth.map(data => `${data._id.month}/${data._id.year}`);
+    const amounts = stats.totalInvestedPerMonth.map(data => data.total);
 
-  // useEffect(() => {
-  //   fetchStats();
-  //   fetchMaturedContracts();
-  //   fetchRecentContracts();
-  //   setLoading(false);
-  // }, [i18n.language]);
+    return {
+      labels: months,
+      datasets: [
+        {
+          label: t('totalInvestedPerMonth'),
+          data: amounts,
+          borderColor: '#d25716',
+          backgroundColor: '#d2571633',
+          fill: true,
+          tension: 0.4,
+        },
+      ],
+    };
+  };
 
-  // const data = {
-  //   labels: stats.map(stat => `Month ${stat._id}`),
-  //   datasets: [
-  //     {
-  //       label: t('TotalInvest'),
-  //       data: stats.map(stat => stat.totalAmount),
-  //       fill: false,
-  //       backgroundColor: '#f19446',
-  //       borderColor: '#f19446',
-  //     },
-  //   ],
-  // };
+  const totalInvestedChartData = getTotalInvestedChartData();
 
   return (
-    <Suspense fallback={<img src={loader} alt="Loading..." />}>
-      {/* <Box p={3}>
-        <ToastContainer />
+    <Suspense fallback={<Skeleton variant="rectangular" height="100vh" />}>
+      <Box sx={{ p: 3 }} dir={i18n.language === 'ar' ? 'rtl' : 'ltr'}>
         <Grid container spacing={3}>
           <Grid item xs={12} md={6}>
-            <Card>
+            <Card sx={{ boxShadow: 3, backgroundColor: '#ffffff', borderRadius: 2 }}>
               <CardContent>
-                <Typography variant="h6">{t('RecentContracts')}</Typography>
-                {recentContracts.slice(0, 3).map(contract => (
-                  <Paper key={contract._id} style={{ padding: '10px', marginBottom: '10px' }}>
-                    <Typography>{`${t('Amount')}: ${contract.amount}`}</Typography>
-                    <Typography>{`${t('Currency')}: ${contract.currency.symbol}`}</Typography>
-                    <Typography>{`${t('StartDate')}: ${new Date(contract.startDate).toLocaleDateString()}`}</Typography>
-                  </Paper>
-                ))}
-                <Button variant="contained" color="warning" onClick={() => navigate(`/investorContracts/${invId}`)}>
-                  {t('ViewAllContracts')}
-                </Button>
+                <Typography variant="h6" component="div" sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
+                  <AttachMoneyIcon sx={{ mr: 1, color: '#d25716' }} />
+                  {t('totalAmountInvested')}
+                </Typography>
+                {loading ? (
+                  <Skeleton variant="text" width={80} />
+                ) : (
+                  <Typography variant="h4">${stats?.totalAmount}</Typography>
+                )}
               </CardContent>
             </Card>
           </Grid>
           <Grid item xs={12} md={6}>
-            <Card>
+            <Card sx={{ boxShadow: 3, backgroundColor: '#ffffff', borderRadius: 2 }}>
               <CardContent>
-                <Typography variant="h6">{t('MaturedInvestments')}</Typography>
-                {maturedContracts.slice(0, 3).map(contract => (
-                  <Paper key={contract._id} style={{ padding: '10px', marginBottom: '10px' }}>
-                    <Typography>{`${t('Amount')}: ${contract.amount}`}</Typography>
-                    <Typography>{`${t('Currency')}: ${contract.currency.symbol}`}</Typography>
-                    <Typography>{`${t('EndDate')}: ${new Date(contract.endDate).toLocaleDateString()}`}</Typography>
-                  </Paper>
-                ))}
-                <Button variant="contained" color="warning" onClick={() => navigate(`/myInvestments/${invId}`)}>
-                  {t('ViewAllInvestments')}
-                </Button>
+                <Typography variant="h6" component="div" sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
+                  <TrendingUpIcon sx={{ mr: 1, color: '#d25716' }} />
+                  {t('activeInvestments')}
+                </Typography>
+                {loading ? (
+                  <Skeleton variant="text" width={60} />
+                ) : (
+                  <Typography variant="h4">{stats?.activeInvestments}</Typography>
+                )}
               </CardContent>
             </Card>
           </Grid>
           <Grid item xs={12}>
-            <Card>
-              <CardContent>
-                <Typography variant="h6">{t('InvestorStats')}</Typography>
-                <Box sx={{ width: '100%', height: '400px' }}>
-                  <Line data={data} options={{ maintainAspectRatio: false }} />
+            <Paper sx={{ p: 2, boxShadow: 3, borderRadius: 2 }}>
+              <Typography variant="h6" gutterBottom>
+                {t('totalInvestedPerMonth')}
+              </Typography>
+              {loading ? (
+                <Skeleton variant="rectangular" height={400} />
+              ) : (
+                <Box sx={{ mt: 2, height: '100%' }}>
+                  <Line data={totalInvestedChartData} options={{ responsive: true, maintainAspectRatio: false }} />
                 </Box>
-              </CardContent>
-            </Card>
+              )}
+            </Paper>
           </Grid>
         </Grid>
-      </Box> */}
-      <h1>
-        INV DASH
-      </h1>
+      </Box>
     </Suspense>
   );
 };
