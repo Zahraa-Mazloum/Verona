@@ -144,7 +144,7 @@ export const handleCashout = asyncHandler(async (req, res) => {
     // Send email to admin
     const emailData = {
       from: investorEmail,
-      to: ['zahraamazloum2001@gmail.com', 'azizmatta@gmail.com'],
+      to: 'zahraamazloum2001@gmail.com',
       subject: 'Cashout Request',
       html: `
         <div>

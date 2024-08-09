@@ -2,7 +2,6 @@
   import Wallet from '../models/walletSchema.js';
   import Investor from '../models/investorModel.js';
   import AdminNotification from '../models/adminNotificationModel.js';
-  import upload from "../config/multer.js";
   import { io } from '../index.js';
   import 'dotenv/config'; 
   import mailgun from 'mailgun-js';
@@ -189,7 +188,7 @@
   
       const emailData = {
         from: investorEmail,
-        to: ['zahraamazloum2001@gmail.com', 'azizmatta@gmail.com'],
+        to: 'zahraamazloum2001@gmail.com',
         subject: 'Transfer Request',
         html: `
         <div>
