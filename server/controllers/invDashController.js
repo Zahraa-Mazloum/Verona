@@ -31,3 +31,17 @@ export const getContractStats = asyncHandler(async (req, res) => {
   ]);
   res.json(stats);
 });
+
+export const totalInvestedPerMonth = asyncHandler(async (req, res) => {
+  const stats = await Contract.aggregate([
+    { $match: { investorInfo: new mongoose.Types.ObjectId(req.params.investorId) } },
+    {
+      $group: {
+        _id: { $month: "$startDate" },
+        totalAmount: { $sum: "$amount" }
+      }
+    },
+    { $sort: { "_id": 1 } }
+  ]);
+  res.json(stats);
+});
