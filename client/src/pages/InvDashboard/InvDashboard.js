@@ -21,9 +21,6 @@ const InvestorDashboard = () => {
     const fetchStats = async () => {
       try {
         const response = await api.get(`/invdash/investordashboard/${investorId}`);
-        console.log('Investor ID:', investorId);
-        console.log('Total Amount Query:', totalAmount);
-        console.log('Active Investments:', activeInvestments);
                 console.log('API Response:', response.data);  
         setStats(response.data);
         setLoading(false);
