@@ -196,7 +196,7 @@ const WalletsTable = () => {
   const columns = [
     {
       field: 'amount',
-      headerName: t('Amount'),
+      headerName: t('amount'),
       flex: 1,
     },
     {
@@ -310,7 +310,7 @@ const WalletsTable = () => {
             <form onSubmit={handleFormSubmit} encType="multipart/form-data">
               <TextField
                 margin="dense"
-                label={t('Amount')}
+                label={t('amount')}
                 name="amount"
                 fullWidth
                 value={transferDetails.amount}

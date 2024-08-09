@@ -20,6 +20,8 @@ const Login = () => {
   const from = location.state?.from?.pathname || "/dashboard";
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
+  const role = localStorage.getItem('role')
+  const investorId = localStorage.getItem('id')
 
   useEffect(() => {
     document.title = "Login";
@@ -39,7 +41,12 @@ const Login = () => {
       localStorage.setItem('token', response.data.token);
       localStorage.setItem('role', response.data.role);
       localStorage.setItem('id', response.data._id);
-      window.location.href = '/dashboard'; 
+      if (role==="admin"){
+        window.location.href = '/dashboard'; 
+      }
+      else {
+        window.location.href = `/invdashboard/${investorId}`;
+      }
 
     } catch (err) {
       console.error('Login error:', err.response.data);

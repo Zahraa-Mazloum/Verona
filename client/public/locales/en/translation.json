@@ -155,7 +155,9 @@
     "amountinv" : "Amount Invested",
     "profitTillDate" : "Profit Till Today",
     "withdraw" : " Amount left to withdraw",
-    "topup" : "Top up"
+    "topup" : "Top up",
+    "totalAmountInvested" : "Total Amount Invested",
+    "VeronainvestmentTotalPerType" :"Verona Investment Total Per Type"
 
 
 
