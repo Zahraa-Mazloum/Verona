@@ -38,13 +38,14 @@ const Login = () => {
     try {
       const response = await api.post('/user/login', formData);
       toast.success("Login successful!");
+      const role = response.data.role;
+      const investorId = response.data._id;
       localStorage.setItem('token', response.data.token);
-      localStorage.setItem('role', response.data.role);
-      localStorage.setItem('id', response.data._id);
-      if (role==="admin"){
-        window.location.href = '/dashboard'; 
-      }
-      else {
+      localStorage.setItem('role', role);
+      localStorage.setItem('id', investorId);
+      if (role === "admin") {
+        window.location.href = '/dashboard';
+      } else if (role === "investor") {
         window.location.href = `/invdashboard/${investorId}`;
       }
 
