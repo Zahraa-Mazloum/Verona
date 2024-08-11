@@ -55,6 +55,7 @@ app.use('/api/types', investmentTypesRoutes);
 app.use('/api/inv', investmentRoutes);
 app.use('/api/wallet', walletRoutes);
 app.use('/api/invdash', InvestorDashboard);
+app.use('/api/investors', investorRoutes);
 
 
 // Socket.IO connection
