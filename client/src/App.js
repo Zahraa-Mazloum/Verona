@@ -80,7 +80,7 @@ function App() {
       <Route path="/myInvestments/:id" element={<InvestorInv />} />
       <Route path="overallInv" element={<OverallInv />} />
       <Route path="/myWallet/:id" element={<InvWallet />} />
-      <Route path="/message" element={<Contact/>} />
+      <Route path="/message/:id" element={<Contact/>} />
       <Route path="NewInvestments" element={<NewInvestments />} />
 
 

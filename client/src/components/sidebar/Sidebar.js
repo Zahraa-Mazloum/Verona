@@ -56,6 +56,10 @@ const Sidebar = ({ open, setOpen }) => {
     }else if (path=== '/invdashboard' && investorId){
       navigate(`/invdashboard/${investorId}`);
 
+   }
+   else if (path=== '/message' && investorId){
+      navigate(`/message/${investorId}`);
+
     }
     
     else {
