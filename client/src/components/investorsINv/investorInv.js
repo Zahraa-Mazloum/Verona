@@ -145,7 +145,7 @@ const InvContractsTable = () => {
     {
       field: 'amount',
       headerName: t('amountinv'),
-      flex: 1,
+      flex: 2,
       align: i18n.language === 'ar' ? 'right' : 'left'
     },
     {
@@ -231,7 +231,7 @@ const InvContractsTable = () => {
         {
       field: 'withdraw',
       headerName: t('withdraw'),
-      flex: 1,
+      flex: 2,
       editable: false,
       readonly: true,
       align: i18n.language === 'ar' ? 'right' : 'left',

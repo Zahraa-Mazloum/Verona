@@ -91,6 +91,7 @@ const ContractsTable = () => {
 
   const filteredContract = contract.filter(Contracts =>
     safeLowerCase(i18n.language === 'ar' ? Contracts.investorInfo.fullname_ar : Contracts.investorInfo.fullname_en).includes(safeLowerCase(search)) ||
+    safeLowerCase(Contracts.currency).includes(safeLowerCase(search)) ||
     safeLowerCase(Contracts.contractTime).includes(safeLowerCase(search)) ||
     safeLowerCase(Contracts.startDate).includes(safeLowerCase(search)) ||
     safeLowerCase(Contracts.endDate).includes(safeLowerCase(search)) ||
@@ -127,17 +128,17 @@ const ContractsTable = () => {
       align: i18n.language === 'ar' ? 'right' : 'left'
 
     },
-    // {
-    //   field: 'currency',
-    //   headerName: t('currency'),
-    //   flex: 1,
-    //   renderCell: (params) => (
-    //     <span>
-    //       {i18n.language === 'ar' ? params.row.currency.symbol_ar : params.row.currency.symbol}
-    //     </span>
-    //   ),
-    //   align: i18n.language === 'ar' ? 'right' : 'left'
-    // },
+    {
+      field: 'currency',
+      headerName: t('currency'),
+      flex: 1,
+      renderCell: (params) => (
+        <span>
+          {i18n.language === 'ar' ? params.row.currency.symbol_ar : params.row.currency.symbol}
+        </span>
+      ),
+      align: i18n.language === 'ar' ? 'right' : 'left'
+    },
     {
       field: 'contractTime',
       headerName: t('contractTime'),
