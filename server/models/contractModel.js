@@ -8,10 +8,10 @@
       amount: { 
         type: Number, 
         required: true },
-      // currency: { 
-      //   type: mongoose.Schema.Types.ObjectId, 
-      //   ref: 'Currency', 
-      //   required: true },
+      currency: { 
+        type: mongoose.Schema.Types.ObjectId, 
+        ref: 'Currency', 
+        required: true },
       contractTime: {
         type: String,
           enum: ['month', 'year', 'day'], 

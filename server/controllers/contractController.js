@@ -11,9 +11,9 @@ const mg = mailgun({ apiKey: process.env.MAILGUN_API_KEY, domain: process.env.MA
 
 // Create Contract
 export const createContract = asyncHandler(async (req, res) => {
-  const { investorInfo: investorId, amount, contractTime, contractTime_ar, startDate } = req.body;
+  const { investorInfo: investorId, amount, currency: currencyId, contractTime, contractTime_ar, startDate } = req.body;
 
-  const contract = new Contract({ investorInfo: investorId, amount, contractTime, contractTime_ar, startDate });
+  const contract = new Contract({ investorInfo: investorId, amount, currency: currencyId, contractTime, contractTime_ar, startDate });
 
   try {
     await contract.save();
@@ -25,13 +25,13 @@ export const createContract = asyncHandler(async (req, res) => {
 
 // Get All Contracts
 export const getContracts = asyncHandler(async (req, res) => {
-  const contracts = await Contract.find().populate('investorInfo');
+  const contracts = await Contract.find().populate('investorInfo currency');
   res.status(200).json(contracts);
 });
 
 // Get Contract by ID
 export const getContractById = asyncHandler(async (req, res) => {
-  const contract = await Contract.findById(req.params.id).populate('investorInfo');
+  const contract = await Contract.findById(req.params.id).populate('investorInfo currency');
   if (contract) {
     res.status(200).json(contract);
   } else {
@@ -41,12 +41,13 @@ export const getContractById = asyncHandler(async (req, res) => {
 
 // Update Contract
 export const updateContract = asyncHandler(async (req, res) => {
-  const { investorInfo, amount, withdraw,contractTime, contractTime_ar, startDate } = req.body;
+  const { investorInfo, amount, currency, withdraw,contractTime, contractTime_ar, startDate } = req.body;
   const contract = await Contract.findById(req.params.id);
 
   if (contract) {
     contract.investorInfo = investorInfo || contract.investorInfo;
     contract.amount = amount || contract.amount;
+    contract.currency = currency || contract.currency;
     contract.withdraw = withdraw || contract.withdraw;
     contract.contractTime = contractTime || contract.contractTime;
     contract.contractTime_ar = contractTime_ar || contract.contractTime_ar;
@@ -76,7 +77,7 @@ export const updateInvestmentStatus = asyncHandler(async (req, res) => {
 
 // Fetch contracts by investor ID
 export const getInvestorContracts = asyncHandler(async (req, res) => {
-  const contracts = await Contract.find({ investorInfo: req.params.id })  ;
+  const contracts = await Contract.find({ investorInfo: req.params.id }).populate('currency');
   if (contracts) {
     res.status(200).json(contracts);
   } else {
