@@ -77,7 +77,7 @@ const Editwallet = () => {
                 <Button
                   variant="outlined"
                   color="secondary"
-                  onClick={() => navigate('/wallet')}
+                  onClick={() => navigate('/wallets')}
                   sx={{
                     mr: 2,
                     border: '1px solid #ed6c02',

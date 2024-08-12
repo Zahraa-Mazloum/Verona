@@ -103,6 +103,17 @@ const Header = ({ open }) => {
       }
     }
   };
+  const handleNotificationDeclined = async () => {
+    if (selectedNotification) {
+      try {
+        await api.put(`/admin/notificationsRejected/${selectedNotification._id}`, { isRead: true });
+        fetchNotifications();
+        setSelectedNotification(null);
+      } catch (error) {
+        console.error('Error marking notification as read:', error);
+      }
+    }
+  };
 
   return (
     <Suspense>
@@ -166,11 +177,21 @@ const Header = ({ open }) => {
             color="warning"
             sx={{ mr: 2 }}
           >
-            {t('MarkasRead')}
+            {t('Accept')}
           </Button>
-          <Button onClick={() => setSelectedNotification(null)} color="secondary">
-            Close
-          </Button>
+          <Button onClick={handleNotificationDeclined} 
+             sx={{
+              mr: 2,
+              border: '1px solid #ed6c02',
+              borderRadius: '10px',
+              color: 'black',
+              '&:hover': {
+                borderColor: '#e65100',
+                color: '#e65100',
+              },
+            }}>
+          {t('Reject')}    
+                </Button>
         </DialogActions>
       </Dialog>
     </Suspense>

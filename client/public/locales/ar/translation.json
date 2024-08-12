@@ -127,7 +127,8 @@
 "ROI" : "العائد على الاستثمار",
 "profit" : "الربح",
 "MyInv" : "استثماراتي",
-"MarkasRead" : "وضع علامة كمقروء",
+"Accept" : "قبول",
+"Reject" : "رفض",
 "WalletsManagement" : "إدارة المحفظة",
 "Wallet" : "محفظة",
 "TotalInvest" : "إجمالي الاستثمار",
@@ -156,9 +157,8 @@
 "topup" : "إعادة تعبئة",
 "totalAmountInvested" : "إجمالي المبلغ المستثمر",
 "VeronainvestmentTotalPerType" : "إجمالي استثمار فيرونا حسب النوع",
-"MyWallet": " محفظتي"
-
-
+"MyWallet": " محفظتي",
+"walletupdatedsuccessfully": "تم تحديث المحفظة بنجاح"
 
 
 

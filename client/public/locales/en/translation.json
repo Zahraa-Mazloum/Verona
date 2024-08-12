@@ -118,8 +118,6 @@
   "UpdateWallet" : "Update Wallet",
   "investmentsPerType" : "Investment Per Type",
   "investmentManagement": "Investment Management",
-
-
     "Registrationsuccessful" : "Registration successful!",
     "Registrationfailed" : "Registration failed. Please try again.",
     "RegisterasInvestor" : "Register as Investor",
@@ -129,7 +127,8 @@
     "ROI" : "ROI",
     "profit" : "Profit",
     "MyInv":"My Investments",
-    "MarkasRead" : "Mark as Read",
+    "Accept" : "Accept",
+    "Reject" :"Reject",
     "WalletsManagement" : "Wallets Management",
     "MyWallet": "My Wallet",
     "TotalInvest" : "Total Invest",
@@ -157,7 +156,11 @@
     "withdraw" : " Amount left to withdraw",
     "topup" : "Top up",
     "totalAmountInvested" : "Total Amount Invested",
-    "VeronainvestmentTotalPerType" :"Verona Investment Total Per Type"
+    "VeronainvestmentTotalPerType" :"Verona Investment Total Per Type",
+
+
+    "walletupdatedsuccessfully":"wallet updated successfully",
+    "CashoutSuccessful":"Cashout Successful"
 
 
 
