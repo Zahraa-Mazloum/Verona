@@ -19,6 +19,10 @@ const adminNotificationSchema = new mongoose.Schema(
       type: Boolean,
       default: false,
     },
+    status:{
+      type: String,
+      default : 'declined'
+    },
     paymentScreenshot: {
       data: Buffer,
       contentType: String,

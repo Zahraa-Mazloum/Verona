@@ -153,7 +153,6 @@
           console.error('Error sending email:', error);
           return res.status(500).json({ message: error.message });
         }
-
         console.log('Email sent successfully!');
         res.status(201).json({ message: 'Transfer details submitted successfully', notification });
       });
@@ -162,7 +161,6 @@
       res.status(500).json({ message: error.message });
     }
   });
-
 
 
   export const handleWalletTransfer = asyncHandler(async (req, res) => {
@@ -188,23 +186,23 @@
   
       const emailData = {
         from: investorEmail,
-        to: ['zahraamazloum2001@gmail.com', 'azizmatta@gmail.com'],
+        to: 'zahraamazloum2001@gmail.com',
         subject: 'Transfer Request',
         html: `
-        <div>
-          ${investorEmail} requested cashout for ${cashoutAmount}.
-          <br>
-          Cashout Details:
-          <br>
-          Account Number: ${accountNumber}
-          <br>
-          Bank Name: ${bankName}
-          <br>
-          Cashout Option: ${cashoutOption}
-          <br>
-          Cashout Amount: ${cashoutAmount}
-        </div>
-      `,
+          <div>
+            ${investorEmail} requested cashout for ${cashoutAmount}.
+            <br>
+            Cashout Details:
+            <br>
+            Account Number: ${accountNumber}
+            <br>
+            Bank Name: ${bankName}
+            <br>
+            Cashout Option: ${cashoutOption}
+            <br>
+            Cashout Amount: ${cashoutAmount}
+          </div>
+        `,
       };
   
       mg.messages().send(emailData, async (error, body) => {
@@ -216,9 +214,10 @@
         // Update the wallet amount
         wallet.amount -= cashoutAmount;
         await wallet.save();
+        const unreadCount = await AdminNotification.countDocuments({ isRead: false });
   
         console.log('Email sent successfully!');
-        res.status(201).json({ message: 'Cashout details submitted successfully', notification });
+        res.status(201).json({ message: 'Cashout details submitted successfully', notification, unreadCount });
       });
     } catch (error) {
       console.error('Error handling bank cashout:', error);

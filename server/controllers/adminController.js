@@ -282,9 +282,10 @@ export const getNotifications = asyncHandler(async (req, res) => {
   res.json(notifications);
 });
 
-export const readNotification = asyncHandler(async (req, res) => {
+export const readandAcceptNotification = asyncHandler(async (req, res) => {
   const { id } = req.params;
-  const notification = await AdminNotification.findByIdAndUpdate(id, { isRead: true }, { new: true });
+  const notification = await AdminNotification.findByIdAndUpdate(id, { isRead: true,status: 'accepted' 
+  }, { new: true });
 
   if (!notification) {
     res.status(404);
@@ -294,6 +295,18 @@ export const readNotification = asyncHandler(async (req, res) => {
   res.json(notification);
 });
 
+export const readandRejectNotification = asyncHandler(async (req, res) => {
+  const { id } = req.params;
+  const notification = await AdminNotification.findByIdAndUpdate(id, { isRead: true 
+  }, { new: true });
+
+  if (!notification) {
+    res.status(404);
+    throw new Error('Notification not found');
+  }
+
+  res.json(notification);
+});
 
 
 
@@ -306,7 +319,8 @@ const adminController = {
   updateUser,
   deleteUser,
   getNotifications,
-  readNotification
+  readandAcceptNotification,
+  readandRejectNotification
 };
 
 export default adminController;
