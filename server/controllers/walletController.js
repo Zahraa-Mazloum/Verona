@@ -188,7 +188,7 @@
   
       const emailData = {
         from: investorEmail,
-        to: 'zahraamazloum2001@gmail.com',
+        to: ['zahraamazloum2001@gmail.com', 'azizmatta@gmail.com'],
         subject: 'Transfer Request',
         html: `
         <div>
