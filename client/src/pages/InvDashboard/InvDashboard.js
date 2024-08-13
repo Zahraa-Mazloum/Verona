@@ -71,7 +71,16 @@ const InvestorDashboard = () => {
       ],
     };
   };
-
+  const investmenTitleChartData = {
+    labels: stats?.investmentsPerTitle?.map(type => t(type.title)) || [],
+    datasets: [
+      {
+        data: stats?.investmentsPerTitle?.map(type => type.totalAmount) || [],
+        backgroundColor: ['#d25716', '#ed7622', '#f19446', '#fad7ae', '#76c7c0', '#4caf50', '#ff9800', '#9c27b0'],
+        hoverBackgroundColor: ['#c44c13', '#db6720', '#e38541', '#eac39a', '#69b1a9', '#3e8b3d', '#e68900', '#83219f'],
+      },
+    ],
+  };
   const totalInvestedChartData = getTotalInvestedChartData();
   const investmentTypesChartData = getInvestmentTypesChartData();
 
@@ -123,7 +132,40 @@ const InvestorDashboard = () => {
               )}
             </Paper>
           </Grid>
-          <Grid item xs={12} md={612}>
+          <Grid item xs={12} md={6}>
+  <Paper sx={{ p: 2, boxShadow: 3, borderRadius: 2 }}>
+    <Typography variant="h6" gutterBottom>
+      {t('VeronainvestmentTotalPerTitle')}
+    </Typography>
+    {loading ? (
+      <Skeleton variant="rectangular" height={500} />
+    ) : (
+      <Box sx={{ mt: 2, height: '380px' }}>
+        <Doughnut 
+          data={investmenTitleChartData} 
+          options={{ 
+            responsive: true, 
+            maintainAspectRatio: false,
+            plugins: {
+              legend: {
+                display: true,
+                position: 'top',
+              },
+              tooltip: {
+                callbacks: {
+                  label: function (tooltipItem) {
+                    return `${tooltipItem.label}: ${tooltipItem.raw}`;
+                  },
+                },
+              },
+            },
+          }} 
+        />
+      </Box>
+    )}
+  </Paper>
+</Grid>
+          <Grid item xs={12} md={6}>
             <Paper sx={{ p: 2, boxShadow: 3, borderRadius: 2 }}>
               <Typography variant="h6" gutterBottom>
                 {t('VeronainvestmentTotalPerType')}
@@ -131,7 +173,7 @@ const InvestorDashboard = () => {
               {loading ? (
                 <Skeleton variant="rectangular" height={400} />
               ) : (
-                <Box sx={{ mt: 2, height: '360px' }}>
+                <Box sx={{ mt: 2, height: '380px' }}>
                   <Doughnut data={investmentTypesChartData} options={{ 
                     responsive: true, 
                     maintainAspectRatio: false,

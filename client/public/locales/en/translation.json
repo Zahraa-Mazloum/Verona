@@ -4,7 +4,7 @@
   "activeInvestments": "Active Investments",
   "totalInvestedPerMonth": "Total Invested Per Month",
   "topInvestors": "Top Investors",
-  "investmentTotalPerType": "Investment Total Per Type",
+  "investmentTotalPerType": "Total Investment  Per Type",
   "currencyManagement": "Currency Management",
   "addCurrency": "Add Currency",
   "name": "Name",
@@ -156,12 +156,13 @@
     "withdraw" : " Amount left to withdraw",
     "topup" : "Top up",
     "totalAmountInvested" : "Total Amount Invested",
-    "VeronainvestmentTotalPerType" :"Verona Investment Total Per Type",
 
-
+    "VeronainvestmentTotalPerType" :"Verona Investments Per Type",
+    "VeronainvestmentTotalPerTitle" :"Verona Investments Per Title",
     "walletupdatedsuccessfully":"wallet updated successfully",
     "CashoutSuccessful":"Cashout Successful",
-    "AmountExceedsWithdraw" : "Amount Exceeds Withdraw"
+    "AmountExceedsWithdraw" : "Amount Exceeds Withdraw",
+    "investmentTotalPerTitle" : "Total Investment Per Title"
 
 
 

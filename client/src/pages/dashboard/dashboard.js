@@ -40,7 +40,7 @@ const Dashboard = () => {
   }, [stats]);
 
   const getTotalInvestedChartData = () => {
-    if (!stats) return { labels: [], datasets: [] };
+    if (!stats || !stats.totalInvestedPerMonth) return { labels: [], datasets: [] };
 
     const months = Array.from(new Set(stats.totalInvestedPerMonth.map(data => `${data._id.month}/${data._id.year}`)));
     const currencyMap = {};
@@ -72,16 +72,27 @@ const Dashboard = () => {
   };
 
   const investmentTypesChartData = {
-    labels: stats ? stats.investmentsPerType.map(type => t(type.title)) : [],
+    labels: stats?.investmentsPerType?.map(type => t(type.title)) || [],
     datasets: [
       {
-        data: stats ? stats.investmentsPerType.map(type => type.totalAmount) : [],
+        data: stats?.investmentsPerType?.map(type => type.totalAmount) || [],
         backgroundColor: ['#d25716', '#ed7622', '#f19446', '#fad7ae', '#76c7c0', '#4caf50', '#ff9800', '#9c27b0'],
         hoverBackgroundColor: ['#c44c13', '#db6720', '#e38541', '#eac39a', '#69b1a9', '#3e8b3d', '#e68900', '#83219f'],
       },
     ],
   };
-
+  
+  const investmenTitleChartData = {
+    labels: stats?.investmentsPerTitle?.map(type => t(type.title)) || [],
+    datasets: [
+      {
+        data: stats?.investmentsPerTitle?.map(type => type.totalAmount) || [],
+        backgroundColor: ['#d25716', '#ed7622', '#f19446', '#fad7ae', '#76c7c0', '#4caf50', '#ff9800', '#9c27b0'],
+        hoverBackgroundColor: ['#c44c13', '#db6720', '#e38541', '#eac39a', '#69b1a9', '#3e8b3d', '#e68900', '#83219f'],
+      },
+    ],
+  };
+  
   const topInvestors = stats?.topInvestors?.map(investor => ({
     name: investor.name,
     namear: investor.namear,
@@ -89,14 +100,14 @@ const Dashboard = () => {
     amount: investor.totalAmount.toFixed(2),
     profit: investor.profit.toFixed(2),
   })) || [];
-  console.log(topInvestors);
+  
 
   const totalInvestedChartData = getTotalInvestedChartData();
 
   return (
     <Suspense fallback={<Skeleton variant="rectangular" height="100vh" />}>
       <Box sx={{ p: 3 }} dir={i18n.language === 'ar' ? 'rtl' : 'ltr'}>
-        <Grid container spacing={3}>
+        <Grid container spacing={4}>
           <Grid item xs={12} md={4}>
             <Card sx={{ boxShadow: 3, backgroundColor: '#ffffff', borderRadius: 2 }}>
               <CardContent>
@@ -156,6 +167,39 @@ const Dashboard = () => {
               )}
             </Paper>
           </Grid>
+          <Grid item xs={12} md={12}>
+  <Paper sx={{ p: 2, boxShadow: 3, borderRadius: 2 }}>
+    <Typography variant="h6" gutterBottom>
+      {t('investmentTotalPerTitle')}
+    </Typography>
+    {loading ? (
+      <Skeleton variant="rectangular" height={500} />
+    ) : (
+      <Box sx={{ mt: 2, height: '380px' }}>
+        <Doughnut 
+          data={investmenTitleChartData} 
+          options={{ 
+            responsive: true, 
+            maintainAspectRatio: false,
+            plugins: {
+              legend: {
+                display: true,
+                position: 'top',
+              },
+              tooltip: {
+                callbacks: {
+                  label: function (tooltipItem) {
+                    return `${tooltipItem.label}: ${tooltipItem.raw}`;
+                  },
+                },
+              },
+            },
+          }} 
+        />
+      </Box>
+    )}
+  </Paper>
+</Grid>
           <Grid item xs={12} md={6}>
             <Paper sx={{ p: 2, boxShadow: 3, borderRadius: 2 }}>  
               <Typography variant="h6" gutterBottom>
