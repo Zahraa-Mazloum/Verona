@@ -123,9 +123,15 @@ const ContractsTable = () => {
     },
     {
       field: 'amount',
-      headerName: t('amount'),
-      flex: 1,
-      align: i18n.language === 'ar' ? 'right' : 'left'
+      headerName: t('amountinv'),
+      flex: 0.1,
+      minWidth: 100,
+      align: i18n.language === 'ar' ? 'right' : 'left',
+      renderHeader: () => (
+        <span style={{ whiteSpace: 'normal', wordWrap: 'break-word', textOverflow: 'ellipsis', overflow: 'hidden' }}>
+          {t('amountinv')}
+        </span>
+      ),
 
     },
     {
@@ -147,6 +153,11 @@ const ContractsTable = () => {
       renderCell: (params) => (
         <span>
           {i18n.language === 'ar' ? params.row.contractTime_ar : params.row.contractTime}
+        </span>
+      ),
+      renderHeader: () => (
+        <span style={{ whiteSpace: 'normal', wordWrap: 'break-word', textOverflow: 'ellipsis', overflow: 'hidden' }}>
+          {t('contractTime')}
         </span>
       ),
 
@@ -191,13 +202,19 @@ const ContractsTable = () => {
     {
       field: 'withdraw',
       headerName: t('withdraw'),
-      flex: 1,
+      flex: 0.1,
+      minWidth: 100,
       editable: false,
       readonly: true,
       align: i18n.language === 'ar' ? 'right' : 'left',
       renderCell: (params) => (
         <span>
           {Number(params.value).toFixed(2)}
+        </span>
+      ),
+      renderHeader: () => (
+        <span style={{ whiteSpace: 'normal', wordWrap: 'break-word', textOverflow: 'ellipsis', overflow: 'hidden' }}>
+          {t('profitTillDate')}
         </span>
       ),
     },

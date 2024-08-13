@@ -145,35 +145,58 @@ const InvContractsTable = () => {
     {
       field: 'amount',
       headerName: t('amountinv'),
-      flex: 2,
-      align: i18n.language === 'ar' ? 'right' : 'left'
+    
+      flex: 0.1,
+      minWidth: 100,
+      align: i18n.language === 'ar' ? 'right' : 'left',
+      renderHeader: () => (
+        <span style={{ whiteSpace: 'normal', wordWrap: 'break-word', textOverflow: 'ellipsis', overflow: 'hidden' }}>
+          {t('amountinv')}
+        </span>
+      ),
     },
     {
       field: 'currency',
       headerName: t('currency'),
-      flex: 1,
+    
+  flex: 1,
+      minWidth: 100,      
+      align: i18n.language === 'ar' ? 'right' : 'left',
+      renderHeader: () => (
+        <span style={{ whiteSpace: 'normal', wordWrap: 'break-word', textOverflow: 'ellipsis', overflow: 'hidden' }}>
+          {t('currency')}
+        </span>
+      ),
       renderCell: (params) => (
         <span>
           {i18n.language === 'ar' ? params.row.currency.symbol_ar : params.row.currency.symbol}
         </span>
       ),
-      align: i18n.language === 'ar' ? 'right' : 'left'
     },
     {
       field: 'contractTime',
       headerName: t('contractTime'),
+    
       flex: 1,
+      minWidth: 100,
       align: i18n.language === 'ar' ? 'right' : 'left',
+      renderHeader: () => (
+        <span style={{ whiteSpace: 'normal', wordWrap: 'break-word', textOverflow: 'ellipsis', overflow: 'hidden' }}>
+          {t('contractTime')}
+        </span>
+      ),
       renderCell: (params) => (
         <span>
           {i18n.language === 'ar' ? params.row.contractTime_ar : params.row.contractTime}
         </span>
-      )
+      ),
     },
     {
       field: 'startDate',
       headerName: t('startDate'),
-      flex: 1,
+    
+  flex: 1,
+      minWidth: 100,
       renderCell: (params) => (
         <span>
           {new Date(params.row.startDate).toLocaleDateString()}
@@ -184,7 +207,9 @@ const InvContractsTable = () => {
     {
       field: 'endDate',
       headerName: t('endDate'),
-      flex: 1,
+    
+  flex: 1,
+      minWidth: 100,
       renderCell: (params) => (
         <span>
           {new Date(params.row.endDate).toLocaleDateString()}
@@ -197,7 +222,9 @@ const InvContractsTable = () => {
     {
       field: 'contractPercentage',
       headerName: t('ROI'),
-      flex: 1,
+    
+  flex: 1,
+      minWidth: 100,
       editable: false,
       readonly: true,
       align: i18n.language === 'ar' ? 'right' : 'left',
@@ -210,7 +237,9 @@ const InvContractsTable = () => {
     // {
     //   field: 'profit',
     //   headerName: t('profit'),
-    //   flex: 1,
+    //   
+  // flex: 1,
+  // minWidth: 100,
     //   editable: false,
     //   readonly: true,
     //   align: i18n.language === 'ar' ? 'right' : 'left',
@@ -218,10 +247,17 @@ const InvContractsTable = () => {
     {
       field: 'currentProfit',
       headerName: t('profitTillDate'),
-      flex: 1,
-      editable: false,
+    
+       flex: 0.1,
+      minWidth: 100,
+       editable: false,
       readonly: true,
       align: i18n.language === 'ar' ? 'right' : 'left',
+      renderHeader: () => (
+        <span style={{ whiteSpace: 'normal', wordWrap: 'break-word', textOverflow: 'ellipsis', overflow: 'hidden' }}>
+          {t('profitTillDate')}
+        </span>
+      ),
       renderCell: (params) => (
         <span>
           {Number(params.value).toFixed(2)}
@@ -231,10 +267,18 @@ const InvContractsTable = () => {
         {
       field: 'withdraw',
       headerName: t('withdraw'),
-      flex: 2,
+    
+      flex: 0.2,
+      minWidth: 100,
       editable: false,
       readonly: true,
-      align: i18n.language === 'ar' ? 'right' : 'left',
+      align: i18n.language === 'ar' ? 'right' : 'left',  
+      renderHeader: () => (
+        <span style={{ whiteSpace: 'normal', wordWrap: 'break-word', textOverflow: 'ellipsis', overflow: 'hidden' }}>
+          {t('withdraw')}
+        </span>
+      ),
+      
       renderCell: (params) => (
         <span>
           {Number(params.value).toFixed(2)}
@@ -244,7 +288,9 @@ const InvContractsTable = () => {
     {
       field: 'cashout',
       headerName: t('cashout'),
-      flex: 1,
+      
+  flex: 1,
+  minWidth: 100,
       align: i18n.language === 'ar' ? 'right' : 'left',
       renderCell: (params) => (
         <Button
@@ -260,7 +306,9 @@ const InvContractsTable = () => {
     {
       field: 'transfer',
       headerName: t('transfer'),
-      flex: 1,
+      
+  flex: 1,
+  minWidth: 100,
       align: i18n.language === 'ar' ? 'right' : 'left',
       renderCell: (params) => (
         <Button
