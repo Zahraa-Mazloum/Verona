@@ -297,12 +297,26 @@ export const readandAcceptNotification = asyncHandler(async (req, res) => {
 
 export const readandRejectNotification = asyncHandler(async (req, res) => {
   const { id } = req.params;
-  const notification = await AdminNotification.findByIdAndUpdate(id, { isRead: true 
-  }, { new: true });
+
+  // Find the notification and populate the contract details
+  const notification = await AdminNotification.findById(id).populate('contract');
 
   if (!notification) {
     res.status(404);
     throw new Error('Notification not found');
+  }
+
+  // Mark the notification as read
+  notification.isRead = true;
+  await notification.save();
+
+  // Add the notification amount to the contract's withdraw
+  if (notification.contract && notification.contract.withdraw !== undefined) {
+    notification.contract.withdraw += notification.amount;
+    await notification.contract.save();
+  } else {
+    res.status(400);
+    throw new Error('Contract or withdraw not found');
   }
 
   res.json(notification);

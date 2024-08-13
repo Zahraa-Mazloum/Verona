@@ -15,6 +15,9 @@ const adminNotificationSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+    amount:{
+        type:Number,
+    },
     isRead: {
       type: Boolean,
       default: false,

@@ -114,6 +114,7 @@
         contract: null,
         type: 'transfer',
         message: `New bank transfer request from ${accountHolderName} for ${amount}.`,
+        amount:$amount,
         paymentScreenshot: {
           data: paymentScreenshot.buffer,
           contentType: paymentScreenshot.mimetype,
@@ -179,6 +180,7 @@
         contract: null,
         type: 'transfer',
         message: `New Cashout request ${investorEmail} for ${cashoutAmount}.`,
+        amount: cashoutAmount
       });
   
       await notification.save();

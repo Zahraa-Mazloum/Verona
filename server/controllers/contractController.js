@@ -137,7 +137,8 @@ export const handleCashout = asyncHandler(async (req, res) => {
     const notification = new AdminNotification({
       contract: contract._id,
       type: 'cashout',
-      message: `${investorName} requested cashout for contract with date ${contractStartDate}`,
+      message: `${investorName} requested cashout amount ${cashoutAmount} for contract with date ${contractStartDate}`,
+      amount: cashoutAmount
     });
     await notification.save();
     io.emit('newNotification', notification);
@@ -201,7 +202,8 @@ export const handleTransfer = asyncHandler(async (req, res) => {
     const notification = new AdminNotification({
       contract: contract._id,
       type: 'transfer',
-      message: `${investorName} requested transfer for contract with date ${contractStartDate}`,
+      message: `${investorName} requested transfer amount ${cashoutAmount} for contract with date ${contractStartDate}`,
+      amount: cashoutAmount,
     });
     await notification.save();
     io.emit('newNotification', notification);
