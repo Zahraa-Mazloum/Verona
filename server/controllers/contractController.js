@@ -136,6 +136,7 @@ export const handleCashout = asyncHandler(async (req, res) => {
 
     const notification = new AdminNotification({
       contract: contract._id,
+      wallet:null,
       type: 'cashout',
       message: `${investorName} requested cashout amount ${cashoutAmount} for contract with date ${contractStartDate}`,
       amount: cashoutAmount
@@ -201,6 +202,7 @@ export const handleTransfer = asyncHandler(async (req, res) => {
 
     const notification = new AdminNotification({
       contract: contract._id,
+      wallet:null,
       type: 'transfer',
       message: `${investorName} requested transfer amount ${cashoutAmount} for contract with date ${contractStartDate}`,
       amount: cashoutAmount,

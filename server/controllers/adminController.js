@@ -295,11 +295,12 @@ export const readandAcceptNotification = asyncHandler(async (req, res) => {
   res.json(notification);
 });
 
+
 export const readandRejectNotification = asyncHandler(async (req, res) => {
   const { id } = req.params;
 
-  // Find the notification and populate the contract details
-  const notification = await AdminNotification.findById(id).populate('contract');
+  // Find the notification and populate the contract and wallet details
+  const notification = await AdminNotification.findById(id).populate('contract wallet');
 
   if (!notification) {
     res.status(404);
@@ -310,17 +311,24 @@ export const readandRejectNotification = asyncHandler(async (req, res) => {
   notification.isRead = true;
   await notification.save();
 
-  // Add the notification amount to the contract's withdraw
+  // If there's a contract associated with the notification, update the withdraw amount
   if (notification.contract && notification.contract.withdraw !== undefined) {
     notification.contract.withdraw += notification.amount;
     await notification.contract.save();
+  }
+
+  // If there's a wallet associated with the notification, update the wallet amount
+  if (notification.wallet && notification.wallet.amount !== undefined) {
+    notification.wallet.amount += notification.amount;
+    await notification.wallet.save();
   } else {
     res.status(400);
-    throw new Error('Contract or withdraw not found');
+    throw new Error('Wallet or amount not found');
   }
 
   res.json(notification);
 });
+  
 
 
 

@@ -6,6 +6,10 @@ const adminNotificationSchema = new mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: 'Contract',
     },
+    wallet:{
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Wallet',
+    },
     type: {
       type: String,
       enum: ['cashout', 'transfer'],

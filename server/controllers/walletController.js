@@ -112,6 +112,7 @@
     try {
       const notification = new AdminNotification({
         contract: null,
+        wallet:wallet._id,
         type: 'transfer',
         message: `New bank transfer request from ${accountHolderName} for ${amount}.`,
         amount:$amount,
@@ -178,6 +179,7 @@
   
       const notification = new AdminNotification({
         contract: null,
+        wallet:wallet._id,
         type: 'transfer',
         message: `New Cashout request ${investorEmail} for ${cashoutAmount}.`,
         amount: cashoutAmount
