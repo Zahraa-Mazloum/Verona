@@ -39,9 +39,7 @@ export const dashboardStates = async (req, res) => {
             },
             { $sort: { '_id.year': 1, '_id.month': 1, '_id.currency': 1 } }
         ]);
-        
-        console.log(totalInvestedPerMonth);
-        
+
         // Top 3 investors
         const topInvestors = await Contract.aggregate([
             {
@@ -81,7 +79,7 @@ export const dashboardStates = async (req, res) => {
               }
             }
           ]);
-        
+
         // Overall investments per type
         const investmentsPerType = await Investment.aggregate([
             {
@@ -108,13 +106,31 @@ export const dashboardStates = async (req, res) => {
             }
         ]);
 
+        // Overall investments per title
+        const investmentsPerTitle = await Investment.aggregate([
+            {
+                $group: {
+                    _id: '$titleInv',  // Group by the title of the investment
+                    totalAmount: { $sum: '$amount' }  // Sum the amounts for each title
+                }
+            },
+            {
+                $project: {
+                    _id: 0,            // Remove the _id field from the output
+                    title: '$_id',     // Rename _id to title in the output
+                    totalAmount: 1     // Keep the totalAmount field
+                }
+            }
+        ]);
+
         res.status(200).json({
             totalInvestors,
             totalAmount: totalAmount[0] ? totalAmount[0].total : 0,
             activeInvestments,
             totalInvestedPerMonth,
             topInvestors,
-            investmentsPerType
+            investmentsPerType,
+            investmentsPerTitle
         });
     } catch (error) {
         res.status(500).json({ message: error.message });

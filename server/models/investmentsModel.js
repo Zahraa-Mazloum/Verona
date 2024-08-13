@@ -37,45 +37,6 @@ const investmentSchema = new mongoose.Schema({
     timestamps: true
 });
 
-// Static method to aggregate investments by type and currency
-investmentSchema.statics.aggregateInvestmentsByTypeAndCurrency = async function () {
-    const aggregateResult = await this.aggregate([
-        {
-            $group: {
-                _id: { type: '$type', currency: '$currency' },
-                totalAmount: { $sum: '$amount' }
-            }
-        },
-        {
-            $lookup: {
-                from: 'types',
-                localField: '_id.type',
-                foreignField: '_id',
-                as: 'type'
-            }
-        },
-        { $unwind: '$type' },
-        {
-            $lookup: {
-                from: 'Currency',
-                localField: '_id.currency',
-                foreignField: '_id',
-                as: 'currency'
-            }
-        },
-        { $unwind: '$currency' },
-        {
-            $project: {
-                title: '$type.type_en',
-                title_ar: '$type.type_ar',
-                currency: '$currency.name',
-                currency_ar: '$currency.name_ar',
-                totalAmount: 1
-            }
-        }
-    ]);
-    return aggregateResult;
-};
 
 const Investment = mongoose.model('Investment', investmentSchema, 'Investments');
 

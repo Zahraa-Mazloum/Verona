@@ -54,12 +54,27 @@ export const getInvestorDashboard = async (req, res) => {
           }
       }
   ]);
-    // Compile the data
+  const investmentsPerTitle = await Investment.aggregate([
+    {
+        $group: {
+            _id: '$titleInv',  
+            totalAmount: { $sum: '$amount' }  
+        }
+    },
+    {
+        $project: {
+            _id: 0,            
+            title: '$_id',   
+            totalAmount: 1     
+        }
+    }
+]);
     const dashboardStats = {
       totalAmount: totalAmount[0]?.total || 0,
       activeInvestments,
       totalInvestedPerMonth,
-      investmentsPerType
+      investmentsPerType,
+      investmentsPerTitle
 
     };
 
