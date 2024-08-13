@@ -384,6 +384,9 @@ const InvContractsTable = () => {
           setCashoutOption={setCashoutOption}
           paymentAmount={selectedRow.payment}
           profitAmount={selectedRow.profit}
+          withdraw={selectedRow.withdraw}
+
+
         />
       )}
       {selectedTransferRow && (
@@ -395,6 +398,8 @@ const InvContractsTable = () => {
           setTransferOption={setTransferOption}
           paymentAmount={selectedTransferRow.payment}
           profitAmount={selectedTransferRow.profit}
+          withdraw={selectedTransferRow.withdraw}
+
         />
       )}
     </Box>

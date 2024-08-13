@@ -15,6 +15,7 @@ import {
   InputAdornment,
 } from '@mui/material';
 import { useTranslation } from 'react-i18next';
+import { toast } from 'react-toastify';
 
 const CashoutPopup = ({ open, onClose, onSubmit, bankDetails, setBankDetails, cashoutOption, setCashoutOption, amount }) => {
   const { t } = useTranslation();
@@ -42,6 +43,18 @@ const CashoutPopup = ({ open, onClose, onSubmit, bankDetails, setBankDetails, ca
 
   const handleSubmit = () => {
     const cashoutAmount = cashoutOption === 'other' ? otherAmount : amount;
+
+  // Validation checks
+  if (cashoutAmount > amount) {
+    toast.error(t('AmountExceedsWithdraw'));
+    return;
+  }
+
+  if (amount - cashoutAmount < 0) {
+    toast.error(t('WithdrawalWouldBeNegative'));
+    return;
+  }
+
     onSubmit({ ...bankDetails, cashoutOption, cashoutAmount });
   };
 

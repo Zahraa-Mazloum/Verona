@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import {
   Dialog,
   DialogActions,
@@ -10,25 +10,16 @@ import {
   FormControlLabel,
   RadioGroup,
   Radio,
-  Box,
   FormLabel,
   InputAdornment,
+  Box,
 } from '@mui/material';
 import { useTranslation } from 'react-i18next';
+import { toast } from 'react-toastify';
 
-const TransferPopup = ({ open, onClose, onSubmit, transferOption, setTransferOption, paymentAmount, profitAmount }) => {
+const TransferPopup = ({ open, onClose, onSubmit, transferOption, setTransferOption, paymentAmount, profitAmount, withdraw }) => {
   const { t } = useTranslation();
   const [otherAmount, setOtherAmount] = useState('');
-
-  // useEffect(() => {
-  //   if (transferOption === 'payment') {
-  //     setBankDetails(prev => ({ ...prev, amount: paymentAmount }));
-  //   } else if (transferOption === 'profit') {
-  //     setBankDetails(prev => ({ ...prev, amount: profitAmount }));
-  //   } else {
-  //     setBankDetails(prev => ({ ...prev, amount: otherAmount }));
-  //   }
-  // }, [transferOption, paymentAmount, profitAmount, otherAmount, setBankDetails]);
 
   const handleChange = (event) => {
     setTransferOption(event.target.value);
@@ -39,12 +30,23 @@ const TransferPopup = ({ open, onClose, onSubmit, transferOption, setTransferOpt
 
   const handleOtherAmountChange = (event) => {
     setOtherAmount(event.target.value);
-    // setBankDetails(prev => ({ ...prev, amount: event.target.value }));
   };
 
   const handleSubmit = () => {
-    const cashoutAmount = transferOption === 'other' ? otherAmount : (transferOption === 'payment' ? paymentAmount : profitAmount);
-    onSubmit({transferOption, cashoutAmount });
+    const cashoutAmount = transferOption === 'other' ? Number(otherAmount) : (transferOption === 'payment' ? paymentAmount : profitAmount);
+
+    // Validation checks
+    if (cashoutAmount > withdraw) {
+      toast.error(t('AmountExceedsWithdraw'));
+      return;
+    }
+
+    if (withdraw - cashoutAmount < 0) {
+      toast.error(t('WithdrawalWouldBeNegative'));
+      return;
+    }
+
+    onSubmit({ transferOption, cashoutAmount });
   };
 
   return (
@@ -62,7 +64,7 @@ const TransferPopup = ({ open, onClose, onSubmit, transferOption, setTransferOpt
             <FormControlLabel
               value="profit"
               control={<Radio />}
-              label={`${t('Profit')} ${profitAmount}`}
+              label={`${t('Profit')}: ${profitAmount}`}
             />
             <FormControlLabel
               value="other"

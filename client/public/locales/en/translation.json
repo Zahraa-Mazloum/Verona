@@ -160,7 +160,9 @@
 
 
     "walletupdatedsuccessfully":"wallet updated successfully",
-    "CashoutSuccessful":"Cashout Successful"
+    "CashoutSuccessful":"Cashout Successful",
+    "AmountExceedsWithdraw" : "Amount Exceeds Withdraw"
+
 
 
 
