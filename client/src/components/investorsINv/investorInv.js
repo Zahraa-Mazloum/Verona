@@ -97,6 +97,7 @@ const InvContractsTable = () => {
       try {
         await api.post(`/contract/cashout/${selectedRow._id}`, details);
         toast.success(t('CashoutRequestSent'));
+        fetchContract()
         const socket = io('https://verona-cfiw.onrender.com/');
         // const socket = io('http://localhost:5001');
         socket.emit('newNotification', {
@@ -116,6 +117,7 @@ const InvContractsTable = () => {
       try {
         await api.post(`/contract/transfer/${selectedTransferRow._id}`, details);
         toast.success(t('TransferRequestSent'));
+        fetchContract()
         const socket = io('https://verona-cfiw.onrender.com');
         // const socket = io('http://localhost:5001');
         socket.emit('newNotification', {
