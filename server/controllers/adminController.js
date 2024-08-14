@@ -5,6 +5,8 @@ import Admin from '../models/adminModel.js';
 import Employee from '../models/employeeModel.js';
 import Investor from '../models/investorModel.js';
 import AdminNotification from '../models/adminNotificationModel.js';
+import { io } from '../index.js';
+import InvestorNotification from '../models/investorNotificationModel.js';
 
 // Generate JWT
 export const generateToken = (id) => {
@@ -282,19 +284,51 @@ export const getNotifications = asyncHandler(async (req, res) => {
   res.json(notifications);
 });
 
+// export const readandAcceptNotification = asyncHandler(async (req, res) => {
+//   const { id } = req.params;
+//   const notification = await AdminNotification.findByIdAndUpdate(id, { isRead: true,status: 'accepted' 
+//   }, { new: true });
+
+//   if (!notification) {
+//     res.status(404);
+//     throw new Error('Notification not found');
+//   }
+
+//   res.json(notification);
+// });
+
 export const readandAcceptNotification = asyncHandler(async (req, res) => {
   const { id } = req.params;
-  const notification = await AdminNotification.findByIdAndUpdate(id, { isRead: true,status: 'accepted' 
-  }, { new: true });
+
+  // Update the AdminNotification status to accepted
+  const notification = await AdminNotification.findByIdAndUpdate(id, { 
+    isRead: true,
+    status: 'accepted',
+  }, { new: true }).populate('contract');
 
   if (!notification) {
     res.status(404);
     throw new Error('Notification not found');
   }
+  const contractStartDate = new Date(notification.contract.startDate).toLocaleDateString();
+
+  // Create an InvestorNotification
+  const investorNotification = new InvestorNotification({
+    contract: notification.contract._id,
+    message: `Your request for the contract date ${contractStartDate} with amount ${notification.amount} has been accepted.`,
+    isRead: false,
+  });
+
+  await investorNotification.save();
+
+  // Emit the notification to the investor (if using WebSockets)
+  const investor = await Investor.findById(notification.contract.investorInfo); 
+  if (investor) {
+    io.to(investor._id.toString()).emit('notification', investorNotification);
+  }
 
   res.json(notification);
 });
-
 
 export const readandRejectNotification = asyncHandler(async (req, res) => {
   const { id } = req.params;

@@ -1,6 +1,7 @@
 import asyncHandler from 'express-async-handler';
 import mailgun from 'mailgun-js';
 import Investor from '../models/investorModel.js';
+import InvestorNotification  from '../models/investorNotificationModel.js'
 
 export const sendMessage = asyncHandler(async (req, res) => {
   const { id } = req.params;
@@ -38,4 +39,26 @@ export const sendMessage = asyncHandler(async (req, res) => {
     console.log('Email sent successfully!');
     return res.status(201).json({ message: 'Transfer details submitted successfully' });
   });
+});
+
+export const getInvestorNotification = asyncHandler(async (req, res) => {
+  const { id } = req.params;
+
+  // Find the investor by ID
+  const investor = await Investor.findById(id);
+
+  if (!investor) {
+    res.status(404);
+    throw new Error('Investor not found');
+  }
+
+  // Retrieve all notifications associated with this investor's contracts or wallet
+  const notifications = await InvestorNotification.find({
+    $or: [
+      { contract: { $in: investor.contracts } }, 
+      { wallet: investor.wallet }, 
+    ]
+  }).sort({ createdAt: -1 }); 
+
+  res.json(notifications);
 });
