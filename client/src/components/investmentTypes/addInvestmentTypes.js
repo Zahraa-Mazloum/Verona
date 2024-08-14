@@ -97,7 +97,7 @@ const Addtypes = () => {
               type="submit"
               sx={{ mr: 2 }}
             >
-                {t('AddType')}
+                {t('Addtype')}
                 </Button>
             <Button
               variant="outlined"

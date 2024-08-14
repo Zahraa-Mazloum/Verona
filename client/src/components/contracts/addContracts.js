@@ -54,7 +54,13 @@ const Addcontract = () => {
     setContract({ ...contract, [name]: value });
 
     if (name === 'contractTime') {
-      const contractTime_ar = value === 'year' ? 'سنة' : value === 'month' ? 'شهر' : 'يوم';
+      const contractTime_ar = 
+      value === 'year' ? 'سنة' : 
+      value === 'month' ? 'شهر' : 
+      value === 'Three months' ? 'ثلاثة اشهر' : 
+      value === 'Six months' ? 'سته اشهر' : 
+      value === 'day' ? 'يوم' : 
+      '';
       setContractAr({ ...contract_ar, contractTime_ar });
     }
   };
@@ -174,9 +180,13 @@ const Addcontract = () => {
               margin="normal"
               InputProps={{ style: { borderRadius: '12px' } }}
             >
-              <MenuItem value="year">Year</MenuItem>
-              <MenuItem value="month">Month</MenuItem>
+              
               <MenuItem value="day">day</MenuItem>
+              <MenuItem value="month">Month</MenuItem>
+              <MenuItem value="Three months">  Three Months</MenuItem>
+              <MenuItem value="Six months">Six Months</MenuItem>
+              <MenuItem value="year">Year</MenuItem>
+
 
             </TextField>
             <TextField
