@@ -18,6 +18,7 @@ const Header = ({ open }) => {
   const isArabic = i18n.language === 'ar';
   const { t } = useTranslation();
   const role = localStorage.getItem('role');
+  const investorId = localStorage.getItem('id')
 
   useEffect(() => {
     const handleUserInteraction = () => setUserInteracted(true);
@@ -31,13 +32,16 @@ const Header = ({ open }) => {
   }, []);
 
   useEffect(() => {
-    // const socket = io('http://localhost:5001');
     const socket = io('https://verona-cfiw.onrender.com');
 
     socket.on('newNotification', (notification) => {
-      setNotifications((prevNotifications) => [notification, ...prevNotifications]);
-      setUnreadCount((prevCount) => prevCount + 1);
-      playNotificationSound();
+      // Check if the notification is relevant to the current user role
+      if ((role === 'admin' && notification.type === 'admin') ||
+          (role === 'investor' && notification.type === 'investor')) {
+        setNotifications((prevNotifications) => [notification, ...prevNotifications]);
+        setUnreadCount((prevCount) => prevCount + 1);
+        playNotificationSound();
+      }
     });
 
     fetchNotifications();
@@ -45,11 +49,12 @@ const Header = ({ open }) => {
     return () => {
       socket.disconnect();
     };
-  }, []);
+  }, [role]);
 
   const fetchNotifications = async () => {
     try {
-      const { data } = await api.get('/admin/notifications');
+      const endpoint = role === 'admin' ? '/admin/notifications' : `/investors/notifications/${investorId}`;
+      const { data } = await api.get(endpoint);
       setNotifications(data);
       const unread = data.filter(notification => !notification.isRead).length;
       setUnreadCount(unread);
@@ -66,6 +71,7 @@ const Header = ({ open }) => {
       console.log('Notification sound only available for admins');
     }
   };
+
   const handleMenu = (event) => {
     setAnchorEl(event.currentTarget);
   };
@@ -103,6 +109,7 @@ const Header = ({ open }) => {
       }
     }
   };
+
   const handleNotificationDeclined = async () => {
     if (selectedNotification) {
       try {
@@ -128,14 +135,11 @@ const Header = ({ open }) => {
       >
         <Toolbar>
           <Box sx={{ flexGrow: 1 }} />
-          {role === 'admin' && (
-
-          <IconButton sx={{ svg: { color: 'rgb(243, 166, 74)' } }} onClick={toggleDrawer}>
-            <Badge badgeContent={unreadCount} color="warning">
-              <Notifications />
-            </Badge>
-          </IconButton>
-          )}
+            <IconButton sx={{ svg: { color: 'rgb(243, 166, 74)' } }} onClick={toggleDrawer}>
+              <Badge badgeContent={unreadCount} color="warning">
+                <Notifications />
+              </Badge>
+            </IconButton>
           <IconButton sx={{ svg: { color: 'rgb(243, 166, 74)' } }} onClick={handleProfile}>
             <AccountCircle />
           </IconButton>
@@ -148,23 +152,40 @@ const Header = ({ open }) => {
           </Menu>
         </Toolbar>
       </AppBar>
-      <Drawer anchor="right" open={drawerOpen} onClose={toggleDrawer}>
-        <Box sx={{ width: 300, padding: 2 }}>
-          <h2>Admin Notifications</h2>
-          <List>
-            {notifications.map((notification) => (
-              <ListItem button key={notification._id} onClick={() => handleNotificationClick(notification)}>
-                <ListItemText
-                  primary={notification.message}
-                  secondary={new Date(notification.createdAt).toLocaleString()}
-                />
-              </ListItem>
-            ))}
-          </List>
-        </Box>
-      </Drawer>
+      {/* {role === 'admin' && (
+        <Drawer anchor="right" open={drawerOpen} onClose={toggleDrawer}>
+          <Box sx={{ width: 300, padding: 2 }}>
+            <h2>{t('Admin Notifications')}</h2>
+            <List>
+              {notifications.map((notification) => (
+                <ListItem button key={notification._id} onClick={() => handleNotificationClick(notification)}>
+                  <ListItemText
+                    primary={notification.message}
+                    secondary={new Date(notification.createdAt).toLocaleString()}
+                  />
+                </ListItem>
+              ))}
+            </List>
+          </Box>
+        </Drawer>
+      )} */}
+        <Drawer anchor="right" open={drawerOpen} onClose={toggleDrawer}>
+    <Box sx={{ width: 300, padding: 2 }}>
+      <h2>{role === 'admin' ? t('Admin Notifications') : t('Investor Notifications')}</h2>
+      <List>
+        {notifications.map((notification) => (
+          <ListItem button key={notification._id} onClick={() => handleNotificationClick(notification)}>
+            <ListItemText
+              primary={notification.message}
+              secondary={new Date(notification.createdAt).toLocaleString()}
+            />
+          </ListItem>
+        ))}
+      </List>
+    </Box>
+  </Drawer>
       <Dialog open={!!selectedNotification} onClose={() => setSelectedNotification(null)}>
-        <DialogTitle>Notification Details</DialogTitle>
+        <DialogTitle>{t('Notification Details')}</DialogTitle>
         <DialogContent>
           <p>{selectedNotification?.message}</p>
           <p style={{ fontSize: '18px', color: 'gray' }}>
@@ -191,7 +212,7 @@ const Header = ({ open }) => {
               },
             }}>
           {t('Reject')}    
-                </Button>
+          </Button>
         </DialogActions>
       </Dialog>
     </Suspense>
