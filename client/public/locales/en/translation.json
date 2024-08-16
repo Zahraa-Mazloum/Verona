@@ -163,7 +163,8 @@
     "AmountExceedsWithdraw" : "Amount Exceeds Withdraw",
     "investmentTotalPerTitle" : "Total Investment Per Title",
     "AddContract" : "Add Contract",
-    "investmentStatus" : "Investment Status"
+    "investmentStatus" : "Investment Status",
+    "WalletDeletedSuccessfully" : "Wallet Deleted Successfully"
 
 
 

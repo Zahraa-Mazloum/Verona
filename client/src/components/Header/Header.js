@@ -110,6 +110,18 @@ const Header = ({ open }) => {
     }
   };
 
+  const handleInvMarkAsRead = async () => {
+    if (selectedNotification) {
+      try {
+        await api.put(`/investors/readnotifications/${selectedNotification._id}`, { isRead: true });
+        fetchNotifications();
+ setSelectedNotification(null);
+      } catch (error) {
+        console.error('Error marking notification as read:', error);
+      }
+    }
+  };
+
   const handleNotificationDeclined = async () => {
     if (selectedNotification) {
       try {
@@ -192,28 +204,53 @@ const Header = ({ open }) => {
             {new Date(selectedNotification?.createdAt).toLocaleString()}
           </p>
         </DialogContent>
-        <DialogActions>
-          <Button onClick={handleMarkAsRead} 
-            variant="contained"
-            color="warning"
-            sx={{ mr: 2 }}
-          >
-            {t('Accept')}
-          </Button>
-          <Button onClick={handleNotificationDeclined} 
-             sx={{
-              mr: 2,
-              border: '1px solid #ed6c02',
-              borderRadius: '10px',
-              color: 'black',
-              '&:hover': {
-                borderColor: '#e65100',
-                color: '#e65100',
-              },
-            }}>
-          {t('Reject')}    
-          </Button>
-        </DialogActions>
+        {role === 'admin' ? (
+  <DialogActions>
+    <Button onClick={handleMarkAsRead} 
+      variant="contained"
+      color="warning"
+      sx={{ mr: 2 }}
+    >
+      {t('Accept')}
+    </Button>
+    <Button onClick={handleNotificationDeclined} 
+       sx={{
+        mr: 2,
+        border: '1px solid #ed6c02',
+        borderRadius: '10px',
+        color: 'black',
+        '&:hover': {
+          borderColor: '#e65100',
+          color: '#e65100',
+        },
+      }}>
+    {t('Reject')}    
+    </Button>
+  </DialogActions>
+) : (
+  <DialogActions>
+  <Button onClick={handleInvMarkAsRead} 
+    variant="contained"
+    color="warning"
+    sx={{ mr: 2 }}
+  >
+    {t('Read')}
+  </Button>
+  <Button onClick={() => setSelectedNotification(null)} color="secondary"
+  sx={{
+      mr: 2,
+      border: '1px solid #ed6c02',
+      borderRadius: '10px',
+      color: 'black',
+      '&:hover': {
+        borderColor: '#e65100',
+        color: '#e65100',
+      },
+    }}>
+  {t('Cancel')}    
+  </Button>
+</DialogActions>
+)}
       </Dialog>
     </Suspense>
   );
