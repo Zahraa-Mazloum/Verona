@@ -57,8 +57,22 @@ export const getInvestorNotification = asyncHandler(async (req, res) => {
     $or: [
       { contract: { $in: investor.contracts } }, 
       { wallet: investor.wallet }, 
-    ]
+    ],
+    isRead: false
   }).sort({ createdAt: -1 }); 
 
   res.json(notifications);
+});
+
+export const readNotification = asyncHandler(async (req, res) => {
+  const { id } = req.params;
+  const notification = await InvestorNotification.findByIdAndUpdate(id, { isRead: true 
+  }, { new: true });
+
+  if (!notification) {
+    res.status(404);
+    throw new Error('Notification not found');
+  }
+
+  res.json(notification);
 });
