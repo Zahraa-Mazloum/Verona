@@ -99,7 +99,7 @@ const Investmenttypes = () => {
       field: i18n.language === 'ar' ? 'type_ar' : 'type_en',
       headerName: t('name'),
       flex: 1,
-      align: i18n.language === 'ar' ? 'right' : 'left'
+      align: i18n.language === 'ar' ? 'right' : 'left',
 
     },
     {
@@ -114,6 +114,7 @@ const Investmenttypes = () => {
       headerName: t('actions'),
       sortable: false,
       flex: 1,
+      align: i18n.language === 'ar' ? 'right' : 'left',
       renderCell: (params) => (
         <Box display="flex" justifyContent="left">
           <IconButton

@@ -57,16 +57,22 @@ const OverallInvestmentTable = () => {
       field: i18n.language === 'ar' ? 'title_ar' : 'title',
       headerName: t('type'),
       flex: 1,
+      align: i18n.language === 'ar' ? 'right' : 'left',
+
     },
     {
       field: i18n.language === 'ar' ? 'currency_ar' : 'currency',
       headerName: t('currency'),
       flex: 1,
+      align: i18n.language === 'ar' ? 'right' : 'left',
+
     },
     {
       field: 'totalAmount',
       headerName: t('totalAmount'),
       flex: 1,
+      align: i18n.language === 'ar' ? 'right' : 'left',
+
     },
   ];
   const isRTL = i18n.language === 'ar';

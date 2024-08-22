@@ -156,10 +156,14 @@
 "withdraw" : "المبلغ المتبقي للسحب",
 "topup" : "إعادة تعبئة",
 "totalAmountInvested" : "إجمالي المبلغ المستثمر",
-"VeronainvestmentTotalPerType" : "إجمالي استثمار فيرونا حسب النوع",
 "MyWallet": " محفظتي",
-"walletupdatedsuccessfully": "تم تحديث المحفظة بنجاح"
-
-
+"VeronainvestmentTotalPerType" : "استثمارات فيرونا حسب النوع",
+"VeronainvestmentTotalPerTitle" : "استثمارات فيرونا حسب العنوان",
+"walletupdatedsuccessfully" : "تم تحديث المحفظة بنجاح",
+"CashoutSuccessful" : "سحب ناجح",
+"AmountExceedsWithdraw" : "المبلغ يتجاوز حد السحب",
+"investmentTotalPerTitle" : "إجمالي الاستثمار حسب العنوان",
+"AddContract" : "أضف عقدًا",
+"WalletDeletedSuccessfully" : "تم حذف المحفظة بنجاح"
 
 }

@@ -192,7 +192,7 @@ const Addinvestment = () => {
             <TextField
               fullWidth
               select
-              label={t("dateInv")}
+              label={t("investmentStatus")}
               name="investmentStatus"
               value={investment.investmentStatus}
               onChange={handleInputChange}

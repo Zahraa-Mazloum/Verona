@@ -274,7 +274,7 @@ const InvestmentTable = () => {
     startIcon={<AddIcon />}
     onClick={() => navigate('/addinvestment')}
   >
-    {t('addInvestment')}
+    {t('Addinvestment')}
   </Button>
 )}
           </Toolbar>
