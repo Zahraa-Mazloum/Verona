@@ -1,27 +1,36 @@
-import React, { useEffect, useState, Suspense } from "react";
-import { useTranslation } from 'react-i18next';
+import React, { useState, useEffect, Suspense } from 'react';
 import { Box } from "@mui/material";
 import Sidebar from '../components/sidebar/Sidebar';
 import Header from './Header/Header';
 import "../App.css";
-import Loading from "./loading.js";
+import Loading from "./loading";
+import { useTranslation } from 'react-i18next';
+
+
 
 function Layout({ children }) {
-  const { i18n } = useTranslation();
   const [userRole, setUserRole] = useState(null);
   const [open, setOpen] = useState(true);
+  const [selectedCurrency, setSelectedCurrency] = useState('USD');
+  const [conversionRate, setConversionRate] = useState(1);
+  const { i18n } = useTranslation();
+
+
+  const handleCurrencyChange = (currency, rate) => {
+    setSelectedCurrency(currency);
+    setConversionRate(rate);
+  };
+  const isRTL = i18n.language === 'ar';
 
   useEffect(() => {
     const role = localStorage.getItem("userRole");
     setUserRole(role);
   }, []);
 
-  const isRTL = i18n.language === 'ar';
-
   return (
     <Suspense fallback={<Loading />}>
       <Box sx={{ display: 'flex' }}>
-        <Sidebar open={open} setOpen={setOpen} userRole={userRole} dir={isRTL ? 'rtl' : 'ltr'}/>
+        <Sidebar open={open} setOpen={setOpen} userRole={userRole} />
         <Box 
           sx={{ 
             flexGrow: 1, 
@@ -33,9 +42,9 @@ function Layout({ children }) {
           }} 
           dir={isRTL ? 'rtl' : 'ltr'}
         >
-          <Header open={open} />
-          <Box sx={{ mt: 8 }} dir={isRTL ? 'rtl' : 'ltr'}>
-            {children}
+          <Header open={open} onCurrencyChange={handleCurrencyChange} />
+          <Box sx={{ mt: 8 }}>
+{children}
           </Box>
         </Box>
       </Box>

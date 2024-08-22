@@ -22,7 +22,7 @@ import CashoutPopup from './CashoutPopup';
 import TransferPopup from './TransferPopup.js'
 import io from 'socket.io-client';
 
-const InvContractsTable = () => {
+const InvContractsTable = ({ selectedCurrency, conversionRate}) => {
   const { id } = useParams();
   const { t, i18n } = useTranslation();
   const [contract, setContract] = useState([]);
@@ -142,15 +142,17 @@ const InvContractsTable = () => {
     safeLowerCase(Contracts.contractPercentage).includes(safeLowerCase(search)) ||
     safeLowerCase(Contracts.investmentStatus).includes(safeLowerCase(search))
   );
-
+  const formatAmount = (value) => {
+    return `${(value * conversionRate).toFixed(2)}`;
+  };
   const columns = [
     {
       field: 'amount',
       headerName: t('amountinv'),
-    
       flex: 0.1,
       minWidth: 100,
       align: i18n.language === 'ar' ? 'right' : 'left',
+      renderCell: ({ value }) => formatAmount(value, selectedCurrency, conversionRate),
       renderHeader: () => (
         <span style={{ whiteSpace: 'normal', wordWrap: 'break-word', textOverflow: 'ellipsis', overflow: 'hidden' }}>
           {t('amountinv')}
@@ -160,20 +162,11 @@ const InvContractsTable = () => {
     {
       field: 'currency',
       headerName: t('currency'),
-    
-  flex: 1,
-      minWidth: 100,      
-      align: i18n.language === 'ar' ? 'right' : 'left',
-      renderHeader: () => (
-        <span style={{ whiteSpace: 'normal', wordWrap: 'break-word', textOverflow: 'ellipsis', overflow: 'hidden' }}>
-          {t('currency')}
-        </span>
-      ),
+      flex: 1,
       renderCell: (params) => (
-        <span>
-          {i18n.language === 'ar' ? params.row.currency.symbol_ar : params.row.currency.symbol}
-        </span>
+        <span>{selectedCurrency}</span>
       ),
+      align: i18n.language === 'ar' ? 'right' : 'left'
     },
     {
       field: 'contractTime',

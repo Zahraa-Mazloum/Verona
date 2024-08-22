@@ -26,7 +26,7 @@ import loader from '../loading.gif';
 import { useTranslation } from 'react-i18next';
 import './ContractsTable.css'
 
-const ContractsTable = () => {
+const ContractsTable = ({ selectedCurrency, conversionRate }) => {
   const { t, i18n } = useTranslation();
   const [contract, setContract] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -42,21 +42,22 @@ const ContractsTable = () => {
       },
     },
   }));
-
-  const fetchContract = async () => {
-    try {
-      const { data } = await api.get(`/contract/allContracts/${i18n.language}`);
-      setContract(data);
-    } catch (error) {
-      toast.error(t('ErrorFetchingContracts'));
-    } finally {
-      setLoading(false);
-    }
+ const formatAmount = (value) => {
+    return `${(value * conversionRate).toFixed(2)}`;
   };
-
   useEffect(() => {
+    const fetchContract = async () => {
+      try {
+        const response = await api.get(`/contract/allContracts/${i18n.language}`);
+        setContract(response.data);
+      } catch (error) {
+        console.error(error);
+      } finally {
+        setLoading(false);
+      }
+    };
     fetchContract();
-  }, [i18n.language]);
+  }, [i18n.language, selectedCurrency, conversionRate]);
 
   const handleDeleteContracts = async (id) => {
     try {
@@ -127,21 +128,19 @@ const ContractsTable = () => {
       flex: 0.1,
       minWidth: 100,
       align: i18n.language === 'ar' ? 'right' : 'left',
+      renderCell: ({ value }) => formatAmount(value, selectedCurrency, conversionRate),
       renderHeader: () => (
         <span style={{ whiteSpace: 'normal', wordWrap: 'break-word', textOverflow: 'ellipsis', overflow: 'hidden' }}>
           {t('amountinv')}
         </span>
       ),
-
     },
     {
       field: 'currency',
       headerName: t('currency'),
       flex: 1,
       renderCell: (params) => (
-        <span>
-          {i18n.language === 'ar' ? params.row.currency.symbol_ar : params.row.currency.symbol}
-        </span>
+        <span>{selectedCurrency}</span>
       ),
       align: i18n.language === 'ar' ? 'right' : 'left'
     },
@@ -209,15 +208,11 @@ const ContractsTable = () => {
       align: i18n.language === 'ar' ? 'right' : 'left',
       renderCell: (params) => (
         <span>
-          {Number(params.value).toFixed(2)}
-        </span>
-      ),
-      renderHeader: () => (
-        <span style={{ whiteSpace: 'normal', wordWrap: 'break-word', textOverflow: 'ellipsis', overflow: 'hidden' }}>
-          {t('profitTillDate')}
+          {(Number(params.value) * conversionRate).toFixed(2)} 
         </span>
       ),
     },
+    
     {
       field: 'investmentStatus',
       headerName: t('investmentStatus'),

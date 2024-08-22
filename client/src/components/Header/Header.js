@@ -1,13 +1,17 @@
 import React, { useState, useEffect, Suspense } from 'react';
 import { AppBar, Toolbar, IconButton, Box, Menu, MenuItem, Badge, Drawer, List, ListItem, ListItemText, Dialog, DialogTitle, DialogContent, DialogActions, Button } from '@mui/material';
 import { Notifications, AccountCircle, Language } from '@mui/icons-material';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate ,useLocation,useParams  } from 'react-router-dom';
 import i18n from 'i18next';
 import api from '../../api/axios';
 import { useTranslation } from 'react-i18next';
 import io from 'socket.io-client';
+import  CurrencySwitcher  from './CurrencySwitcher.js';
+import ContractsTable from '../contracts/contractTable.js';
+import InvestorInv from '../investorsINv/investorInv.js';
 
-const Header = ({ open }) => {
+
+const Header = ({ open ,onCurrencyChange  }) => {
   const [anchorEl, setAnchorEl] = useState(null);
   const [notifications, setNotifications] = useState([]);
   const [unreadCount, setUnreadCount] = useState(0);
@@ -19,6 +23,26 @@ const Header = ({ open }) => {
   const { t } = useTranslation();
   const role = localStorage.getItem('role');
   const investorId = localStorage.getItem('id')
+  const [currency, setCurrency] = useState('USD');
+  const [conversionRate, setConversionRate] = useState(1);
+  const location = useLocation();
+  const { id } = useParams();
+  const storedId = localStorage.getItem('id');
+
+
+  const handleCurrencyChange = (selectedCurrency, rate) => {
+  console.log("header", selectedCurrency, rate);    setCurrency(selectedCurrency);
+    setConversionRate(rate);
+  };
+  const shouldRenderContractTable = () => {
+    const allowedRoutes = ['/contract'];
+    return allowedRoutes.includes(location.pathname);
+  };
+
+  const shouldRenderInvContractTable = () => {
+    const baseRoute = '/myInvestments';
+    return location.pathname === `${baseRoute}/${storedId}`;
+  };
 
   useEffect(() => {
     const handleUserInteraction = () => setUserInteracted(true);
@@ -152,35 +176,20 @@ const Header = ({ open }) => {
                 <Notifications />
               </Badge>
             </IconButton>
-          <IconButton sx={{ svg: { color: 'rgb(243, 166, 74)' } }} onClick={handleProfile}>
-            <AccountCircle />
-          </IconButton>
-          <IconButton sx={{ svg: { color: 'rgb(243, 166, 74)' } }} onClick={handleMenu}>
+       
+            <CurrencySwitcher onCurrencyChange={handleCurrencyChange} />
+            <IconButton sx={{ svg: { color: 'rgb(243, 166, 74)' } }} onClick={handleMenu}>
             <Language />
           </IconButton>
           <Menu anchorEl={anchorEl} open={Boolean(anchorEl)} onClose={handleClose}>
             <MenuItem onClick={() => handleLanguageChange('en')}>English</MenuItem>
             <MenuItem onClick={() => handleLanguageChange('ar')}>Arabic</MenuItem>
           </Menu>
+          <IconButton sx={{ svg: { color: 'rgb(243, 166, 74)' } }} onClick={handleProfile}>
+            <AccountCircle />
+          </IconButton>
         </Toolbar>
       </AppBar>
-      {/* {role === 'admin' && (
-        <Drawer anchor="right" open={drawerOpen} onClose={toggleDrawer}>
-          <Box sx={{ width: 300, padding: 2 }}>
-            <h2>{t('Admin Notifications')}</h2>
-            <List>
-              {notifications.map((notification) => (
-                <ListItem button key={notification._id} onClick={() => handleNotificationClick(notification)}>
-                  <ListItemText
-                    primary={notification.message}
-                    secondary={new Date(notification.createdAt).toLocaleString()}
-                  />
-                </ListItem>
-              ))}
-            </List>
-          </Box>
-        </Drawer>
-      )} */}
         <Drawer anchor="right" open={drawerOpen} onClose={toggleDrawer}>
     <Box sx={{ width: 300, padding: 2 }}>
       <h2>{role === 'admin' ? t('Admin Notifications') : t('Investor Notifications')}</h2>
@@ -252,6 +261,12 @@ const Header = ({ open }) => {
 </DialogActions>
 )}
       </Dialog>
+      {shouldRenderContractTable() && (
+      <ContractsTable selectedCurrency={currency} conversionRate={conversionRate} />
+    )}
+          {shouldRenderInvContractTable() && (
+      <InvestorInv selectedCurrency={currency} conversionRate={conversionRate} />
+    )}
     </Suspense>
   );
 };

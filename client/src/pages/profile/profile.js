@@ -1,16 +1,16 @@
-import React, { useEffect, useState,Suspense } from 'react';
+import React, { useEffect, useState, Suspense } from 'react';
 import api from '../../api/axios.js';
-import { Typography, Container, Box } from '@mui/material';
+import { Typography, Container, Box, Paper } from '@mui/material';
 import Loading from '../../components/loading.js';
-
 
 const Profile = () => {
   const [userData, setUserData] = useState(null);
   const [error, setError] = useState('');
+  
   useEffect(() => {
     document.title = "Profile";
-  },[]);
- 
+  }, []);
+
   useEffect(() => {
     const fetchProfile = async () => {
       try {
@@ -37,32 +37,36 @@ const Profile = () => {
 
   return (
     <Suspense fallback={<Loading />}>
-    <Container maxWidth="sm">
-      <Box sx={{ mt: 4 }}>
-        <Typography variant="h4" align="center" gutterBottom>
-          My Profile
-        </Typography>
-        {error ? (
-          <Typography variant="body1" color="error" align="center">
-            {error}
-          </Typography>
-        ) : (
-          userData && (
-            <div>
-              <Typography variant="body1">
-                <strong>Full Name (English):</strong> {userData.fullname_en}
+      <Container maxWidth="sm">
+        <Paper elevation={3} sx={{ p: 3, mt: 4, borderRadius: 2 }}>
+          <Box sx={{ textAlign: 'center' }}>
+            <Typography variant="h5" sx={{ fontWeight: 'bold' }}>
+              My Profile
+            </Typography>
+          </Box>
+          <Box sx={{ mt: 3 }}>
+            {error ? (
+              <Typography variant="body1" color="error" align="center">
+                {error}
               </Typography>
-              <Typography variant="body1">
-                <strong>Full Name (Arabic):</strong> {userData.fullname_ar}
-              </Typography>
-              <Typography variant="body1">
-                <strong>Email:</strong> {userData.email}
-              </Typography>
-            </div>
-          )
-        )}
-      </Box>
-    </Container>
+            ) : (
+              userData && (
+                <div>
+                  <Typography variant="body1" sx={{ mt: 2 }}>
+                    <strong>Full Name (English):</strong> {userData.fullname_en}
+                  </Typography>
+                  <Typography variant="body1" sx={{ mt: 1 }}>
+                    <strong>Full Name (Arabic):</strong> {userData.fullname_ar}
+                  </Typography>
+                  <Typography variant="body1" sx={{ mt: 1 }}>
+                    <strong>Email:</strong> {userData.email}
+                  </Typography>
+                </div>
+              )
+            )}
+          </Box>
+        </Paper>
+      </Container>
     </Suspense>
   );
 };

@@ -1,5 +1,5 @@
 import { Routes, Route, Navigate } from 'react-router-dom';
-import { Suspense } from 'react';
+import { Suspense , useState} from 'react';
 import Login from "../src/pages/login/login";
 import RequireAuth from './components/RequireAuth';
 import Profile from './pages/profile/profile';
@@ -47,7 +47,8 @@ function App() {
         <Route path="Profile" element={<Profile />} />
         <Route path="Dashboard" element={<Dashboard />} />
         <Route path="CurrencyTable" element={<CurrencyTable />} />
-        <Route path="Contract" element={<Contract />} />
+        <Route path="Contract"  />
+
         <Route path="Investor" element={<Investor />} />
         <Route path="Types" element={<Types />} />
         <Route path="overallInv" element={<OverallInv />} />
@@ -75,9 +76,8 @@ function App() {
       <Route path="/" element={<Navigate to="/dashboard" />} />
       <Route path="Profile" element={<Profile />} />
       <Route path="/invdashboard/:id" element={<InvDashboard />} />
-      {/* <Route path="/investorContracts/:id" element={<InvContracts />} /> */}
       <Route path="/investment" element={<Investment />} />
-      <Route path="/myInvestments/:id" element={<InvestorInv />} />
+      <Route path="/myInvestments/:id"  />
       <Route path="overallInv" element={<OverallInv />} />
       <Route path="/myWallet/:id" element={<InvWallet />} />
       <Route path="/message/:id" element={<Contact/>} />
