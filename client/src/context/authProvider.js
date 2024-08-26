@@ -6,18 +6,15 @@ const AuthContext = createContext({});
 export const AuthProvider = ({ children }) => {
   const [auth, setAuth] = useState(() => {
     const token = localStorage.getItem("token") ;
-    // const superadmin = localStorage.getItem("super-admin") ;
     return token ? { token } : {};
   });
 
   useEffect(() => {
     if (auth.token) {
       localStorage.setItem("token", auth.token);
-    //   localStorage.setItem("super-admin", auth.superadmin);
     } else {
       localStorage.removeItem("token");
-    //   localStorage.removeItem("super-admin");
-    }
+      }
   }, [auth]);
 
   return (

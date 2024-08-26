@@ -1,0 +1,34 @@
+.not-found-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    text-align: center;
+    color: #333; 
+}
+
+.not-found-container h1 {
+    font-size: 6rem;
+    margin-bottom: 1rem;
+    color: #F16C1D; 
+}
+
+.not-found-container p {
+    font-size: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.back-previous {
+    padding: 10px 20px;
+    background-color: #F16C1D; 
+    color: #fff;
+    text-decoration: none;
+    border-radius: 5px;
+    font-weight: bold;
+    transition: background-color 0.3s;
+}
+
+.back-previous:hover {
+    background-color: #D45b1a; 
+}

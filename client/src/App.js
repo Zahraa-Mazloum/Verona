@@ -34,21 +34,21 @@ import InvestorInv from './components/investorsINv/investorInv.js';
 import InvWallet from './components/invWallet/invWalletTable.js';
 import Contact from './pages/SendMessageForm.js';
 import './App.css';
+import NotFound from './pages/notFound/NotFound.js';
 
 function App() {
   useDocumentTitle();
   const userRole = localStorage.getItem('role');
-
-  let routes;
+  let adminRoutes;
+  let investorRoutes;
   if (userRole === 'admin') {
-    routes = (
-      <Route path="/" element={<RequireAuth />}>
+     adminRoutes = (
+      <Route element={<RequireAuth />}>
         <Route path="/" element={<Navigate to="/dashboard" />} />
         <Route path="Profile" element={<Profile />} />
         <Route path="Dashboard" element={<Dashboard />} />
         <Route path="CurrencyTable" element={<CurrencyTable />} />
         <Route path="Contract"  />
-
         <Route path="Investor" element={<Investor />} />
         <Route path="Types" element={<Types />} />
         <Route path="overallInv" element={<OverallInv />} />
@@ -71,8 +71,8 @@ function App() {
       </Route>
     );
   } else if (userRole === 'investor') {
-    routes = (
-      <Route path="/" element={<RequireAuth />}>
+     investorRoutes = (
+      <Route element={<RequireAuth />}>
       <Route path="/" element={<Navigate to="/dashboard" />} />
       <Route path="Profile" element={<Profile />} />
       <Route path="/invdashboard/:id" element={<InvDashboard />} />
@@ -91,13 +91,19 @@ function App() {
 
   return (
     <Suspense fallback={<Loading />}>
-      <Routes>
-        {/* public routes */}
+     <Routes>
+        {/* Public routes */}
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<RegisterInvestor />} />
         
-        {/* protected routes */}
-        {routes}
+        {/* Protected routes */}
+        {userRole === 'admin' && adminRoutes}
+        {userRole === 'investor' && investorRoutes}
+        
+        {/* Catch-all redirect for undefined routes */}
+        <Route element={<RequireAuth />}>
+        <Route path="*" element={<NotFound />} />
+                  </Route>
       </Routes>
     </Suspense>
   );
