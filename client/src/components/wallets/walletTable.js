@@ -110,12 +110,12 @@ const WalletsTable = () => {
 
     {
       field: 'amount',
-      headerName: t('Amount'),
+      headerName: t('amount'),
       flex: 1,
     },
     {
       field: 'actions',
-      headerName: t('Actions'),
+      headerName: t('actions'),
       sortable: false,
       flex: 1,
       renderCell: (params) => (

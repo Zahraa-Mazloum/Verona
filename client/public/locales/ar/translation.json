@@ -39,7 +39,7 @@
   "Profit" : "ربح:",
   "title" : "عنوان", 
   "addContract"  : "إضافة عقد",
-  "Investorname" : "اسم المستثمر",
+  "InvestorName" : "اسم المستثمر",
   "ContractsManagement": "إدارة العقود",
   "currency" : "عملة",
   "contractTime" : "وقت العقد",
@@ -164,6 +164,7 @@
 "AmountExceedsWithdraw" : "المبلغ يتجاوز حد السحب",
 "investmentTotalPerTitle" : "إجمالي الاستثمار حسب العنوان",
 "AddContract" : "أضف عقدًا",
-"WalletDeletedSuccessfully" : "تم حذف المحفظة بنجاح"
+"WalletDeletedSuccessfully" : "تم حذف المحفظة بنجاح",
+"AdminWallet": "محافظ المستثمرين"
 
 }
